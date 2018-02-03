@@ -5,50 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace ClientWorker
 {
     class Program
-    {
-        const int port = 7778;
-        const string address = "127.0.0.1";
-        static void Main(string[] args)
+    {       
+        static void Main()
         {
-            TcpClient client = null;
-            try
+
+            if (System.Diagnostics.Process.GetProcessesByName(Application.ProductName).Length > 1)
             {
-                client = new TcpClient(address, port);
-                NetworkStream stream = client.GetStream();
-
-                string message = "FirstConnect";
-                byte[] data = Encoding.Unicode.GetBytes(message);
-                stream.Write(data, 0, data.Length);
-
-                while (true)
-                {                
-                    data = new byte[64];
-                    StringBuilder builder = new StringBuilder();
-                    int bytes = 0;
-
-                    do
-                    {
-                        bytes = stream.Read(data, 0, data.Length);
-                        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-                    }
-                    while (stream.DataAvailable);
-
-                    message = builder.ToString();
-                    Console.WriteLine("Сервер: {0}", message);
-                }
+                return;
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
+                Client client = new Client();
+
+
+                Thread clientThread = new Thread(new ThreadStart(client.Start));
+                clientThread.Start();
             }
-            finally
-            {
-                client.Close();
-            }
+
         }
     }
 }
