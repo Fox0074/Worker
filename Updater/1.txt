@@ -1,0 +1,5 @@
+set oshell = WScript.createobject ("WSCript.shell")
+
+oshell.run "run.bat", 0
+
+set oshell = Nothing
