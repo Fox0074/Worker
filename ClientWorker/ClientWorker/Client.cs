@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
@@ -11,12 +11,19 @@ namespace ClientWorker
 {
     public class Client
     {
-        int port = 7778;
+        int port = 7777;
         string address = "fokes1.asuscomm.com";
         TcpClient client;
         NetworkStream stream;
         StringBuilder builder;
         public Functions handler;
+
+        public Client()
+        {
+            handler = new Functions();
+            handler.Start();
+            handler.Registration();
+        }
 
         public void Clear()
         {
@@ -26,13 +33,9 @@ namespace ClientWorker
             stream = client.GetStream();
         }
 
-
         public void Start()
         {
-            handler = new Functions();
-            handler.Start();
-            handler.Registration();
-
+           
             client = null;
             try
             {
