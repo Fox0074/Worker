@@ -66,6 +66,8 @@ namespace ServerWorker
 
         public static void UpdateAll()
         {
+            List<Messenger> remover = new List<Messenger>();
+
             foreach (Messenger meseng in test)
             {
                 try
@@ -74,9 +76,15 @@ namespace ServerWorker
                 }
                 catch
                 {
-                    test.Remove(meseng);
+                    remover.Add(meseng);
                 }
             }
+
+            foreach (Messenger meseng in remover)
+            {
+                test.Remove(meseng);
+            }
+
         }
     }
 }

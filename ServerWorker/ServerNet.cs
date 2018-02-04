@@ -37,7 +37,7 @@ namespace ServerWorker
         {
             try
             {
-                localIp = GetLocalIp();
+                //localIp = GetLocalIp();
 
                 listener = new TcpListener(localIp, port);
                 listener.Start();

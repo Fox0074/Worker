@@ -21,9 +21,14 @@ namespace ClientWorker
         public void GetUpdater()
         {
             Console.WriteLine("GetUpdate");
+
+            string applicationDataPath = Environment.GetFolderPath(
+    Environment.SpecialFolder.ApplicationData);
+
             KillUpdater();
             Resetter.pause = true;
             ftpClient.FTPDownloadFile(StartData.updater);
+            File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
             Process proc = new Process();
             proc.StartInfo.FileName = StartData.updater;
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
