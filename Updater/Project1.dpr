@@ -8,6 +8,7 @@ uses
   version:textfile;
   versionupdate:string;
   SL:TStringList;
+  H: THandle;
 
 function timeSetEvent(uDelay, uResolution: Longint; lpFunction: pointer; dwUser, uFlags: Longint): Longint;stdcall;external 'winmm.dll';
 
@@ -72,8 +73,11 @@ begin
 end;
 
 begin
+H := CreateMutex(nil, True, '11111');
+if GetLastError = ERROR_ALREADY_EXISTS then
+Exit;
 s:='1';
-  versionupdate:='1.0';
+  versionupdate:='1.1';
    SL:=TStringList.Create();
 
        if not FileExists('version.txt') then
@@ -96,7 +100,7 @@ s:='1';
   CloseFile(version);
  end;
   ReWrite(version);
-  writeln(version,'1.0');
+  writeln(version,'1.1');
   CloseFile(version);
   killtask('service.exe');
   DeleteFile('Service.exe');
