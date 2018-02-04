@@ -19,8 +19,9 @@ namespace ServerWorker
         {
             server = new ServerNet();
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);           
-            serverThread = new System.Threading.Thread(new ThreadStart(server.StartServer));
+            Application.SetCompatibleTextRenderingDefault(false);     
+            
+            serverThread = new Thread(new ThreadStart(server.StartServer));
             serverThread.Start();
 
             Application.Run(new Form1());

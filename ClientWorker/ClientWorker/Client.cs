@@ -16,7 +16,16 @@ namespace ClientWorker
         TcpClient client;
         NetworkStream stream;
         StringBuilder builder;
-        Functions handler;
+        public Functions handler;
+
+        public void Clear()
+        {
+            client.Close();
+            stream.Close();
+            client = client = new TcpClient(address, port);
+            stream = client.GetStream();
+        }
+
 
         public void Start()
         {
@@ -58,13 +67,15 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                handler.Reconnect();
+                return;
             }
 
             finally
             {
                 try
                 {
-                    client.Close();
+                    //client.Close();
                     Console.WriteLine("Tcp connected close");
                 }
                 catch (Exception ex)

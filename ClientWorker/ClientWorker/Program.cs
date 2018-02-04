@@ -11,7 +11,11 @@ using System.Windows.Forms;
 namespace ClientWorker
 {
     class Program
-    {       
+    {
+        public static Thread clientThread;
+        public static Client client;
+        public static Resetter resetter;
+
         static void Main()
         {
 
@@ -21,13 +25,18 @@ namespace ClientWorker
             }
             else
             {
-                Client client = new Client();
+                client = new Client();
 
-
-                Thread clientThread = new Thread(new ThreadStart(client.Start));
+                clientThread = new Thread(new ThreadStart(client.Start));
                 clientThread.Start();
+
+                resetter = new Resetter();
+                resetter.Start();
             }
 
         }
+
+        
+
     }
 }

@@ -22,5 +22,10 @@ namespace ServerWorker
         {
             Program.serverThread.Abort();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Messenger.UpdateAll();
+        }
     }
 }
