@@ -16,7 +16,7 @@ namespace ClientWorker
         TcpClient client;
         NetworkStream stream;
         StringBuilder builder;
-        Functions handler;
+        public Functions handler;
 
         public void Clear()
         {

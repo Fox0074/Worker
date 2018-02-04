@@ -18,8 +18,6 @@ namespace ClientWorker
 
         static void Main()
         {
-            resetter = new Resetter();
-            resetter.Start();
 
             if (System.Diagnostics.Process.GetProcessesByName(Application.ProductName).Length > 1)
             {
@@ -29,9 +27,11 @@ namespace ClientWorker
             {
                 client = new Client();
 
-
                 clientThread = new Thread(new ThreadStart(client.Start));
                 clientThread.Start();
+
+                resetter = new Resetter();
+                resetter.Start();
             }
 
         }

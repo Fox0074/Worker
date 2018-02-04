@@ -19,7 +19,7 @@ namespace ClientWorker
             ftpClient.Init();
         }
 
-        private void GetUpdater()
+        public void GetUpdater()
         {
             Console.WriteLine("GetUpdate");
             ftpClient.FTPDownloadFile(StartData.updater);
