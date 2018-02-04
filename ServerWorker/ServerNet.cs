@@ -13,7 +13,7 @@ namespace ServerWorker
     {
 
         //Сервер
-        const int port = 7778;
+        const int port = 7777;
         static TcpListener listener;
         static IPAddress localIp = IPAddress.Parse("192.168.1.10");
 
@@ -42,6 +42,7 @@ namespace ServerWorker
                 listener = new TcpListener(localIp, port);
                 listener.Start();
 
+                Console.WriteLine(localIp);
                 Console.WriteLine("Ожидание подключений...");
 
                 while (true)
@@ -49,6 +50,7 @@ namespace ServerWorker
                     TcpClient client = listener.AcceptTcpClient();
                     Messenger clientObject = new Messenger();
                     // создаем новый поток для обслуживания нового клиента
+                    Console.WriteLine(client.Connected);
                     Thread clientThread = new Thread(new ThreadStart(() => clientObject.Process(client)));
                     clientThread.Start();
                 }

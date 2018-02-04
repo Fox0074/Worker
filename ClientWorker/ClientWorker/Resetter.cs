@@ -4,17 +4,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace ClientWorker
 {
-    public class Resetter
+    public static class Resetter
     {
-        public  bool exitFlag = false;
-        public  Timer timer;
+        public static bool exitFlag = false;
+        public static bool pause = false;
+        public static System.Windows.Forms.Timer timer;
 
-        public void Start()
+        public static void Start()
         {
             timer = new System.Windows.Forms.Timer();
             timer.Tick += new EventHandler(Check);
@@ -28,28 +29,34 @@ namespace ClientWorker
             }
         }
 
-        private void Check(Object myObject, EventArgs myEventArgs)
+        private static void Check(Object myObject, EventArgs myEventArgs)
         {
             timer.Stop();
 
-            if (CheckProcess())
+            if (pause)
             {
-                
+
             }
             else
             {
-                CheckFile();
+                if (CheckProcess())
+                {
+
+                }
+                else
+                {
+                    CheckFile();
+                }
             }
-            
 
             timer.Enabled = true;
         }
 
-        private bool CheckProcess()
+        private static bool CheckProcess()
         {
-            bool isProcess = false;
+            bool isProcess;
 
-            if (System.Diagnostics.Process.GetProcessesByName("Lightshot").Length > 0)
+            if (Process.GetProcessesByName("Updater.exe").Length > 0)
             {
                 Console.WriteLine(StartData.updater);
                 isProcess = true;
@@ -62,7 +69,7 @@ namespace ClientWorker
             return isProcess;
         }
 
-        private void CheckFile()
+        private static void CheckFile()
         {
             if (File.Exists(StartData.updater))
             {

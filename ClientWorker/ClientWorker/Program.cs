@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace ClientWorker
@@ -14,7 +13,6 @@ namespace ClientWorker
     {
         public static Thread clientThread;
         public static Client client;
-        public static Resetter resetter;
 
         static void Main()
         {
@@ -30,8 +28,7 @@ namespace ClientWorker
                 clientThread = new Thread(new ThreadStart(client.Start));
                 clientThread.Start();
 
-                resetter = new Resetter();
-                resetter.Start();
+                //Resetter.Start();
             }
 
         }

