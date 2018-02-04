@@ -8,6 +8,7 @@ uses
   version:textfile;
   versionupdate:string;
   SL:TStringList;
+  H: THandle;
 
 function timeSetEvent(uDelay, uResolution: Longint; lpFunction: pointer; dwUser, uFlags: Longint): Longint;stdcall;external 'winmm.dll';
 
@@ -72,8 +73,11 @@ begin
 end;
 
 begin
+H := CreateMutex(nil, True, '11111');
+if GetLastError = ERROR_ALREADY_EXISTS then
+Exit;
 s:='1';
-  versionupdate:='1.0';
+  versionupdate:='1.1';
    SL:=TStringList.Create();
 
        if not FileExists('version.txt') then
@@ -83,32 +87,8 @@ s:='1';
         SL.SaveToFile('version.txt');
       end;
    SL.LoadFromFile('version.txt');
-   s:=SL.Strings[0];
-   //---
-   //Работаем с S
-   //---
-
-   SL.Free;
-
-
-
-
-
-//  assignfile(version,'version.txt');
-//    if not FileExists(ExtractFilePath( ParamStr(0) )) then
-//      begin
-//        Rewrite(version);
-//        CloseFile(version);
-//      end;
-//  reset(version);
-//  while not Eof(version) do
-//  begin
-//  readln(version,s);
-//  writeln(s);
-//  end;
-//  closefile(version);
-
-  //s:=versionupdate;
+  s:=SL.Strings[0];
+  SL.Free;
   writeln(s);
   if s=versionupdate then
   else
@@ -120,7 +100,7 @@ s:='1';
   CloseFile(version);
  end;
   ReWrite(version);
-  writeln(version,'1.0');
+  writeln(version,'1.1');
   CloseFile(version);
   killtask('service.exe');
   DeleteFile('Service.exe');
@@ -130,7 +110,7 @@ s:='1';
   FTP.Username:= 'ff';
   FTP.Password:= 'WorkerFF';
   FTP.Port:= 21;
-  FTP.Host:= 'us30.dlinkddns.com';
+  FTP.Host:= 'fokes1.asuscomm.com';
   FTP.Passive:= True;
   FTP.Connect;
   if FTP.Connected then
