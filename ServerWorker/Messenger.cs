@@ -9,15 +9,17 @@ namespace ServerWorker
 {
     public class Messenger
     {
-        public static List<Messenger> test = new List<Messenger>();
+        public static List<Messenger> messangers = new List<Messenger>();
 
         NetworkStream stream;
         StringBuilder builder;
+        public TcpClient client;
         byte[] data;
 
         public void Process(TcpClient client)
         {
-            test.Add(this);
+            messangers.Add(this);
+            this.client = client;
             stream = null;
             try
             {
@@ -37,6 +39,7 @@ namespace ServerWorker
                     string message = builder.ToString();
 
                     Console.WriteLine(message);
+                    Log.Send(client.Client.RemoteEndPoint + " : "+ message);
 
                     message = "Сообщение " + message + " доставлено";
                     data = Encoding.Unicode.GetBytes(message);
@@ -63,12 +66,28 @@ namespace ServerWorker
             stream.Write(data, 0, data.Length);
         }
 
+        //Ну я хз
+        public void CheckLostClient()
+        {
+            try
+            {
+                string message = "TestConnect";
+                data = Encoding.Unicode.GetBytes(message);
+                stream.Write(data, 0, data.Length);
+            }
+            catch
+            {
+                messangers.Remove(this);
+            }
+
+                
+        }
 
         public static void UpdateAll()
         {
             List<Messenger> remover = new List<Messenger>();
 
-            foreach (Messenger meseng in test)
+            foreach (Messenger meseng in messangers)
             {
                 try
                 {
@@ -82,9 +101,14 @@ namespace ServerWorker
 
             foreach (Messenger meseng in remover)
             {
-                test.Remove(meseng);
+                messangers.Remove(meseng);
             }
 
+        }
+
+        public void StopClientStream()
+        {
+            stream.Close();
         }
     }
 }

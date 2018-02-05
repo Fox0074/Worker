@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -13,7 +14,8 @@ namespace ServerWorker
     {
         static public ServerNet server;
         static public Thread serverThread;
-
+        static public Form1 form1;
+        
         [STAThread]
         static void Main()
         {
@@ -24,7 +26,8 @@ namespace ServerWorker
             serverThread = new Thread(new ThreadStart(server.StartServer));
             serverThread.Start();
 
-            Application.Run(new Form1());
+            Application.Run(form1 = new Form1());           
         }
+
     }
 }

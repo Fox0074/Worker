@@ -11,14 +11,19 @@ namespace ServerWorker
 {
     public class ServerNet
     {
+        public static Action AddClient = delegate { };
 
         //Сервер
         const int port = 7777;
         static TcpListener listener;
         static IPAddress localIp = IPAddress.Parse("192.168.1.10");
+        public List<EndPoint> listIp = new List<EndPoint>();      
 
         //Клиент
         public TcpClient client;
+        Thread clientThread;
+
+
         #region Конструкторы
         /// <summary>
         /// Конструктор класса
@@ -44,25 +49,31 @@ namespace ServerWorker
 
                 Console.WriteLine(localIp);
                 Console.WriteLine("Ожидание подключений...");
+                Log.Send("Твой LocalIp " + localIp);
+                Log.Send("Ожидание подключений...");
 
                 while (true)
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     Messenger clientObject = new Messenger();
                     // создаем новый поток для обслуживания нового клиента
-                    Console.WriteLine(client.Connected);
-                    Thread clientThread = new Thread(new ThreadStart(() => clientObject.Process(client)));
+                    clientThread = new Thread(new ThreadStart(() => clientObject.Process(client)));
                     clientThread.Start();
+
+                    AddClient.Invoke();
+                    Console.WriteLine("Подключился клиент : " + client.Client.RemoteEndPoint);
+                    Log.Send("Подключился клиент : " + client.Client.RemoteEndPoint);
+                    listIp.Add(client.Client.RemoteEndPoint);                    
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("ServerNet.StartServer " + ex.Message);
             }
             finally
             {
                 if (listener != null)
-                    listener.Stop();
+                    listener.Stop();               
             }
         }
 
@@ -81,6 +92,21 @@ namespace ServerWorker
             }
 
             return IPAddress.Parse("192.168.1.10");
+        }
+
+        public void StopServer()
+        {
+            try
+            {
+                foreach (Messenger sender in Messenger.messangers)
+                {
+                    sender.StopClientStream();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ServerNet.StopServer " + ex.Message);
+            }
         }
     }
 }
