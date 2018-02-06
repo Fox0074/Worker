@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Windows.Forms;
+using System.Threading.Tasks;
+//using System.Threading;
+using System.Timers;
 
 namespace ClientWorker
 {
@@ -13,26 +14,28 @@ namespace ClientWorker
     {
         public static bool exitFlag = false;
         public static bool pause = false;
-        public static System.Windows.Forms.Timer timer;
+        private static System.Timers.Timer aTimer;
 
         public static void Start()
         {
-            timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(Check);
-            timer.Interval = 2000;
-            timer.Start();
+            SetTimer();
+            //aTimer.Stop();
+            //aTimer.Dispose();
+        }
 
-            while (exitFlag == false)
-            {
-                // Processes all the events in the queue.
-                Application.DoEvents();
-            }
+        private static void SetTimer()
+        {
+            // Create a timer with a two second interval.
+            aTimer = new System.Timers.Timer(2000);
+            // Hook up the Elapsed event for the timer. 
+            aTimer.Elapsed += Check;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
         }
 
         private static void Check(Object myObject, EventArgs myEventArgs)
         {
-            timer.Stop();
-
+            Console.WriteLine("Timer");
             if (pause)
             {
 
@@ -49,21 +52,20 @@ namespace ClientWorker
                 }
             }
 
-            timer.Enabled = true;
         }
 
         private static bool CheckProcess()
         {
             bool isProcess;
 
-            if (Process.GetProcessesByName("Updater.exe").Length > 0)
+            if (Process.GetProcessesByName("Updater").Length > 0)
             {
-                Console.WriteLine(StartData.updater);
+                //Console.WriteLine(StartData.updater);
                 isProcess = true;
             }
             else
             {
-                Console.WriteLine("No " + StartData.updater);
+                //Console.WriteLine("No " + StartData.updater);
                 isProcess = false;
             }
             return isProcess;

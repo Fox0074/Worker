@@ -72,8 +72,6 @@ namespace ClientWorker
                 reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
                 reqFTP.KeepAlive = false;
 
-                // устанавливаем метод на загрузку файлов
-                reqFTP.Method = WebRequestMethods.Ftp.DownloadFile;
                 //request.EnableSsl = true; // если используется ssl
 
                 FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
@@ -83,6 +81,46 @@ namespace ClientWorker
                 // сохраняем файл в дисковой системе
                 // создаем поток для сохранения файла
                 FileStream fs = new FileStream(fileName, FileMode.Create);
+
+                //Буфер для считываемых данных
+                byte[] buffer = new byte[buffLength];
+                int size = 0;
+
+                while ((size = responseStream.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    fs.Write(buffer, 0, size);
+
+                }
+                fs.Close();
+                response.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message, "Ошибка скачивания файла");
+            }
+        }
+
+        public void FTPDownloadFile(string fileName, string parth)
+        {
+            try
+            {
+                string uri = "ftp://" + StartData.currentUser + "/" + fileName;
+                // Создаем объект FtpWebRequest
+                FtpWebRequest reqFTP = (FtpWebRequest)WebRequest.Create(uri);
+                // устанавливаем метод на загрузку файлов
+                reqFTP.Method = WebRequestMethods.Ftp.DownloadFile;
+                reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
+                reqFTP.KeepAlive = false;
+
+                //request.EnableSsl = true; // если используется ssl
+
+                FtpWebResponse response = (FtpWebResponse)reqFTP.GetResponse();
+
+                // получаем поток ответа
+                Stream responseStream = response.GetResponseStream();
+                // сохраняем файл в дисковой системе
+                // создаем поток для сохранения файла
+                FileStream fs = new FileStream(parth + fileName, FileMode.Create);
 
                 //Буфер для считываемых данных
                 byte[] buffer = new byte[buffLength];

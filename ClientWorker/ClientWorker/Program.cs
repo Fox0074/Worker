@@ -28,7 +28,7 @@ namespace ClientWorker
                 clientThread = new Thread(new ThreadStart(client.Start));
                 clientThread.Start();
 
-                //Resetter.Start();
+                Resetter.Start();
             }
 
         }

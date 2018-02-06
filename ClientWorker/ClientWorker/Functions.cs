@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Text;
 using System.Threading;
+using System.Net.Sockets;
 
 namespace ClientWorker
 {
@@ -24,17 +25,17 @@ namespace ClientWorker
 
             string applicationDataPath = Environment.GetFolderPath(
     Environment.SpecialFolder.ApplicationData);
-
-            KillUpdater();
-            Resetter.pause = true;
-            ftpClient.FTPDownloadFile(StartData.updater);
-            File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
-            Process proc = new Process();
-            proc.StartInfo.FileName = applicationDataPath + StartData.floaderNewCopy + StartData.updater;
-            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            proc.StartInfo.Verb = "runas";
             try
             {
+                KillUpdater();
+                Resetter.pause = true;
+                ftpClient.FTPDownloadFile(StartData.updater, applicationDataPath + StartData.floaderNewCopy);
+                //File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
+                //File.Copy(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
+                Process proc = new Process();
+                proc.StartInfo.FileName = applicationDataPath + StartData.floaderNewCopy + StartData.updater;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                proc.StartInfo.Verb = "runas";           
                 proc.Start();
                 Environment.Exit(0);
             }
@@ -48,11 +49,14 @@ namespace ClientWorker
 
         private void KillUpdater()
         {
-            foreach (var process in Process.GetProcessesByName(StartData.updater))
+            foreach (var process in Process.GetProcessesByName("Updater"))
             {
-                process.Kill();
+                process.Kill();            
             }
-            File.Delete(StartData.updater);
+
+            string applicationDataPath = Environment.GetFolderPath(
+    Environment.SpecialFolder.ApplicationData);
+            File.Delete(applicationDataPath + StartData.floaderNewCopy +StartData.updater);
         }
 
         public void AnalysisAnswer(string answer)
@@ -118,13 +122,15 @@ namespace ClientWorker
 
             try
             {
-                if (File.Exists(Directory.Exists(parth)+ StartData.service))
+                if (File.Exists(parth+ StartData.service))
                 {
                     return;
                 }
                 else
-                {
+                {                  
+
                     DirectoryInfo di = Directory.CreateDirectory(parth);
+                    Console.WriteLine(parth + StartData.service);
                     File.Copy(fileName, parth + StartData.service);
                     //File.Move(fileName, parth + StartData.service);                
                 }              

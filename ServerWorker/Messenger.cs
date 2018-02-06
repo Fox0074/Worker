@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace ServerWorker
 {
@@ -33,17 +34,25 @@ namespace ServerWorker
                     {
                         bytes = stream.Read(data, 0, data.Length);
                         builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
+
+                        if (bytes == 0)
+                        {
+                            Log.Send(client.Client.RemoteEndPoint + " Пришло 0 байт, клиент отключен");
+                            messangers.Remove(this);
+                            stream.Close();
+                            client.Close();
+                            return;
+                        }
+
                     }
                     while (stream.DataAvailable);
 
                     string message = builder.ToString();
 
+
                     Log.Send("Получено " + client.Client.RemoteEndPoint + " : "+ message);
 
-                    message = "Сообщение " + message + " доставлено";
-                    data = Encoding.Unicode.GetBytes(message);
-                    stream.Write(data, 0, data.Length);
-                    Log.Send("Отправлено " + client.Client.RemoteEndPoint + " : " + message);
+                    Functions.AnalysisAnswer(message,stream);
                 }
             }
             catch (Exception ex)

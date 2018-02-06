@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using System.Net.Sockets;
 
 namespace ServerWorker
 {
@@ -71,7 +72,18 @@ namespace ServerWorker
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {          
+        {
+            IPHostEntry host;
+            string hostName = Dns.GetHostName();
+
+            host = Dns.GetHostEntry(hostName);
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    
+                }
+            }
         }
 
     }
