@@ -23,7 +23,6 @@ namespace ServerWorker
         public TcpClient client;
         Thread clientThread;
 
-
         #region Конструкторы
         /// <summary>
         /// Конструктор класса
@@ -37,12 +36,12 @@ namespace ServerWorker
         {
         }
         #endregion
-
+        //Запуск сервера
         public void StartServer()
         {
             try
             {
-                //localIp = GetLocalIp();
+                localIp = GetLocalIp();
 
                 listener = new TcpListener(localIp, port);
                 listener.Start();
@@ -77,6 +76,24 @@ namespace ServerWorker
             }
         }
 
+        //Остановка сервера
+        public void StopServer()
+        {
+            try
+            {
+                foreach (Messenger sender in Messenger.messangers)
+                {
+                    sender.StopClientStream();
+                }
+                Messenger.messangers.Clear();
+                listener.Stop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ServerNet.StopServer " + ex.Message);
+            }
+        }
+
         private IPAddress GetLocalIp()
         {
             IPHostEntry host;
@@ -92,21 +109,6 @@ namespace ServerWorker
             }
 
             return IPAddress.Parse("192.168.1.10");
-        }
-
-        public void StopServer()
-        {
-            try
-            {
-                foreach (Messenger sender in Messenger.messangers)
-                {
-                    sender.StopClientStream();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ServerNet.StopServer " + ex.Message);
-            }
-        }
+        }     
     }
 }

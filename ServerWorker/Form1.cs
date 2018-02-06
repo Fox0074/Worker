@@ -24,7 +24,15 @@ namespace ServerWorker
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Program.serverThread.Abort();
+            //try
+            //{
+            //    Console.WriteLine("Form1_FormClosing start");
+            //    Program.serverThread.Abort();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Console.WriteLine("Form1_FormClosing " + ex.Message);
+            //}
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -32,11 +40,13 @@ namespace ServerWorker
             Messenger.UpdateAll();
         }
 
-        private void Form1_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
+                Console.WriteLine("Form1_FormClosing start");
                 Program.server.StopServer();
+                //Program.serverThread.Abort();
             }
             catch (Exception ex)
             {

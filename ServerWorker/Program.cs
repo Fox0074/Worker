@@ -28,6 +28,5 @@ namespace ServerWorker
 
             Application.Run(form1 = new Form1());           
         }
-
     }
 }
