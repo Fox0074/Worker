@@ -36,6 +36,9 @@ namespace ServerWorker
         {
         }
         #endregion
+
+
+
         //Запуск сервера
         public void StartServer()
         {
@@ -46,8 +49,6 @@ namespace ServerWorker
                 listener = new TcpListener(localIp, port);
                 listener.Start();
 
-                Console.WriteLine(localIp);
-                Console.WriteLine("Ожидание подключений...");
                 Log.Send("Твой LocalIp " + localIp);
                 Log.Send("Ожидание подключений...");
 
@@ -60,14 +61,13 @@ namespace ServerWorker
                     clientThread.Start();
 
                     AddClient.Invoke();
-                    Console.WriteLine("Подключился клиент : " + client.Client.RemoteEndPoint);
                     Log.Send("Подключился клиент : " + client.Client.RemoteEndPoint);
                     listIp.Add(client.Client.RemoteEndPoint);                    
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ServerNet.StartServer " + ex.Message);
+                Log.Send("ServerNet.StartServer " + ex.Message);
             }
             finally
             {
@@ -90,7 +90,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Console.WriteLine("ServerNet.StopServer " + ex.Message);
+                Log.Send("Ошибка при остановке сервера " + ex.Message);
             }
         }
 

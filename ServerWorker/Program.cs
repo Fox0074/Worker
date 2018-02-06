@@ -19,14 +19,16 @@ namespace ServerWorker
         [STAThread]
         static void Main()
         {
-            server = new ServerNet();
+            server = new ServerNet();            
             Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);     
-            
-            serverThread = new Thread(new ThreadStart(server.StartServer));
-            serverThread.Start();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(form1 = new Form1());           
+            form1 = new Form1();
+
+            serverThread = new Thread(new ThreadStart(server.StartServer));
+            serverThread.Start();   
+            
+            Application.Run(form1);
         }
     }
 }

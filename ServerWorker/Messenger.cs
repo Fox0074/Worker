@@ -38,12 +38,12 @@ namespace ServerWorker
 
                     string message = builder.ToString();
 
-                    Console.WriteLine(message);
-                    Log.Send(client.Client.RemoteEndPoint + " : "+ message);
+                    Log.Send("Получено " + client.Client.RemoteEndPoint + " : "+ message);
 
                     message = "Сообщение " + message + " доставлено";
                     data = Encoding.Unicode.GetBytes(message);
                     stream.Write(data, 0, data.Length);
+                    Log.Send("Отправлено " + client.Client.RemoteEndPoint + " : " + message);
                 }
             }
             catch (Exception ex)

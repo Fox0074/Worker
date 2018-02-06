@@ -14,30 +14,20 @@ namespace ServerWorker
 {
     public partial class Form1 : Form
     {
-        public static List<string> cash = new List<string>();
 
         public Form1()
         {
             InitializeComponent();
-  
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            //try
-            //{
-            //    Console.WriteLine("Form1_FormClosing start");
-            //    Program.serverThread.Abort();
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine("Form1_FormClosing " + ex.Message);
-            //}
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             Messenger.UpdateAll();
+            Log.Send("Сервер: Обновить клиенты");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -81,22 +71,8 @@ namespace ServerWorker
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
-            Log.UpdateAction += Send;
+        {          
         }
 
-        private void Send (string str)
-        {
-            cash.Add(str);
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            listBox2.Items.Clear();
-            foreach (string str in cash)
-            {
-                listBox2.Items.Add(str);
-            }
-        }
     }
 }

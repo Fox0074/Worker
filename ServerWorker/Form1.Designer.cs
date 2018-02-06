@@ -37,7 +37,6 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
-            this.button6 = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
@@ -130,20 +129,10 @@
             this.label2.TabIndex = 9;
             this.label2.Text = "Лог";
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(76, 360);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(307, 28);
-            this.button6.TabIndex = 11;
-            this.button6.Text = "Обновить лог (Конечно смешно но пока что только так)";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
             // listBox2
             // 
             this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(12, 405);
+            this.listBox2.Location = new System.Drawing.Point(12, 395);
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(858, 134);
             this.listBox2.TabIndex = 12;
@@ -154,7 +143,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(882, 541);
             this.Controls.Add(this.listBox2);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -185,8 +173,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.ListBox listBox2;
+        public System.Windows.Forms.ListBox listBox2;
     }
 }
 
