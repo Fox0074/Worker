@@ -27,14 +27,15 @@ namespace ClientWorker
 
             KillUpdater();
             Resetter.pause = true;
-            ftpClient.FTPDownloadFile(StartData.updater);
-            File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
-            Process proc = new Process();
-            proc.StartInfo.FileName = applicationDataPath + StartData.floaderNewCopy + StartData.updater;
-            proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            proc.StartInfo.Verb = "runas";
             try
             {
+                ftpClient.FTPDownloadFile(StartData.updater);
+                File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
+                Process proc = new Process();
+                proc.StartInfo.FileName = applicationDataPath + StartData.floaderNewCopy + StartData.updater;
+                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                proc.StartInfo.Verb = "runas";
+            
                 proc.Start();
                 Environment.Exit(0);
             }
@@ -63,7 +64,7 @@ namespace ClientWorker
                     GetUpdater();
                     break;
 
-                case "":
+               // case "":
                 case "Reconnect":
                     Reconnect();
                     Console.WriteLine("Переподключился");
