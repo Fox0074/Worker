@@ -15,13 +15,6 @@ object Form1: TForm1
     Text = 'Button1'
     OnClick = Button1Click
   end
-  object Edit1: TEdit
-    Touch.InteractiveGestures = [LongTap, DoubleTap]
-    TabOrder = 3
-    Text = 'Hello moto'
-    Position.X = 168.000000000000000000
-    Position.Y = 144.000000000000000000
-  end
   object Memo1: TMemo
     Touch.InteractiveGestures = [Pan, LongTap, DoubleTap]
     DataDetectorTypes = []
@@ -30,16 +23,30 @@ object Form1: TForm1
     Size.Width = 249.000000000000000000
     Size.Height = 81.000000000000000000
     Size.PlatformDefault = False
-    TabOrder = 4
+    TabOrder = 3
     Viewport.Width = 245.000000000000000000
     Viewport.Height = 77.000000000000000000
   end
   object Button2: TButton
     Position.X = 280.000000000000000000
     Position.Y = 304.000000000000000000
-    TabOrder = 5
+    TabOrder = 4
     Text = 'Button2'
     OnClick = Button2Click
+  end
+  object Button3: TButton
+    Position.X = 160.000000000000000000
+    Position.Y = 88.000000000000000000
+    TabOrder = 6
+    Text = 'Button3'
+    OnClick = Button3Click
+  end
+  object Button4: TButton
+    Position.X = 192.000000000000000000
+    Position.Y = 168.000000000000000000
+    TabOrder = 7
+    Text = 'Button4'
+    OnClick = Button4Click
   end
   object IdTCPClient1: TIdTCPClient
     OnDisconnected = IdTCPClient1Disconnected
@@ -49,7 +56,7 @@ object Form1: TForm1
     Port = 7778
     ReadTimeout = -1
     ReuseSocket = rsTrue
-    Left = 184
-    Top = 48
+    Left = 24
+    Top = 16
   end
 end
