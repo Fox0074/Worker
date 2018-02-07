@@ -12,52 +12,16 @@ namespace ClientWorker
 {
     public static class Resetter
     {
-        public static bool exitFlag = false;
-        public static bool pause = false;
-        private static System.Timers.Timer aTimer;
 
         public static void Start()
         {
-            SetTimer();
-            //aTimer.Stop();
-            //aTimer.Dispose();
+            CheckFile(null, null); 
         }
 
-        private static void SetTimer()
-        {
-            // Create a timer with a two second interval.
-            aTimer = new System.Timers.Timer(2000);
-            // Hook up the Elapsed event for the timer. 
-            aTimer.Elapsed += Check;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
-        }
-
-        private static void Check(Object myObject, EventArgs myEventArgs)
-        {
-            Console.WriteLine("Timer");
-            if (pause)
-            {
-
-            }
-            else
-            {
-                if (CheckProcess())
-                {
-
-                }
-                else
-                {
-                    CheckFile();
-                }
-            }
-
-        }
 
         private static bool CheckProcess()
         {
             bool isProcess;
-
             if (Process.GetProcessesByName("Updater").Length > 0)
             {
                 //Console.WriteLine(StartData.updater);
@@ -71,29 +35,31 @@ namespace ClientWorker
             return isProcess;
         }
 
-        private static void CheckFile()
+        private static void CheckFile(object Sender, EventArgs e)
         {
             if (File.Exists(StartData.updater))
             {
-                Console.WriteLine("File exists.");
+                Console.WriteLine("Файл найден");
 
                 Process proc = new Process();
                 proc.StartInfo.FileName = StartData.updater;
-                proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                proc.EnableRaisingEvents = true;
+                proc.Exited += new EventHandler(CheckFile);
                 proc.StartInfo.Verb = "runas";
                 try
                 {
                     proc.Start();
+                    //Process.Start(proc.StartInfo);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("The start process failed: {0}", e.ToString());
+                    Console.WriteLine("Ошибка при запуске процесса: {0}", ex.ToString());
                 }
             }
             else
             {
                 Program.client.handler.GetUpdater();
-                Console.WriteLine("File does not exist.");
+                Console.WriteLine("Файл не найден");
             }
         }
     }

@@ -28,7 +28,6 @@ namespace ClientWorker
             try
             {
                 KillUpdater();
-                Resetter.pause = true;
                 ftpClient.FTPDownloadFile(StartData.updater, applicationDataPath + StartData.floaderNewCopy);
                 //File.Move(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
                 //File.Copy(StartData.updater, applicationDataPath + StartData.floaderNewCopy + StartData.updater);
@@ -43,7 +42,6 @@ namespace ClientWorker
             {
                 Console.WriteLine("The start process failed: {0}", e.ToString());
             }
-            Resetter.pause = false;
         }
         private void KillUpdater()
         {

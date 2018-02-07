@@ -6,6 +6,7 @@ using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ClientWorker
 {
@@ -29,8 +30,24 @@ namespace ClientWorker
                 clientThread.Start();
 
                 Resetter.Start();
+                DebugCommand();
             }
 
+        }
+
+        static void DebugCommand()
+        {
+            while (true)
+            {
+                if ((Console.ReadLine()) == "Worker.Close")
+                {
+                    foreach (var process in Process.GetProcessesByName("Updater"))
+                    {
+                        process.Kill();
+                    }
+                    Environment.Exit(0);
+                }
+            }
         }
 
         
