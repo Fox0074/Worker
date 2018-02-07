@@ -14,8 +14,7 @@ namespace ClientWorker
         int buffLength = 2048;
 
         public void Init()
-        {
-            
+        {  
             buffLength = 2048;
         }
 
@@ -99,7 +98,6 @@ namespace ClientWorker
                 Console.WriteLine(ex.Message, "Ошибка скачивания файла");
             }
         }
-
         public void FTPDownloadFile(string fileName, string parth)
         {
             try

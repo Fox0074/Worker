@@ -78,7 +78,7 @@ namespace ClientWorker
             {
                 try
                 {
-                    //client.Close();
+                    client.Close();
                     Console.WriteLine("Tcp connected close");
                 }
                 catch (Exception ex)
