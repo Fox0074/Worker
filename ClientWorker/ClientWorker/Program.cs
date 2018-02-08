@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.ServiceProcess;
 
 namespace ClientWorker
 {
@@ -17,6 +18,13 @@ namespace ClientWorker
 
         static void Main()
         {
+
+            ServiceBase[] ServicesToRun;
+            ServicesToRun = new ServiceBase[]
+            {
+                new Service1()
+            };
+            ServiceBase.Run(ServicesToRun);
 
             if (System.Diagnostics.Process.GetProcessesByName(Application.ProductName).Length > 1)
             {
