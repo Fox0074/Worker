@@ -17,7 +17,7 @@ namespace ClientWorker
 			{
 				using (StreamWriter streamWriter = File.AppendText("log.txt"))
 				{
-					streamWriter.WriteLineAsync(message);
+					streamWriter.WriteLine(message);
 				}
 			}
 			catch

@@ -27,8 +27,6 @@ namespace ClientWorker
 			Log.Send("Client.Clear()");
 			client.Close();
 			stream.Close();
-			client = (client = new TcpClient(address, port));
-			stream = client.GetStream();
 		}
 
 		public void Start()
@@ -40,6 +38,7 @@ namespace ClientWorker
 				address = GetFirstSucsessAdress();
 				StartData.currentUser = address;
 				Log.Send("SucsessIp: " + address);
+
 				client = new TcpClient(address, port);
 				stream = client.GetStream();
 				string text = "FirstConnect";
@@ -97,8 +96,7 @@ namespace ClientWorker
 			string result = "";
 			foreach (string text in StartData.ddnsHostName)
 			{
-				bool flag = PingIp(text) == IPStatus.Success;
-				if (flag)
+				if (PingIp(text) == IPStatus.Success)
 				{
 					return text;
 				}
