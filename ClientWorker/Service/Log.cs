@@ -8,6 +8,7 @@ namespace ClientWorker
 	{
         public static List<string> messages = new List<string>();
         public static List<string> ErrorLog = new List<string>();
+        public static string logParth = "log.txt";
         private static StreamWriter w;
 
         public static void Send(string message)
@@ -15,7 +16,7 @@ namespace ClientWorker
 			messages.Add(message);
 			try
 			{
-				using (StreamWriter streamWriter = File.AppendText("log.txt"))
+				using (StreamWriter streamWriter = File.AppendText(logParth))
 				{
 					streamWriter.WriteLine(message);
 				}
@@ -25,5 +26,10 @@ namespace ClientWorker
 				ErrorLog.Add(message);
 			}
 		}
-	}
+
+        public static void DetermineLogParth()
+        {
+            //Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
+        }
+    }
 }
