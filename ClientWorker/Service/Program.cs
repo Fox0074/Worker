@@ -31,8 +31,10 @@ namespace ClientWorker
                 Environment.Exit(0);
             }
 
+            Log.DetermineLogParth();
             nameProcess = GetProcessName();         
             Functions.Registration();
+
         }
         private static string GetProcessName()
         {
