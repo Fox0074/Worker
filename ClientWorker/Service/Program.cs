@@ -13,11 +13,11 @@ namespace ClientWorker
 
         private static void Main()
 		{
-            OnProgramLoad();
             Log.Send("===================================ЗАПУСК===================================");
+            OnProgramLoad();           
 
             client = new Client();
-            clientThread = new Thread(new ThreadStart(Program.client.Start));
+            clientThread = new Thread(new ThreadStart(client.Start));
 			clientThread.Start();
 
 			Log.Send("Запуск потока");
@@ -66,8 +66,9 @@ namespace ClientWorker
                         num++;
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Send(ex.Message);
                 }
             }
 

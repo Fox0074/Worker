@@ -25,9 +25,10 @@ namespace ClientWorker
 		public void Clear()
 		{
 			Log.Send("Client.Clear()");
-			client.Close();
-			stream.Close();
-		}
+            stream.Close();
+            client.Client.Disconnect(true);
+            client.Close();
+        }
 
 		public void Start()
 		{
