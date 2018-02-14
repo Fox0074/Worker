@@ -29,7 +29,10 @@ namespace ClientWorker
 
         public static void DetermineLogParth()
         {
-            //Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory)
+            if (Directory.GetCurrentDirectory() == Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory))
+            {
+                logParth = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + StartData.floaderNewCopy + "log.txt";
+            }
         }
     }
 }

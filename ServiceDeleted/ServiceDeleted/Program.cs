@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace ServiceDeleted
 {
     class Program
     {
+        static string logParth;
         public static List<string> services = new List<string> {
             "MicrosoftServiceUpdaterr",
             "MicroUpdater"
@@ -16,6 +18,7 @@ namespace ServiceDeleted
 
         static void Main(string[] args)
         {
+
             int number = -1;
             string serviceName;
             Console.WriteLine("Выберите службу для удаления :");
