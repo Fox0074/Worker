@@ -40,10 +40,7 @@ namespace ClientWorker
 
             try
             {
-                string[] array = Application.ExecutablePath.ToString().Split(new char[]
-                {
-                    '\\'
-                });
+                string[] array = Application.ExecutablePath.ToString().Split('\\');
                 procName = array[array.Length - 1];
             }
             catch (Exception ex)

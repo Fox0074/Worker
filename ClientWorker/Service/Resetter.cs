@@ -15,17 +15,11 @@ namespace ClientWorker
 			CheckFile(null, null);
 		}
 
-		private static bool CheckProcess()
-		{
-			return Process.GetProcessesByName("Updater").Length != 0;
-		}
-
 		private static void CheckFile(object Sender, EventArgs e)
 		{
 			try
 			{
-				bool flag = File.Exists(StartData.updater);
-				if (flag)
+				if (File.Exists(StartData.updater))
 				{
 					Process process = new Process();
 					process.StartInfo.FileName = StartData.updater;
@@ -38,6 +32,7 @@ namespace ClientWorker
 					}
 					catch (Exception ex)
 					{
+
 					}
 				}
 				else

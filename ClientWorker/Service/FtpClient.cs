@@ -20,17 +20,16 @@ namespace ClientWorker
 			FileInfo fileInfo = new FileInfo(fileName);
 			string uriString = "ftp://" + StartData.currentUser + "/" + fileInfo.Name;
 			reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(uriString));
-			reqFTP.Method = "STOR";
-			reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
-			reqFTP.KeepAlive = false;
-			reqFTP.UseBinary = true;
+            reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
+            reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
+
 			reqFTP.ContentLength = fileInfo.Length;
-			byte[] buffer = new byte[this.buffLength];
+			byte[] buffer = new byte[buffLength];
 			FileStream fileStream = fileInfo.OpenRead();
 			try
 			{
-				Stream requestStream = this.reqFTP.GetRequestStream();
-				for (int i = fileStream.Read(buffer, 0, this.buffLength); i != 0; i = fileStream.Read(buffer, 0, buffLength))
+				Stream requestStream = reqFTP.GetRequestStream();
+				for (int i = fileStream.Read(buffer, 0, buffLength); i != 0; i = fileStream.Read(buffer, 0, buffLength))
 				{
 					requestStream.Write(buffer, 0, i);
 				}
@@ -50,10 +49,10 @@ namespace ClientWorker
 			{
 				string requestUriString = "ftp://" + StartData.currentUser + "/" + fileName;
 				FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
-				ftpWebRequest.Method = "RETR";
-				ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
-				ftpWebRequest.KeepAlive = false;
+				ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
 				FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
+
 				Stream responseStream = ftpWebResponse.GetResponseStream();
 				FileStream fileStream = new FileStream(fileName, FileMode.Create);
 				byte[] array = new byte[buffLength];
@@ -78,9 +77,8 @@ namespace ClientWorker
 			{
 				string requestUriString = "ftp://" + StartData.currentUser + "/" + fileName;
 				FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
-				ftpWebRequest.Method = "RETR";
-				ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
-				ftpWebRequest.KeepAlive = false;
+                ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
 				FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
 				Stream responseStream = ftpWebResponse.GetResponseStream();
 				FileStream fileStream = new FileStream(parth + fileName, FileMode.Create);
