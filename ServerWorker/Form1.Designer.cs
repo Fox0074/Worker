@@ -43,12 +43,16 @@
             // 
             // listBox1
             // 
+            this.listBox1.BackColor = System.Drawing.SystemColors.MenuText;
+            this.listBox1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBox1.ForeColor = System.Drawing.Color.Lime;
             this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 16;
             this.listBox1.Items.AddRange(new object[] {
             "Тест"});
             this.listBox1.Location = new System.Drawing.Point(12, 43);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(174, 303);
+            this.listBox1.Size = new System.Drawing.Size(174, 292);
             this.listBox1.TabIndex = 0;
             // 
             // label1
@@ -103,7 +107,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(141, 14);
+            this.button4.Location = new System.Drawing.Point(192, 43);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(129, 23);
             this.button4.TabIndex = 6;
@@ -132,19 +136,23 @@
             // 
             // listBox2
             // 
+            this.listBox2.BackColor = System.Drawing.SystemColors.MenuText;
+            this.listBox2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBox2.ForeColor = System.Drawing.Color.Lime;
             this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(12, 395);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(858, 134);
+            this.listBox2.Size = new System.Drawing.Size(858, 132);
             this.listBox2.TabIndex = 12;
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(741, 160);
+            this.button6.Location = new System.Drawing.Point(192, 72);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(129, 23);
             this.button6.TabIndex = 13;
-            this.button6.Text = "Запросить лог";
+            this.button6.Text = "Открыть выбранный";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -152,6 +160,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(882, 541);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.listBox2);
@@ -164,6 +173,7 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.listBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);

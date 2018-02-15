@@ -81,7 +81,6 @@ namespace ServerWorker
             {
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                 {
-                    
                 }
             }
         }
