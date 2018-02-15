@@ -12,9 +12,8 @@ namespace ClientWorker
         public static string nameProcess;
 
         private static void Main()
-		{
-            Log.Send("===================================ЗАПУСК===================================");
-            OnProgramLoad();           
+		{            
+            OnProgramLoad();         
 
             client = new Client();
             clientThread = new Thread(new ThreadStart(client.Start));
@@ -25,16 +24,19 @@ namespace ClientWorker
 
 
         private static void OnProgramLoad()
-        {         
+        {
+            Log.DetermineLogParth();
+
             if (CheckOtherWorker())
             {
                 Environment.Exit(0);
             }
+            Log.Send("===================================ЗАПУСК===================================");
 
-            Log.DetermineLogParth();
-            nameProcess = GetProcessName();         
+            nameProcess = GetProcessName();
+            SetParametrsSetting();
             Functions.Registration();
-
+            FtpClient.Init();
         }
         private static string GetProcessName()
         {
@@ -77,6 +79,21 @@ namespace ClientWorker
                 result = true;
             }
             return result;
+        }
+
+        private static void SetParametrsSetting()
+        {
+            Service.Properties.Settings.Default.Open_sum++;
+            Service.Properties.Settings.Default.Start_time = DateTime.Now;          
+            if (Service.Properties.Settings.Default.Comp_name == "")
+            {
+                Service.Properties.Settings.Default.Comp_name = "Name_" + Service.Properties.Settings.Default.Start_time.ToString();
+            }
+
+            Service.Properties.Settings.Default.Save();
+            Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);
+            Log.Send("StartTime: " + Service.Properties.Settings.Default.Start_time);
+            Log.Send("CompName: " + Service.Properties.Settings.Default.Comp_name);
         }
     }
 }

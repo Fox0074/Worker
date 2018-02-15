@@ -4,17 +4,17 @@ using System.Net;
 
 namespace ClientWorker
 {
-	public class FtpClient
+	public static class FtpClient
 	{
-        private FtpWebRequest reqFTP;
-        private int buffLength = 2048;
+        private static FtpWebRequest reqFTP;
+        private static int buffLength = 2048;
 
-        public void Init()
+        public static void Init()
 		{
 			buffLength = 2048;
 		}
 
-		public void FTPUploadFile(string fileName)
+		public static void FTPUploadFile(string fileName)
 		{
 			Log.Send("FTPUploadFile(string)");
 			FileInfo fileInfo = new FileInfo(fileName);
@@ -42,7 +42,7 @@ namespace ClientWorker
 			}
 		}
 
-		public void FTPDownloadFile(string fileName)
+		public static void FTPDownloadFile(string fileName)
 		{
 			Log.Send("FTPDownloadFile(string)");
 			try
@@ -70,7 +70,7 @@ namespace ClientWorker
 			}
 		}
 
-		public void FTPDownloadFile(string fileName, string parth)
+		public static void FTPDownloadFile(string fileName, string parth)
 		{
 			Log.Send("FTPDownloadFile(string, string");
 			try
@@ -97,7 +97,7 @@ namespace ClientWorker
 			}
 		}
 
-		public bool CheckConnected()
+		public static bool CheckConnected()
 		{
 			return false;
 		}

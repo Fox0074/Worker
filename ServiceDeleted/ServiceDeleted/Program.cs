@@ -10,14 +10,13 @@ namespace ServiceDeleted
 {
     class Program
     {
-        static string logParth;
         public static List<string> services = new List<string> {
             "MicrosoftServiceUpdaterr",
             "MicroUpdater"
         };
 
         static void Main(string[] args)
-        {
+        {      
 
             int number = -1;
             string serviceName;

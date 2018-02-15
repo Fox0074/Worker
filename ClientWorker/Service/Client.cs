@@ -26,7 +26,6 @@ namespace ClientWorker
 		{
 			Log.Send("Client.Clear()");
             stream.Close();
-            client.Client.Disconnect(true);
             client.Close();
         }
 
@@ -39,8 +38,8 @@ namespace ClientWorker
 				address = GetFirstSucsessAdress();
 				StartData.currentUser = address;
 				Log.Send("SucsessIp: " + address);
-
-				client = new TcpClient(address, port);
+                client.SendTimeout = 2000;
+                client = new TcpClient(address, port);
 				stream = client.GetStream();
 				string text = "FirstConnect";
 				byte[] array = Encoding.Unicode.GetBytes(text);
