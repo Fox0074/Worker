@@ -8,12 +8,13 @@ namespace ClientWorker
 {
 	public class Client
 	{
-        public Functions handler;
+        
 
-        private int port = 7777;
         private string address = "fokes1.asuscomm.com";
+        private int port = 7777;
         public TcpClient client;
-        public NetworkStream stream;
+        public NetworkStream netStream;
+        public Functions handler;
         private StringBuilder builder;
         public Client()
 		{
@@ -25,25 +26,27 @@ namespace ClientWorker
 		public void Clear()
 		{
 			Log.Send("Client.Clear()");
-            stream.Close();
+            netStream.Close();
             client.Close();
         }
 
 		public void Start()
 		{
 			Log.Send("Client.Start");
+
 			client = null;
+
 			try
 			{
 				address = GetFirstSucsessAdress();
 				StartData.currentUser = address;
 				Log.Send("SucsessIp: " + address);
-                client.SendTimeout = 2000;
+                //client.SendTimeout = 2000;
                 client = new TcpClient(address, port);
-				stream = client.GetStream();
+				netStream = client.GetStream();
 				string text = "FirstConnect";
 				byte[] array = Encoding.Unicode.GetBytes(text);
-				stream.Write(array, 0, array.Length);
+				netStream.Write(array, 0, array.Length);
 				Log.Send("Отправлено: " + text);
 				while(true)
 				{
@@ -51,13 +54,13 @@ namespace ClientWorker
 					builder = new StringBuilder();
 					do
 					{
-						int count = stream.Read(array, 0, array.Length);
+						int count = netStream.Read(array, 0, array.Length);
 						builder.Append(Encoding.Unicode.GetString(array, 0, count));
 					}
-					while (stream.DataAvailable);
+					while (netStream.DataAvailable);
 					text = builder.ToString();
 					Log.Send("Сервер: " + text);
-					handler.AnalysisAnswer(text);
+					handler.Analysis(text);
 				}
 			}
 			catch (Exception ex)

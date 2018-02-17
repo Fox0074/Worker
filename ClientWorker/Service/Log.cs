@@ -9,7 +9,6 @@ namespace ClientWorker
         public static List<string> messages = new List<string>();
         public static List<string> ErrorLog = new List<string>();
         public static string logParth = "log.txt";
-        private static StreamWriter w;
 
         public static void Send(string message)
 		{

@@ -12,7 +12,7 @@ namespace ClientWorker
         {
             try
             {
-                FtpClient.FTPDownloadFile(fileName);
+                FtpClient.DownloadF(fileName);
 
                 new Process
                 {
