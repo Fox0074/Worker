@@ -87,7 +87,18 @@ namespace ServerWorker
 
         private void button6_Click(object sender, EventArgs e)
         {
+            //num = listBox1.SelectedIndex;
+            //Functions.onGettingLog += StartForm2;
             Messenger.messangers[listBox1.SelectedIndex].RequestLog();
+            StartForm2(Messenger.messangers[listBox1.SelectedIndex]);
+
+
+        }
+
+        private void StartForm2(Messenger messenger )
+        {
+            Form2 form2 = new Form2(messenger);
+            form2.Show();
         }
     }
 }

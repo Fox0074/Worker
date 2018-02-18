@@ -12,12 +12,13 @@ namespace ServerWorker
     {
         public static List<Messenger> messangers = new List<Messenger>();
 
-        NetworkStream stream;
+        public NetworkStream stream;
         StringBuilder builder;
         public TcpClient client;
+        public ClientLog clientLog = new ClientLog();
+        public ClientSetting setting = new ClientSetting();
         byte[] data;
 
-        bool gettingLog = false;
 
         public void Process(TcpClient client)
         {
@@ -51,21 +52,9 @@ namespace ServerWorker
 
                         string message = builder.ToString();
 
-
-                    if (gettingLog)
-                    {
-                        Log.Send( message );
-                        if (message == "EndLog")
-                        {
-                            gettingLog = false;
-                        }
-                    }
-                    else
-                    {
                         Log.Send("Получено " + client.Client.RemoteEndPoint + " : " + message);
 
-                        Functions.AnalysisAnswer(message, stream);
-                    }                      
+                        Functions.AnalysisAnswer(message, this);                  
                 }
             }
             catch (Exception ex)
@@ -85,42 +74,14 @@ namespace ServerWorker
         {
             Log.Send("Запрос логов у клиента " + client.Client.RemoteEndPoint);
             List<string> log = new List<string>();
-            string message = "";
-
             byte[] data = Encoding.Unicode.GetBytes("GetLogList");
             stream.Write(data, 0, data.Length);
 
-            gettingLog = true;
-            //while (message != "EndLog")
-            //{
-            //    builder = new StringBuilder();
-            //    int bytes = 0;
-            //    do
-            //    {
-            //        bytes = stream.Read(data, 0, data.Length);
-            //        builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-
-            //        if (bytes == 0)
-            //        {
-            //            Log.Send(client.Client.RemoteEndPoint + " Пришло 0 байт, клиент отключен");
-            //            messangers.Remove(this);
-            //            stream.Close();
-            //            client.Close();
-            //            Log.Send("Ошибка, клиент был отключен");
-            //            return log;
-            //        }
-            //    } while (stream.DataAvailable);
-
-            //    message = builder.ToString();
-            //    log.Add(message);
-            //}
-            //gettingLog = false;
-            Log.Send("Логи получены");          
         }
 
         public void Update()
         {
-            string message = "DownloadUpdater";
+            string message = "DownlUpd";
             data = Encoding.Unicode.GetBytes(message);
             stream.Write(data, 0, data.Length);
         }

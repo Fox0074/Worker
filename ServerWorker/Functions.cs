@@ -9,12 +9,53 @@ namespace ServerWorker
 {
     public static class Functions
     {
-        public static void AnalysisAnswer(string answer, NetworkStream stream)
+        public static Action onGettingLog = delegate { };
+        public static Action OnGettingInfoDevice = delegate { };
+
+        public static void AnalysisAnswer(string answer, Messenger client)
         {
-            switch (answer)
+            string head;
+            List<string> parametrs = new List<string>(); ;
+            try
             {
+                head = answer.Split('_')[0];
+                parametrs.AddRange(answer.Split('_'));
+                parametrs.Remove(head);
+                parametrs.RemoveAt(parametrs.Count - 1);
+            }
+            catch
+            {
+                head = answer;
+                Log.Send("Старая команда" );
+            }
+
+            switch (head)
+            {
+                case "StartInfoDevice":
+                    client.setting.infoDevice = parametrs;
+                    OnGettingInfoDevice.Invoke();
+                    break;
+
+                case "StartSetting":
+                    try
+                    {
+                        client.setting.name = parametrs[0];
+                        //client.setting.name = parametrs[1];
+                        client.setting.openCount = int.Parse(parametrs[2]);
+                        client.setting.startTime = parametrs[3];
+                        client.setting.Version = parametrs[4];
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Send("Ошибка получения настроек " + ex.Message);
+                    }
+                    break;
+                case "StartLog":
+                    client.clientLog.messages = parametrs;
+                    onGettingLog.Invoke();
+                    break;
                 case "GetListUsers":
-                    SendListUsers(stream);
+                    SendListUsers(client.stream);
                     break;
 
                 default:

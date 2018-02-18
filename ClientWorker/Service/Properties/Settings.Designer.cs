@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Defender2.Properties {
+namespace Service.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -23,15 +23,6 @@ namespace Defender2.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.0b")]
-        public string Version {
-            get {
-                return ((string)(this["Version"]));
-            }
-        }
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
@@ -41,6 +32,17 @@ namespace Defender2.Properties {
             }
             set {
                 this["Open_sum"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime Start_time {
+            get {
+                return ((global::System.DateTime)(this["Start_time"]));
+            }
+            set {
+                this["Start_time"] = value;
             }
         }
         
@@ -70,12 +72,13 @@ namespace Defender2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime Start_time {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Version {
             get {
-                return ((global::System.DateTime)(this["Start_time"]));
+                return ((string)(this["Version"]));
             }
             set {
-                this["Start_time"] = value;
+                this["Version"] = value;
             }
         }
     }

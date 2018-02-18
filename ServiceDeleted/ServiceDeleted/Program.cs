@@ -3,21 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ServiceDeleted
 {
-    class Program
+    public class Program
     {
+
+
         public static List<string> services = new List<string> {
             "MicrosoftServiceUpdaterr",
             "MicroUpdater"
         };
 
         static void Main(string[] args)
-        {      
-
+        {
             int number = -1;
             string serviceName;
             Console.WriteLine("Выберите службу для удаления :");
