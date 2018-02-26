@@ -72,7 +72,8 @@ namespace ClientWorker
 			{
 				try
 				{
-					client.Close();
+                    client.Client.Shutdown(SocketShutdown.Both);
+                    client.Close();
 					Log.Send("Tcp connected close");
 				}
 				catch (Exception ex2)
