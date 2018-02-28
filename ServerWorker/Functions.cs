@@ -15,7 +15,8 @@ namespace ServerWorker
         public static void AnalysisAnswer(string answer, Messenger client)
         {
             string head;
-            List<string> parametrs = new List<string>(); ;
+            List<string> parametrs = new List<string>();
+            Console.WriteLine(answer);
             try
             {
                 head = answer.Split('_')[0];
