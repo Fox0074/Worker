@@ -42,25 +42,23 @@ namespace ServerWorker
                 cState = new ClientState(authStream, client);
 
                 authStream.BeginAuthenticateAsServer(
-                    new AsyncCallback(EndAuthenticateCallback),
-                    cState
-                    );
-
+                               new AsyncCallback(EndAuthenticateCallback),
+                               cState
+                               );
                 cState.Waiter.WaitOne();
                 cState.Waiter.Reset();
 
-                authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                       new AsyncCallback(EndReadCallback),
-                       cState);
-
-                cState.Waiter.WaitOne();
-
+                //authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                //       new AsyncCallback(EndReadCallback),
+                //       cState);
+                //cState.Waiter.WaitOne();
 
 
                 data = new byte[64];
                 while (true)
                 {
-                        builder = new StringBuilder();
+
+                    builder = new StringBuilder();
                         int bytes = 0;
                         do
                         {
