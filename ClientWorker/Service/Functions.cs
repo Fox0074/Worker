@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -122,7 +123,7 @@ namespace ClientWorker
 
         private void SendSetting()
         {
-            NetworkStream stream = Program.netSender.netStream;
+            NegotiateStream stream = Program.netSender.netStream;
             byte[] bytes;
 
             bytes = Encoding.Unicode.GetBytes("StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
@@ -138,7 +139,7 @@ namespace ClientWorker
         {
             InfoDevice.AskedInfoDevice();
 
-            NetworkStream stream = Program.netSender.netStream;
+            NegotiateStream stream = Program.netSender.netStream;
             byte[] bytes;
             string message = "StartInfoDevice" + StartData.delimiter;
 
@@ -155,7 +156,7 @@ namespace ClientWorker
         }
         private void SendLogList()
         {
-            NetworkStream stream = Program.netSender.netStream;
+            NegotiateStream stream = Program.netSender.netStream;
             byte[] bytes;
             string message= "StartLog"+StartData.delimiter;
             foreach (string s in Log.messages)

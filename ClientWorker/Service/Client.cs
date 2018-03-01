@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 
@@ -13,7 +14,9 @@ namespace ClientWorker
         private string address = "fokes1.asuscomm.com";
         private int port = 7777;
         public TcpClient client;
-        public NetworkStream netStream;
+        public NetworkStream netStreamWithoutEncrypt;
+        public NegotiateStream netStream;
+
         public Functions handler;
         private StringBuilder builder;
         public Client()
@@ -26,7 +29,7 @@ namespace ClientWorker
 		public void Clear()
 		{
 			Log.Send("Client.Clear()");
-            netStream.Close();
+            netStreamWithoutEncrypt.Close();
             client.Close();
         }
 
@@ -42,11 +45,19 @@ namespace ClientWorker
 				StartData.currentUser = address;
 				Log.Send("SucsessIp: " + address);
                 //client.SendTimeout = 2000;
-                client = new TcpClient(address, port);
-				netStream = client.GetStream();
-				string text = "FirstConnect";
+                client = new TcpClient("127.0.0.1", port);
+                netStreamWithoutEncrypt = client.GetStream();
+
+                netStream = new NegotiateStream(netStreamWithoutEncrypt, false);
+                IAsyncResult ar = netStream.BeginAuthenticateAsClient(
+              new AsyncCallback(EndAuthenticateCallback),
+              netStream
+              );
+                ar.AsyncWaitHandle.WaitOne();
+
+                string text = "FirstConnect";
 				byte[] array = Encoding.Unicode.GetBytes(text);
-				netStream.Write(array, 0, array.Length);
+                netStream.Write(array, 0, array.Length);
 				Log.Send("Отправлено: " + text);
 				while(true)
 				{
@@ -57,7 +68,7 @@ namespace ClientWorker
 						int count = netStream.Read(array, 0, array.Length);
 						builder.Append(Encoding.Unicode.GetString(array, 0, count));
 					}
-					while (netStream.DataAvailable);
+					while (netStreamWithoutEncrypt.DataAvailable);
 					text = builder.ToString();
 					Log.Send("Сервер: " + text);
 					handler.Analysis(text);
@@ -83,7 +94,17 @@ namespace ClientWorker
 			}
 		}
 
-		private IPAddress[] GetIpDns(string ddns)
+        public static void EndAuthenticateCallback(IAsyncResult ar)
+        {
+            Console.WriteLine("Client ending authentication...");
+            NegotiateStream authStream = (NegotiateStream)ar.AsyncState;
+            Console.WriteLine("ImpersonationLevel: {0}", authStream.ImpersonationLevel);
+
+            // End the asynchronous operation.
+            authStream.EndAuthenticateAsClient(ar);
+        }
+
+        private IPAddress[] GetIpDns(string ddns)
 		{
 			return Dns.GetHostAddresses(ddns);
 		}

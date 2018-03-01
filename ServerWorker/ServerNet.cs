@@ -16,7 +16,8 @@ namespace ServerWorker
         //Сервер
         const int port = 7777;
         static TcpListener listener;
-        static IPAddress localIp = IPAddress.Parse("192.168.1.10");
+        //static IPAddress localIp = IPAddress.Parse("192.168.1.10");
+        static IPAddress localIp = IPAddress.Parse("127.0.0.1");
         public List<EndPoint> listIp = new List<EndPoint>();      
 
         //Клиент
