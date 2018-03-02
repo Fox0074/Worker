@@ -19,10 +19,11 @@ namespace ServerWorker
         public NetworkStream stream;
         public NegotiateStream authStream;
 
-        StringBuilder builder;
         public TcpClient client;
         public ClientLog clientLog = new ClientLog();
         public ClientSetting setting = new ClientSetting();
+        IIdentity id;
+        IAsyncResult ars;
         byte[] data;
 
 
@@ -38,66 +39,38 @@ namespace ServerWorker
 
             try
             {
-               
                 cState = new ClientState(authStream, client);
 
-                authStream.BeginAuthenticateAsServer(
+                ars = authStream.BeginAuthenticateAsServer(
                                new AsyncCallback(EndAuthenticateCallback),
                                cState
                                );
                 cState.Waiter.WaitOne();
                 cState.Waiter.Reset();
 
-                //authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                //       new AsyncCallback(EndReadCallback),
-                //       cState);
-                //cState.Waiter.WaitOne();
-
-
-                data = new byte[64];
-                while (true)
-                {
-
-                    builder = new StringBuilder();
-                        int bytes = 0;
-                        do
-                        {
-                            bytes = authStream.Read(data, 0, data.Length);
-                            builder.Append(Encoding.Unicode.GetString(data, 0, bytes));
-
-                            if (bytes == 0)
-                            {
-                                Log.Send(client.Client.RemoteEndPoint + " Пришло 0 байт, клиент отключен");
-                                messangers.Remove(this);
-                                stream.Close();
-                                authStream.Close();
-                                client.Close();
-                                return;
-                            }
-
-                        }
-                        while (stream.DataAvailable);
-
-                        string message = builder.ToString();
-
-                        Log.Send("Получено " + client.Client.RemoteEndPoint + " : " + message);
-
-                        Functions.AnalysisAnswer(message, this);                  
-                }
+                authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                       new AsyncCallback(EndReadCallback),
+                       cState);
+                cState.Waiter.WaitOne();
             }
             catch (Exception ex)
             {
-                Log.Send(ex.Message);
+                Log.Send("Messenger.Process() " + ex.Message);
             }
-            finally
-            {
-                authStream.Close();
-                client.Close();
-            }
+
         }
-        public static void EndAuthenticateCallback(IAsyncResult ar)
+
+        public void SendMessage(string message)
         {
-            // Get the saved data.
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            ars = authStream.BeginWrite(data, 0, data.Length,
+                new AsyncCallback(EndWriteCallback),
+                authStream);
+            ars.AsyncWaitHandle.WaitOne();
+        }
+
+        public void EndAuthenticateCallback(IAsyncResult ar)
+        {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
             NegotiateStream authStream = (NegotiateStream)cState.AuthenticatedStream;
@@ -121,13 +94,12 @@ namespace ServerWorker
                 cState.Waiter.Set();
                 return;
             }
-            // Display properties of the authenticated client.
-            IIdentity id = authStream.RemoteIdentity;
+            id = authStream.RemoteIdentity;
             Log.Send(id.Name+" was authenticated using " + id.AuthenticationType);
             cState.Waiter.Set();
 
         }
-        public static void EndReadCallback(IAsyncResult ar)
+        public void EndReadCallback(IAsyncResult ar)
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
@@ -144,6 +116,9 @@ namespace ServerWorker
                     authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                           new AsyncCallback(EndReadCallback),
                           cState);
+
+                    Functions.AnalysisAnswer(cState.Message.ToString(),this);
+                    cState.Message.Clear();
                     return;
                 }
             }
@@ -154,12 +129,20 @@ namespace ServerWorker
                 cState.Waiter.Set();
                 return;
             }
-            IIdentity id = authStream.RemoteIdentity;
+
+            id = authStream.RemoteIdentity;
+            Functions.AnalysisAnswer(cState.Message.ToString(), this);
             Log.Send(id.Name+ " says "+ cState.Message.ToString());
             cState.Waiter.Set();
         }
+        public void EndWriteCallback(IAsyncResult ars)
+        {
+            NegotiateStream authStream = (NegotiateStream)ars.AsyncState;
 
-    internal class ClientState
+            authStream.EndWrite(ars);
+        }
+
+        internal class ClientState
         {
             private AuthenticatedStream authStream = null;
             private TcpClient client = null;
@@ -203,17 +186,13 @@ namespace ServerWorker
         public void RequestLog()
         {
             Log.Send("Запрос логов у клиента " + client.Client.RemoteEndPoint);
-            List<string> log = new List<string>();
-            byte[] data = Encoding.Unicode.GetBytes("GetLogList");
-            authStream.Write(data, 0, data.Length);
-
+            SendMessage("GetLogList");
         }
 
         public void Update()
         {
             string message = "DownlUpd";
-            data = Encoding.Unicode.GetBytes(message);
-            authStream.Write(data, 0, data.Length);
+            SendMessage(message);
         }
         //Ну я хз
         public void CheckLostClient()
@@ -221,8 +200,7 @@ namespace ServerWorker
             try
             {
                 string message = "TestConnect";
-                data = Encoding.Unicode.GetBytes(message);
-                authStream.Write(data, 0, data.Length);
+                SendMessage(message);
             }
             catch
             {
@@ -257,17 +235,16 @@ namespace ServerWorker
 
         public void StopClientStream()
         {
-            authStream.Close();
-        }
-
-            private RSACryptoServiceProvider m_Rsa;
-        private RSAParameters m_ExternKey;
-        private RSAParameters m_InternKey;
-
-        public void CryptoRsa()
-        {
-            m_Rsa = new RSACryptoServiceProvider(512);
-            m_InternKey = m_Rsa.ExportParameters(true);
+            try
+            {
+                authStream.Close();
+                stream.Close();
+                client.Close();
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Cant close client " + ex.Message);
+            }
         }
     }
 }
