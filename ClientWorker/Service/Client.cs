@@ -74,13 +74,15 @@ namespace ClientWorker
                 cState.Waiter.Reset();
                 cState.Waiter.WaitOne();
 
-                Start();
             }
             catch (Exception ex)
             {
                 Log.Send("Client.Start() " + ex.Message);
-                int t = 5000;
-                Thread.Sleep(t);
+                //int t = 5000;
+                //Thread.Sleep(t);             
+            }
+            finally
+            {
                 Start();
             }
 		}
