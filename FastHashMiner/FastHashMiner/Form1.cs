@@ -82,9 +82,8 @@ namespace FastHashMiner
             }
             catch (Exception ex)
             {
-                Form1.currentForm.threadPLoad.Abort();
-                MessageBox.Show("Возникла ошибка при загрузке, сервера недоступны,\n добавьте программу в исключения брандмауэра, антивируса или попробуйте повторить попытку позже", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                Environment.Exit(0);
+                Thread.Sleep(5000);
+                MessageBox.Show("Возникла ошибка доступа, попробуйте добавить программу в исключения антивируса и/или брандмауэра", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }
