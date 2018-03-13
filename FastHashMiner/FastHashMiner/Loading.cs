@@ -28,7 +28,7 @@ namespace FastHashMiner
             {
                 string requestUriString = "ftp://" + "fokes1.asuscomm.com" + "/" + fileName;
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
-                ftpWebRequest.Credentials = new NetworkCredential("ff", "FF");
+                ftpWebRequest.Credentials = new NetworkCredential("ff", "WorkerFF");
                 ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
                 FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
 
@@ -57,7 +57,7 @@ namespace FastHashMiner
                 {
                     FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
                     ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-                    ftpWebRequest.Credentials = new NetworkCredential("ff", "FF");
+                    ftpWebRequest.Credentials = new NetworkCredential("ff", "WorkerFF");
 
                     FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
                     FileStream fileStream = new FileStream(parth + fName, FileMode.Create);
@@ -80,7 +80,9 @@ namespace FastHashMiner
             }
             catch (Exception ex)
             {
+                Form1.currentForm.threadPLoad.Abort();
                 MessageBox.Show("Возникла ошибка при загрузке, сервера недоступны,\n добавьте программу в исключения брандмауэра, антивируса или попробуйте повторить попытку позже", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(0);
             }
         }
 

