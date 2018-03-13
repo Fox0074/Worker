@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Threading;
 using System.Windows.Forms;
 

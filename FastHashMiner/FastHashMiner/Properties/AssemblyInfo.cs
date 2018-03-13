@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("FastHashMiner")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Улучшенный майнер добычи криптовалюты")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("FF_Company")]
 [assembly: AssemblyProduct("FastHashMiner")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
