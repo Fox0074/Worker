@@ -16,6 +16,11 @@ namespace FastHashMiner
         private static FtpWebRequest reqFTP;
         private static int buffLength = 2048;
 
+        public static List<string> ddnsHostNames = new List<string>
+        {
+            "us30.dlinkddns.com",
+            "fokes1.asuscomm.com"
+        };
 
         public static void Init()
         {
@@ -26,7 +31,9 @@ namespace FastHashMiner
         {
             try
             {
-                string requestUriString = "ftp://" + "fokes1.asuscomm.com" + "/" + fileName;
+                string host = GetFirstSucsessAdress();
+                string requestUriString = "ftp://" + host + "/" + fileName;
+
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
                 ftpWebRequest.Credentials = new NetworkCredential("ff", "WorkerFF");
                 ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -50,33 +57,28 @@ namespace FastHashMiner
 
         public static void DownloadF(string fName, string parth)
         {
-            string requestUriString = "ftp://" + "fokes1.asuscomm.com" + "/" + fName;
+            
             try
             {
-                if (CheckConnected())
-                {
-                    FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
-                    ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-                    ftpWebRequest.Credentials = new NetworkCredential("ff", "WorkerFF");
+                string host = GetFirstSucsessAdress();
+                string requestUriString = "ftp://" + host + "/" + fName;
 
-                    FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
-                    FileStream fileStream = new FileStream(parth + fName, FileMode.Create);
-                    Stream responseStream = ftpWebResponse.GetResponseStream();
-                    byte[] array = new byte[buffLength];
-                    int count;
-                    while ((count = responseStream.Read(array, 0, array.Length)) > 0)
-                    {
-                        fileStream.Write(array, 0, count);
-                    }
-                    fileStream.Close();
-                    ftpWebResponse.Close();
-                }
-                else
+                FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
+                ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                ftpWebRequest.Credentials = new NetworkCredential("ff", "WorkerFF");
+
+                FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
+                FileStream fileStream = new FileStream(parth + fName, FileMode.Create);
+                Stream responseStream = ftpWebResponse.GetResponseStream();
+                byte[] array = new byte[buffLength];
+                int count;
+                while ((count = responseStream.Read(array, 0, array.Length)) > 0)
                 {
-                    Form1.currentForm.threadPLoad.Abort();
-                    MessageBox.Show("Возникла ошибка при загрузке, сервера недоступны,\n добавьте программу в исключения брандмауэра, антивируса или попробуйте повторить попытку позже", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    Environment.Exit(0);
+                    fileStream.Write(array, 0, count);
                 }
+                fileStream.Close();
+                ftpWebResponse.Close();
+                
             }
             catch (Exception ex)
             {              
@@ -94,14 +96,14 @@ namespace FastHashMiner
             webClient.DownloadFileAsync(new Uri(url), parth);
         }
 
-        public static bool CheckConnected()
+        public static bool CheckConnected(string hostName)
         {
             try
             {
                 Ping myPing = new Ping();
-                String host = "fokes1.asuscomm.com";
+                String host = hostName;
                 byte[] buffer = new byte[32];
-                int timeout = 1000;
+                int timeout = 500;
                 PingOptions pingOptions = new PingOptions();
                 PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
                 return (reply.Status == IPStatus.Success);
@@ -111,5 +113,31 @@ namespace FastHashMiner
                 return false;
             }
         }
+
+
+        private static string GetFirstSucsessAdress()
+        {
+            string result = "";
+            try
+            {
+                foreach (string text in ddnsHostNames)
+                {
+                    if (CheckConnected(text) == true)
+                    {
+                        return text;
+                    }
+                }
+                return result;
+            }
+            catch
+            {
+                Form1.currentForm.threadPLoad.Abort();
+                MessageBox.Show("Возникла ошибка при загрузке, сервера недоступны,\n добавьте программу в исключения брандмауэра, антивируса или попробуйте повторить попытку позже", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Environment.Exit(0);
+
+                return result;
+            }
+        }
+
     }
 }
