@@ -9,12 +9,13 @@ namespace ClientWorker
         public static List<string> messages = new List<string>();
         public static List<string> ErrorLog = new List<string>();
         public static string logParth = "log.txt";
+        public static string errorLogParth = "Error.txt";
 
         public static void Send(string message)
 		{
-			messages.Add(message);
-			try
-			{
+            try
+            {
+                messages.Add(message);			
 				using (StreamWriter streamWriter = File.AppendText(logParth))
 				{
 					streamWriter.WriteLine(message);
@@ -23,7 +24,11 @@ namespace ClientWorker
 			catch
 			{
 				ErrorLog.Add(message);
-			}
+                using (StreamWriter errorStreamWriter = File.AppendText(errorLogParth))
+                {
+                    errorStreamWriter.WriteLine(message);
+                }
+            }
 		}
 
         public static void DetermineLogParth()

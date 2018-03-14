@@ -41,12 +41,11 @@ namespace ClientWorker
 
 		public void Start()
 		{
-			Log.Send("Client.Start");
-
-			client = null;
+			Log.Send("Client.Start");			
 
             try
             {
+                client = null;
                 address = GetFirstSucsessAdress();
                 StartData.currentUser = address;
                 Log.Send("SucsessIp: " + address);
