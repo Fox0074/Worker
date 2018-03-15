@@ -127,9 +127,20 @@ namespace ServerWorker
             }
             catch (Exception e)
             {
-                Log.Send("Client message exception:");
-                Log.Send(e.Message);
-                cState.Waiter.Set();
+                try
+                {
+                    Log.Send("Client message exception:");
+                    Log.Send(e.Message);
+                    Log.Send("Обьект " + client.Client.RemoteEndPoint + " удален.");
+                    messangers.Remove(this);
+                    StopClientStream();
+                    if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
+                    else Program.form1.WrileClientsInList();
+                    cState.Waiter.Set();
+                }
+                catch (Exception ex)
+                {
+                }
                 return;
             }
 
