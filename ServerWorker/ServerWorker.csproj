@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvailableIp.cs" />
+    <Compile Include="AviableNetServers.cs" />
     <Compile Include="ClientLog.cs" />
     <Compile Include="ClientSetting.cs" />
     <Compile Include="Form1.cs">

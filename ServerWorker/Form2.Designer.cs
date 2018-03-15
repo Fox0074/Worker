@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
@@ -57,18 +58,26 @@
             // 
             // listBox1
             // 
+            this.listBox1.BackColor = System.Drawing.Color.Black;
+            this.listBox1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            this.listBox1.ForeColor = System.Drawing.Color.Lime;
             this.listBox1.FormattingEnabled = true;
+            this.listBox1.ItemHeight = 16;
             this.listBox1.Location = new System.Drawing.Point(12, 12);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(636, 303);
+            this.listBox1.Size = new System.Drawing.Size(636, 292);
             this.listBox1.TabIndex = 2;
             // 
             // listBox2
             // 
+            this.listBox2.BackColor = System.Drawing.Color.Black;
+            this.listBox2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold);
+            this.listBox2.ForeColor = System.Drawing.Color.Lime;
             this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(794, 13);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(250, 290);
+            this.listBox2.Size = new System.Drawing.Size(250, 276);
             this.listBox2.TabIndex = 3;
             // 
             // button3
@@ -85,7 +94,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1056, 329);
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ClientSize = new System.Drawing.Size(1060, 329);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.listBox2);
             this.Controls.Add(this.listBox1);

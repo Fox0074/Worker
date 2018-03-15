@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Security.Cryptography;
 using System.Net.Security;
-using System.Security.Principal;
+using System.Net.Sockets;
 using System.Security.Authentication;
+using System.Security.Principal;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ServerWorker
 {
-    public class Messenger
+    public class AviableNetServers
     {
         public static List<Messenger> messangers = new List<Messenger>();
 
@@ -28,7 +27,7 @@ namespace ServerWorker
 
         public void Process(TcpClient client)
         {
-            messangers.Add(this);
+            //messangers.Add(this);
             this.client = client;
             stream = null;
             ClientState cState;
@@ -58,7 +57,7 @@ namespace ServerWorker
             }
 
             if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
-            else Program.form1.WrileClientsInList(); 
+            else Program.form1.WrileClientsInList();
 
         }
 
@@ -94,11 +93,11 @@ namespace ServerWorker
                 Log.Send(e.Message);
                 Log.Send(client.Client.RemoteEndPoint + "Closing connection.");
                 cState.Waiter.Set();
-                messangers.Remove(this);
+                //messangers.Remove(this);
                 return;
             }
             id = authStream.RemoteIdentity;
-            Log.Send(id.Name+" was authenticated using " + id.AuthenticationType);
+            Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
             cState.Waiter.Set();
 
         }
@@ -120,7 +119,7 @@ namespace ServerWorker
                           new AsyncCallback(EndReadCallback),
                           cState);
 
-                    Functions.AnalysisAnswer(cState.Message.ToString(),this);
+                    //Functions.AnalysisAnswer(cState.Message.ToString(), this);
                     cState.Message.Clear();
                     return;
                 }
@@ -134,8 +133,8 @@ namespace ServerWorker
             }
 
             id = authStream.RemoteIdentity;
-            Functions.AnalysisAnswer(cState.Message.ToString(), this);
-            Log.Send(id.Name+ " says "+ cState.Message.ToString());
+            //Functions.AnalysisAnswer(cState.Message.ToString(), this);
+            Log.Send(id.Name + " says " + cState.Message.ToString());
             cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)
@@ -207,10 +206,10 @@ namespace ServerWorker
             }
             catch
             {
-                messangers.Remove(this);
+                //messangers.Remove(this);
             }
 
-                
+
         }
 
         public static void UpdateAll()
