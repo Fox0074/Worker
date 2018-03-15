@@ -17,7 +17,7 @@ namespace ServerWorker
         const int port = 7777;
         static TcpListener listener;
         //static IPAddress localIp = IPAddress.Parse("192.168.1.10");
-        static IPAddress localIp = IPAddress.Parse("192.168.1.10");
+        public static IPAddress localIp = null;
         public List<EndPoint> listIp = new List<EndPoint>();      
 
         //Клиент
@@ -25,27 +25,27 @@ namespace ServerWorker
         Thread clientThread;
 
         #region Конструкторы
-        /// <summary>
-        /// Конструктор класса
-        /// </summary>
-        /// <param name="tcpClient"></param>
+
         public ServerNet(TcpClient tcpClient)
         {
             client = tcpClient;
+            AvailableIp.CheckAviableNetworkConnections();
         }
         public ServerNet()
         {
+            AvailableIp.CheckAviableNetworkConnections();
         }
         #endregion
-
-
 
         //Запуск сервера
         public void StartServer()
         {
             try
             {
-                //localIp = GetLocalIp();
+                if (localIp == null)
+                {
+                    localIp = AvailableIp.GetFirstAviableIp();
+                }
 
                 listener = new TcpListener(localIp, port);
                 listener.Start();

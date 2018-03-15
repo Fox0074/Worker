@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace ServerWorker
 {
@@ -73,15 +74,28 @@ namespace ServerWorker
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            IPHostEntry host;
-            string hostName = Dns.GetHostName();
+            int numRb = 0;
+            int merginX = 10;
+            int merginY = 20;
 
-            host = Dns.GetHostEntry(hostName);
-            foreach (IPAddress ip in host.AddressList)
+            foreach (IPAddress ip in AvailableIp.ListAviableIp)
             {
-                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                RadioButton rb = new RadioButton();
+
+                rb.Parent = groupBox1;
+                rb.Location = new System.Drawing.Point(merginX, merginY * numRb + 20);
+                rb.Name = "radioButton"+numRb;
+                rb.AutoSize = true;
+                rb.Text = ip.ToString();
+
+                if (ip == ServerNet.localIp)
                 {
+                    rb.Checked = true;
                 }
+
+                rb.Click += (object send, EventArgs ea) => SetInternetIp(rb.Text);
+                groupBox1.Controls.Add(rb);
+                numRb++;
             }
         }
 
@@ -89,16 +103,63 @@ namespace ServerWorker
         {
             //num = listBox1.SelectedIndex;
             //Functions.onGettingLog += StartForm2;
-            Messenger.messangers[listBox1.SelectedIndex].RequestLog();
-            StartForm2(Messenger.messangers[listBox1.SelectedIndex]);
 
-
+            if ((listBox1.Items.Count > listBox1.SelectedIndex)&&(listBox1.SelectedIndex>=0))
+            {
+                if (Messenger.messangers.Count > listBox1.SelectedIndex)
+                {
+                    Messenger.messangers[listBox1.SelectedIndex].RequestLog();
+                    StartForm2(Messenger.messangers[listBox1.SelectedIndex]);
+                }
+                else
+                {
+                    Log.Send("Ошибка получения доступу к элементу, такого элемента не существует или он имеет другой индекс");
+                }
+            }
+            else
+            {
+                Log.Send("Ошибка, индекс элемента не попадает в допустимый диапазон");
+            }
         }
 
         private void StartForm2(Messenger messenger )
         {
             Form2 form2 = new Form2(messenger);
             form2.Show();
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SetInternetIp(string ip)
+        {
+            if (ServerNet.localIp.ToString() != ip)
+            {
+                Log.Send("Изменение ip на " + ip);
+                ServerNet.localIp = IPAddress.Parse(ip);
+                Program.server.StopServer();
+                Program.serverThread.Abort();
+
+                Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
+                Program.serverThread.Start();
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
