@@ -15,7 +15,7 @@ namespace ServerWorker
 
         //Сервер
         const int port = 7777;
-        static TcpListener listener;
+        public static TcpListener listener;
         //static IPAddress localIp = IPAddress.Parse("192.168.1.10");
         public static IPAddress localIp = null;
         public List<EndPoint> listIp = new List<EndPoint>();      
@@ -88,6 +88,7 @@ namespace ServerWorker
                 }
                 Messenger.messangers.Clear();
                 listener.Stop();
+                clientThread.Abort();
             }
             catch (Exception ex)
             {

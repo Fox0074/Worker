@@ -139,11 +139,10 @@ namespace ServerWorker
             {
                 Log.Send("Изменение ip на " + ip);
                 ServerNet.localIp = IPAddress.Parse(ip);
+                
                 Program.server.StopServer();
-                Program.serverThread.Abort();
-
-                Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
-                Program.serverThread.Start();
+                Thread serverThread = new Thread(new ThreadStart(Program.server.StartServer));
+                serverThread.Start();
             }
         }
 

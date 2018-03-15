@@ -47,6 +47,9 @@ namespace ServerWorker
                 cState.Waiter.WaitOne();
                 cState.Waiter.Reset();
 
+                if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
+                else Program.form1.WrileClientsInList();
+
                 authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                        new AsyncCallback(EndReadCallback),
                        cState);
@@ -55,10 +58,7 @@ namespace ServerWorker
             catch (Exception ex)
             {
                 Log.Send("Messenger.Process() " + ex.Message);
-            }
-
-            if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
-            else Program.form1.WrileClientsInList(); 
+            } 
 
         }
 
