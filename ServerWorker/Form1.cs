@@ -37,8 +37,14 @@ namespace ServerWorker
             try
             {
                 Console.WriteLine("Form1_FormClosing start");
-                Program.server.StopServer();
-                //Program.serverThread.Abort();
+
+                if (Program.server != null)
+                    Program.server.StopServer();
+
+                if (Program.aviableServer != null)
+                    Program.aviableServer.Close();
+
+                Program.serverThread.Abort();
             }
             catch (Exception ex)
             {

@@ -58,7 +58,7 @@ namespace ServerWorker
             catch (Exception ex)
             {
                 Log.Send("Messenger.Process() " + ex.Message);
-            } 
+            }
 
         }
 
@@ -98,7 +98,7 @@ namespace ServerWorker
                 return;
             }
             id = authStream.RemoteIdentity;
-            Log.Send(id.Name+" was authenticated using " + id.AuthenticationType);
+            Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
             cState.Waiter.Set();
 
         }
@@ -120,7 +120,7 @@ namespace ServerWorker
                           new AsyncCallback(EndReadCallback),
                           cState);
 
-                    Functions.AnalysisAnswer(cState.Message.ToString(),this);
+                    Functions.AnalysisAnswer(cState.Message.ToString(), this);
                     cState.Message.Clear();
                     return;
                 }
@@ -146,7 +146,7 @@ namespace ServerWorker
 
             id = authStream.RemoteIdentity;
             Functions.AnalysisAnswer(cState.Message.ToString(), this);
-            Log.Send(id.Name+ " says "+ cState.Message.ToString());
+            Log.Send(id.Name + " says " + cState.Message.ToString());
             cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)
@@ -208,21 +208,6 @@ namespace ServerWorker
             string message = "DownlUpd";
             SendMessage(message);
         }
-        //Ну я хз
-        public void CheckLostClient()
-        {
-            try
-            {
-                string message = "TestConnect";
-                SendMessage(message);
-            }
-            catch
-            {
-                messangers.Remove(this);
-            }
-
-                
-        }
 
         public static void UpdateAll()
         {
@@ -259,6 +244,11 @@ namespace ServerWorker
             {
                 Log.Send("Cant close client " + ex.Message);
             }
+        }
+        public void EndReadClient()
+        {
+            authStream.EndRead(ars);
+            authStream.EndWrite(ars);
         }
     }
 }

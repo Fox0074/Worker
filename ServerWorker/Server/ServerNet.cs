@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Net;
+using System.Windows.Forms;
 using System.Net.Sockets;
+using System.Reflection;
 
 namespace ServerWorker
 {
-    public class ServerNet
+    public class ServerNet : ServerBehaviour
     {
         public static Action AddClient = delegate { };
 
@@ -29,13 +31,23 @@ namespace ServerWorker
         public ServerNet(TcpClient tcpClient)
         {
             client = tcpClient;
-            AvailableIp.CheckAviableNetworkConnections();
         }
-        public ServerNet()
-        {
-            AvailableIp.CheckAviableNetworkConnections();
-        }
+        public ServerNet() { }
         #endregion
+
+        public override void Start()
+        {
+            Type myType = typeof(ServerBehaviour);
+
+            foreach (MemberInfo mi in myType.GetMembers())
+            {
+                Console.WriteLine(mi.DeclaringType + " " + mi.MemberType + " " + mi.Name);
+            }
+
+            Console.ReadLine();
+
+            AvailableIp.CheckAviableNetworkConnections();
+        }
 
         //Запуск сервера
         public void StartServer()

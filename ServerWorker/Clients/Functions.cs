@@ -59,6 +59,11 @@ namespace ServerWorker
                     SendListUsers(client.stream);
                     break;
 
+                case "Key":
+                    client.EndReadClient();
+                    ConnectedServers connectedServers = new ConnectedServers(client.authStream, client.client);
+                    break;
+
                 default:
                     Log.Send("UnknownCommand " + answer);
                     break;
@@ -84,7 +89,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                //Console.WriteLine(ex.Message);
                 Log.Send(ex.Message);
             }
 
