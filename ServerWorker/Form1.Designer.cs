@@ -40,6 +40,7 @@
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.button6 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button7 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // listBox1
@@ -169,6 +170,16 @@
             this.groupBox1.Text = "Listener Ip";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // button7
+            // 
+            this.button7.Location = new System.Drawing.Point(65, 363);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(121, 23);
+            this.button7.TabIndex = 16;
+            this.button7.Text = "Очистить";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -177,6 +188,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(882, 541);
+            this.Controls.Add(this.button7);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.listBox2);
@@ -213,6 +225,7 @@
         public System.Windows.Forms.ListBox listBox2;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button7;
     }
 }
 

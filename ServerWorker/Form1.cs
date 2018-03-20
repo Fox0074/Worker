@@ -172,5 +172,10 @@ namespace ServerWorker
         {
 
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            listBox2.Items.Clear();
+        }
     }
 }

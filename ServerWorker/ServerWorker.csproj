@@ -50,6 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AvailableIp.cs" />
+    <Compile Include="LockForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LockForm.Designer.cs">
+      <DependentUpon>LockForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="OtherServers\AviableNetServers.cs" />
     <Compile Include="Clients\ClientLog.cs" />
     <Compile Include="Clients\ClientSetting.cs" />
