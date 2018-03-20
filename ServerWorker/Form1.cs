@@ -141,14 +141,20 @@ namespace ServerWorker
 
         private void SetInternetIp(string ip)
         {
+            if (Program.aviableServer.isWorking)
+            {
+                Program.aviableServer.Close();
+                Program.serverThread.Abort();
+            }
+
             if (ServerNet.localIp.ToString() != ip)
             {
                 Log.Send("Изменение ip на " + ip);
                 ServerNet.localIp = IPAddress.Parse(ip);
-                
+
                 Program.server.StopServer();
-                Thread serverThread = new Thread(new ThreadStart(Program.server.StartServer));
-                serverThread.Start();
+                Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
+                Program.serverThread.Start();
             }
         }
 

@@ -17,7 +17,7 @@ namespace ServerWorker
         static public Form1 form1;
         static public List<string> listDdns = new List<string> { "fokes1.asuscomm.com" };
         static public AviableNetServers aviableServer;
-
+        
         [STAThread]
         static void Main()
         {
@@ -42,7 +42,7 @@ namespace ServerWorker
                 {
                     serverThread = new Thread(new ThreadStart(server.StartServer));
                     serverThread.Start();
-                    break;
+                    return;
                 }
             }
 

@@ -57,7 +57,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Log.Send("Messenger.Process() " + ex.Message);
+                Log.Send("Exception Messenger.Process: " + ex.Message);
             }
 
         }
@@ -76,7 +76,7 @@ namespace ServerWorker
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
             NegotiateStream authStream = (NegotiateStream)cState.AuthenticatedStream;
-            Log.Send("Ending authentication.");
+            //Log.Send("Ending authentication.");
 
             try
             {
@@ -146,7 +146,7 @@ namespace ServerWorker
 
             id = authStream.RemoteIdentity;
             Functions.AnalysisAnswer(cState.Message.ToString(), this);
-            Log.Send(id.Name + " says " + cState.Message.ToString());
+            Log.Send(id.Name + ": says " + cState.Message.ToString());
             cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)

@@ -38,6 +38,7 @@
             // 
             // button1
             // 
+            this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button1.Location = new System.Drawing.Point(654, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(126, 27);
@@ -82,6 +83,7 @@
             // 
             // button3
             // 
+            this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.button3.Location = new System.Drawing.Point(654, 76);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(126, 25);
@@ -102,8 +104,10 @@
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "Клиент";
             this.ResumeLayout(false);
 
         }

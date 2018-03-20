@@ -18,8 +18,8 @@ namespace ServerWorker
         //Сервер
         const int port = 7777;
         public static TcpListener listener;
-        //static IPAddress localIp = IPAddress.Parse("192.168.1.10");
-        public static IPAddress localIp = null;
+        public static IPAddress localIp = IPAddress.Parse("127.0.0.1");
+        //public static IPAddress localIp = null;
         public List<EndPoint> listIp = new List<EndPoint>();      
 
         //Клиент
@@ -37,15 +37,6 @@ namespace ServerWorker
 
         public override void Start()
         {
-            Type myType = typeof(ServerBehaviour);
-
-            foreach (MemberInfo mi in myType.GetMembers())
-            {
-                Console.WriteLine(mi.DeclaringType + " " + mi.MemberType + " " + mi.Name);
-            }
-
-            Console.ReadLine();
-
             AvailableIp.CheckAviableNetworkConnections();
         }
 

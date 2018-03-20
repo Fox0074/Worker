@@ -21,6 +21,7 @@ namespace ServerWorker
         public NetworkStream netStreamWithoutEncrypt;
         public NegotiateStream netStream;
         public string key = "ONR87gew549e";
+        public bool isWorking = false;
 
         private List<string> ddnsHostNames = new List<string> { "fokes1.asuscomm.com" };
         private ClientState cState;
@@ -30,22 +31,41 @@ namespace ServerWorker
         public void Close()
         {
             Log.Send("Client.Clear()");
-            netStreamWithoutEncrypt.Close();
-            netStream.Close();
-            client.Close();
+            isWorking = false;
+            try
+            {
+                client.Close();
+                client.Dispose();
+                
+                netStreamWithoutEncrypt.Dispose();
+                netStreamWithoutEncrypt.Close();
+                netStream.Dispose();
+                netStream.Close();
+                
+                return;
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Исключение закрытия подключения к удаленному серверу: "+ex.Message);
+            }
         }
 
         public new void  Start()
         {
-            Log.Send("Client.Start");
-
+            Log.Send("Подключение к удаленному серверу");
+            isWorking = true;
             try
             {
                 client = null;
                 address = GetSucsessAdress();
-                Log.Send("SucsessIp: " + address);
+                Log.Send("Определен досупный сервер: " + address);
                 //client.SendTimeout = 5000;
-                client = new TcpClient(address, port);
+
+                IPAddress[] ipAddress = Dns.GetHostAddresses(address);
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress[0], 7777);
+                client = new TcpClient();
+                client.Connect(remoteEP);
+                //client = new TcpClient(address, port);
 
                 netStreamWithoutEncrypt = client.GetStream();
                 netStream = new NegotiateStream(netStreamWithoutEncrypt, false);
@@ -71,13 +91,13 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Log.Send("Client.Start() " + ex.Message);
+                Log.Send("Exception Client.Start(): " + ex.Message);
                 //int t = 5000;
                 //Thread.Sleep(t);             
             }
             finally
             {
-                Start();
+               //Start();
             }
         }
 
