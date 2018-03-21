@@ -23,19 +23,17 @@ namespace ServerWorker
         [STAThread]
         static void Main()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+
             LockForm lockForm = new LockForm();
             Application.Run(lockForm);
 
-            while (!authSystem.IsAuthorizate)
-            {
-                Thread.Sleep(50);
-            }
+
 
             server = new ServerNet();
             aviableServer = new AviableNetServers();
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
             form1 = new Form1();
             StartServer();
@@ -45,15 +43,16 @@ namespace ServerWorker
 
         static void StartServer()
         {
-            string myHostName = Dns.GetHostName();
-            foreach (string serverDns in listDdns)
+            IPAddress[] ipAddress = Dns.GetHostAddresses(listDdns[0]);
+
+            string externalip = new WebClient().DownloadString("http://icanhazip.com");
+            IPAddress myIp = IPAddress.Parse(externalip.Replace("\n",""));
+
+            if (ipAddress[0].ToString() == myIp.ToString())
             {
-                if (serverDns == myHostName)
-                {
-                    serverThread = new Thread(new ThreadStart(server.StartServer));
-                    serverThread.Start();
-                    return;
-                }
+                serverThread = new Thread(new ThreadStart(server.StartServer));
+                serverThread.Start();
+                return;
             }
 
             serverThread = new Thread(new ThreadStart(aviableServer.Start));
