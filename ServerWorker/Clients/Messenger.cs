@@ -53,6 +53,7 @@ namespace ServerWorker
             {
                 Log.Send("Exception Messenger.Process: " + ex.Message);
             }
+            Console.WriteLine("test");
 
         }
 
