@@ -17,7 +17,7 @@ namespace ServerWorker
         public static List<Messenger> messangers = new List<Messenger>();
 
         public NetworkStream stream;
-        public NegotiateStream authStream;
+        public NetworkStream authStream;
 
         public TcpClient client;
         public ClientLog clientLog = new ClientLog();
@@ -34,18 +34,12 @@ namespace ServerWorker
             ClientState cState;
 
             stream = client.GetStream();
-            authStream = new NegotiateStream(stream, false);
+            authStream = stream;
 
             try
             {
                 cState = new ClientState(authStream, client);
 
-                ars = authStream.BeginAuthenticateAsServer(
-                               new AsyncCallback(EndAuthenticateCallback),
-                               cState
-                               );
-                cState.Waiter.WaitOne();
-                cState.Waiter.Reset();
 
                 if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
                 else Program.form1.WrileClientsInList();
@@ -75,12 +69,12 @@ namespace ServerWorker
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
-            NegotiateStream authStream = (NegotiateStream)cState.AuthenticatedStream;
+            NetworkStream authStream = (NetworkStream)cState.AuthenticatedStream;
             //Log.Send("Ending authentication.");
 
             try
             {
-                authStream.EndAuthenticateAsServer(ar);
+                //authStream.EndAuthenticateAsServer(ar);
             }
             catch (AuthenticationException e)
             {
@@ -97,7 +91,7 @@ namespace ServerWorker
                 messangers.Remove(this);
                 return;
             }
-            id = authStream.RemoteIdentity;
+           // id = authStream.RemoteIdentity;
             Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
             cState.Waiter.Set();
 
@@ -106,7 +100,7 @@ namespace ServerWorker
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
-            NegotiateStream authStream = (NegotiateStream)cState.AuthenticatedStream;
+            NetworkStream authStream = (NetworkStream)cState.AuthenticatedStream;
 
             int bytes = -1;
 
@@ -144,26 +138,26 @@ namespace ServerWorker
                 return;
             }
 
-            id = authStream.RemoteIdentity;
+            //id = authStream.RemoteIdentity;
             Functions.AnalysisAnswer(cState.Message.ToString(), this);
             Log.Send(id.Name + ": says " + cState.Message.ToString());
             cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)
         {
-            NegotiateStream authStream = (NegotiateStream)ars.AsyncState;
+            NetworkStream authStream = (NetworkStream)ars.AsyncState;
 
             authStream.EndWrite(ars);
         }
 
         internal class ClientState
         {
-            private AuthenticatedStream authStream = null;
+            private NetworkStream authStream = null;
             private TcpClient client = null;
             byte[] buffer = new byte[2048];
             StringBuilder message = null;
             ManualResetEvent waiter = new ManualResetEvent(false);
-            internal ClientState(AuthenticatedStream a, TcpClient theClient)
+            internal ClientState(NetworkStream a, TcpClient theClient)
             {
                 authStream = a;
                 client = theClient;
@@ -172,7 +166,7 @@ namespace ServerWorker
             {
                 get { return client; }
             }
-            internal AuthenticatedStream AuthenticatedStream
+            internal NetworkStream AuthenticatedStream
             {
                 get { return authStream; }
             }

@@ -50,7 +50,7 @@ namespace ServerWorker
                     localIp = AvailableIp.GetFirstAviableIp();
                 }
 
-                listener = new TcpListener(localIp, port);
+                listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
 
                 Log.Send("Твой LocalIp " + localIp);

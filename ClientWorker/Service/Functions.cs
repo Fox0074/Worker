@@ -150,7 +150,7 @@ namespace ClientWorker
         }
         private void SendLogList()
         {
-            NegotiateStream stream = Program.netSender.netStream;
+            NetworkStream stream = Program.netSender.netStream;
             string message= "StartLog"+StartData.delimiter;
             foreach (string s in Log.messages)
             {

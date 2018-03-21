@@ -18,7 +18,7 @@ namespace ClientWorker
         private int port = 7777;
         public TcpClient client;
         public NetworkStream netStreamWithoutEncrypt;
-        public NegotiateStream netStream;
+        public NetworkStream netStream;
 
         public Functions handler;
         private ClientState cState;
@@ -53,16 +53,9 @@ namespace ClientWorker
                 client = new TcpClient(address, port);
 
                 netStreamWithoutEncrypt = client.GetStream();             
-                netStream = new NegotiateStream(netStreamWithoutEncrypt, false);
+                netStream = netStreamWithoutEncrypt;
 
                 cState = new ClientState(netStream, client);
-
-                ars = netStream.BeginAuthenticateAsClient(
-              new AsyncCallback(EndAuthenticateCallback),
-              netStream
-              );
-
-                ars.AsyncWaitHandle.WaitOne();
 
                 netStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                        new AsyncCallback(EndReadCallback),
@@ -105,7 +98,7 @@ namespace ClientWorker
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
-            NegotiateStream authStream = (NegotiateStream)cState.AuthenticatedStream;
+            NetworkStream authStream = (NetworkStream)cState.AuthenticatedStream;
 
             int bytes = -1;
 
@@ -119,7 +112,7 @@ namespace ClientWorker
                           new AsyncCallback(EndReadCallback),
                           cState);
 
-                    id = authStream.RemoteIdentity;
+                    //id = authStream.RemoteIdentity;
                     handler.Analysis(cState.Message.ToString());
                     Log.Send("Server says: " + cState.Message.ToString());
 
@@ -139,19 +132,19 @@ namespace ClientWorker
         }
         public void EndWriteCallback(IAsyncResult ars)
         {
-            NegotiateStream authStream = (NegotiateStream)ars.AsyncState;
+            NetworkStream authStream = (NetworkStream)ars.AsyncState;
 
             authStream.EndWrite(ars);
         }
 
         internal class ClientState
         {
-            private AuthenticatedStream authStream = null;
+            private NetworkStream authStream = null;
             private TcpClient client = null;
             byte[] buffer = new byte[2048];
             StringBuilder message = null;
             ManualResetEvent waiter = new ManualResetEvent(false);
-            internal ClientState(AuthenticatedStream a, TcpClient theClient)
+            internal ClientState(NetworkStream a, TcpClient theClient)
             {
                 authStream = a;
                 client = theClient;
@@ -160,7 +153,7 @@ namespace ClientWorker
             {
                 get { return client; }
             }
-            internal AuthenticatedStream AuthenticatedStream
+            internal NetworkStream AuthenticatedStream
             {
                 get { return authStream; }
             }

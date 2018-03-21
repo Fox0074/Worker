@@ -61,7 +61,7 @@ namespace ServerWorker
 
                 case "Key":
                     client.EndReadClient();
-                    ConnectedServers connectedServers = new ConnectedServers(client.authStream, client.client);
+                    //ConnectedServers connectedServers = new ConnectedServers(client.authStream, client.client);
                     break;
 
                 default:
