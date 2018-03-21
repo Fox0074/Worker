@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ServerWorker
+{
+    public class AuthInProgram
+    {
+        public string Login { get; private set; } = "Worker";
+        public string Pass { get; private set; } = "hex34";
+        public bool IsAuthorizate { get; private set; } = false;
+
+        public bool Authorization (string login, string pass)
+        {
+            bool result = false;
+
+            if ((login==Login)&&(pass==Pass))
+            {
+                result = true;
+                IsAuthorizate = true;
+            }
+
+            return result;
+        }
+    }
+}

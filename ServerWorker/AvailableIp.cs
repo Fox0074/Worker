@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ServerWorker
 {
-    public static class AvailableIp
+    public static class AvailableLocalIp
     {
         private static List<IPAddress> listIp = new List<IPAddress>();
         private static List<IPAddress> listAviableIp = new List<IPAddress>();

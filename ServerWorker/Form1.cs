@@ -84,7 +84,7 @@ namespace ServerWorker
             int merginX = 10;
             int merginY = 20;
 
-            foreach (IPAddress ip in AvailableIp.ListAviableIp)
+            foreach (IPAddress ip in AvailableLocalIp.ListAviableIp)
             {
                 RadioButton rb = new RadioButton();
 

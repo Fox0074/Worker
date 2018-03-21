@@ -12,6 +12,8 @@ namespace ServerWorker
 {
     static class Program
     {
+        static public AuthInProgram authSystem = new AuthInProgram();
+
         static public ServerNet server;
         static public Thread serverThread;
         static public Form1 form1;
@@ -21,6 +23,14 @@ namespace ServerWorker
         [STAThread]
         static void Main()
         {
+            LockForm lockForm = new LockForm();
+            Application.Run(lockForm);
+
+            while (!authSystem.IsAuthorizate)
+            {
+                Thread.Sleep(50);
+            }
+
             server = new ServerNet();
             aviableServer = new AviableNetServers();
 

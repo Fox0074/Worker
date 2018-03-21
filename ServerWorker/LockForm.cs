@@ -16,5 +16,10 @@ namespace ServerWorker
         {
             InitializeComponent();
         }
+
+        private void TryAuthorization(string login, string pass)
+        {
+            Program.authSystem.Authorization(login,pass);
+        }
     }
 }

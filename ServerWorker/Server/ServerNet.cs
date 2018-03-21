@@ -37,7 +37,7 @@ namespace ServerWorker
 
         public override void Start()
         {
-            AvailableIp.CheckAviableNetworkConnections();
+            AvailableLocalIp.CheckAviableNetworkConnections();
         }
 
         //Запуск сервера
@@ -47,7 +47,7 @@ namespace ServerWorker
             {
                 if (localIp == null)
                 {
-                    localIp = AvailableIp.GetFirstAviableIp();
+                    localIp = AvailableLocalIp.GetFirstAviableIp();
                 }
 
                 listener = new TcpListener(IPAddress.Any, port);
@@ -98,7 +98,6 @@ namespace ServerWorker
                 Log.Send("Ошибка при остановке сервера " + ex.Message);
             }
         }
-
         private IPAddress GetLocalIp()
         {
             IPHostEntry host;
