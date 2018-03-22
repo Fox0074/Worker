@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Net.Security;
 using System.Security.Principal;
 using System.Security.Authentication;
+using ServerWorker.Commands;
 
 namespace ServerWorker
 {
@@ -70,7 +71,7 @@ namespace ServerWorker
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
-            NetworkStream authStream = (NetworkStream)cState.AuthenticatedStream;
+            NetworkStream authStream = (NetworkStream)cState.NetStream;
             //Log.Send("Ending authentication.");
 
             try
@@ -101,7 +102,7 @@ namespace ServerWorker
         {
             ClientState cState = (ClientState)ar.AsyncState;
             TcpClient clientRequest = cState.Client;
-            NetworkStream authStream = (NetworkStream)cState.AuthenticatedStream;
+            NetworkStream authStream = (NetworkStream)cState.NetStream;
 
             int bytes = -1;
 
@@ -149,48 +150,6 @@ namespace ServerWorker
             NetworkStream authStream = (NetworkStream)ars.AsyncState;
 
             authStream.EndWrite(ars);
-        }
-
-        internal class ClientState
-        {
-            private NetworkStream authStream = null;
-            private TcpClient client = null;
-            byte[] buffer = new byte[2048];
-            StringBuilder message = null;
-            ManualResetEvent waiter = new ManualResetEvent(false);
-            internal ClientState(NetworkStream a, TcpClient theClient)
-            {
-                authStream = a;
-                client = theClient;
-            }
-            internal TcpClient Client
-            {
-                get { return client; }
-            }
-            internal NetworkStream AuthenticatedStream
-            {
-                get { return authStream; }
-            }
-            internal byte[] Buffer
-            {
-                get { return buffer; }
-            }
-            internal StringBuilder Message
-            {
-                get
-                {
-                    if (message == null)
-                        message = new StringBuilder();
-                    return message;
-                }
-            }
-            internal ManualResetEvent Waiter
-            {
-                get
-                {
-                    return waiter;
-                }
-            }
         }
         public void RequestLog()
         {

@@ -40,6 +40,7 @@ namespace ServerWorker
             AvailableLocalIp.CheckAviableNetworkConnections();
         }
 
+        #region Server
         //Запуск сервера
         public void StartServer()
         {
@@ -98,6 +99,9 @@ namespace ServerWorker
                 Log.Send("Ошибка при остановке сервера " + ex.Message);
             }
         }
+        #endregion
+
+        #region AddingFunctions
         private IPAddress GetLocalIp()
         {
             IPHostEntry host;
@@ -113,6 +117,7 @@ namespace ServerWorker
             }
 
             return IPAddress.Parse("192.168.1.10");
-        }     
+        }
+#endregion
     }
 }

@@ -25,7 +25,6 @@ namespace ServerWorker
         private List<string> ddnsHostNames = new List<string> { "fokes1.asuscomm.com" };
         private ClientState cState;
         private IAsyncResult ars;
-        private IIdentity id;
 
         public void Close()
         {
@@ -61,7 +60,7 @@ namespace ServerWorker
                 //client.SendTimeout = 5000;
 
                 IPAddress[] ipAddress = Dns.GetHostAddresses(address);
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress[0], 7777);
+                IPEndPoint remoteEP = new IPEndPoint(ipAddress[0], port);
                 client = new TcpClient();
                 client.Connect(remoteEP);
                 //client = new TcpClient(address, port);
@@ -75,7 +74,7 @@ namespace ServerWorker
                        new AsyncCallback(EndReadCallback),
                        cState);
 
-                //SendMessage("Key_" + key);
+                //SendMessage("GetListUsers");
 
                 cState.Waiter.Reset();
                 cState.Waiter.WaitOne();

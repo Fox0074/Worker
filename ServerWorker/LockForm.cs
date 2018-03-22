@@ -19,7 +19,7 @@ namespace ServerWorker
             button1.FlatStyle = FlatStyle.Flat;
 
             this.KeyPreview = true;
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler((object e, KeyEventArgs s) =>Test(s));
+            this.KeyUp += new KeyEventHandler((object e, KeyEventArgs s) =>Test(s));
             //this.button1.Click += new System.EventHandler(this.button2_Click);
 
         }

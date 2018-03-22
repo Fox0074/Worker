@@ -51,6 +51,10 @@
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
+    <Compile Include="Commands\ClientState.cs" />
+    <Compile Include="Crypting\CryptoMesenger.cs" />
+    <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
+    <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
     <Compile Include="LockForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -73,7 +77,7 @@
     <Compile Include="Form2.Designer.cs">
       <DependentUpon>Form2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Clients\Functions.cs" />
+    <Compile Include="Commands\Functions.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Clients\Messenger.cs" />
     <Compile Include="Program.cs" />
