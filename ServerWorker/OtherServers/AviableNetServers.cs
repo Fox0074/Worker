@@ -94,11 +94,18 @@ namespace ServerWorker
 
         public void SendMessage(string message)
         {
-            byte[] data = Encoding.UTF8.GetBytes(message);
-            ars = netStream.BeginWrite(data, 0, data.Length,
-                new AsyncCallback(EndWriteCallback),
-                netStream);
-            ars.AsyncWaitHandle.WaitOne();
+            try
+            {
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                ars = netStream.BeginWrite(data, 0, data.Length,
+                    new AsyncCallback(EndWriteCallback),
+                    netStream);
+                ars.AsyncWaitHandle.WaitOne();
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Ошибка отправки сообщения " + message + " : " + ex.Message);
+            }
         }
 
         public static void EndAuthenticateCallback(IAsyncResult ars)

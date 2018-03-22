@@ -18,8 +18,8 @@ namespace FastHashMiner
 
         public static List<string> ddnsHostNames = new List<string>
         {
-            "us30.dlinkddns.com",
-            "fokes1.asuscomm.com"
+            "fokes1.asuscomm.com",
+            "us30.dlinkddns.com"
         };
 
         public static void Init()

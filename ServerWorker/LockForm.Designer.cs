@@ -54,13 +54,19 @@
             // 
             // textBox1
             // 
+            this.textBox1.BackColor = System.Drawing.SystemColors.InfoText;
+            this.textBox1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBox1.ForeColor = System.Drawing.Color.Lime;
             this.textBox1.Location = new System.Drawing.Point(41, 69);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(141, 20);
+            this.textBox1.Size = new System.Drawing.Size(141, 22);
             this.textBox1.TabIndex = 1;
             // 
             // textBox2
             // 
+            this.textBox2.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Append;
+            this.textBox2.BackColor = System.Drawing.SystemColors.InfoText;
+            this.textBox2.ForeColor = System.Drawing.Color.Lime;
             this.textBox2.Location = new System.Drawing.Point(231, 69);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(139, 20);
@@ -104,6 +110,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
             this.ForeColor = System.Drawing.Color.Transparent;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "LockForm";
             this.Text = "Авторизация";

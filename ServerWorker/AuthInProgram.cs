@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace ServerWorker
 {
@@ -20,6 +21,10 @@ namespace ServerWorker
             {
                 result = true;
                 IsAuthorizate = true;
+            }
+            else
+            {
+                MessageBox.Show("Логин или пароль введены неверно", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return result;
