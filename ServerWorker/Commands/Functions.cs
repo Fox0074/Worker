@@ -56,7 +56,7 @@ namespace ServerWorker
                     onGettingLog.Invoke();
                     break;
                 case "GetListUsers":
-                    SendListUsers(client.stream);
+                    SendListUsers(client);
                     break;
 
                 case "Key":
@@ -70,21 +70,18 @@ namespace ServerWorker
             }
         }
 
-        private static void SendListUsers(NetworkStream stream)
+        private static void SendListUsers(Messenger client)
         {
             try
             {
-                stream.ReadTimeout = 1000;
-                byte[] data = new byte[64];
+                string message = "";
                 Log.Send("Отправка списка пользователей клиенту ");
-                foreach (Messenger client in Messenger.messangers)
+                foreach (Messenger user in Messenger.messangers)
                 {
-                    data = Encoding.Unicode.GetBytes("_Name" + "Fox" + "_Ip" + client.client.Client.RemoteEndPoint.ToString() + "|&");
-                    stream.Write(data, 0, data.Length);
+                    message += ("_Name" + "Fox" + "_Ip" + user.client.Client.RemoteEndPoint.ToString() + "|&");
                 }
 
-                data = Encoding.Unicode.GetBytes("\n");
-                stream.Write(data, 0, data.Length);
+                client.SendMessage(message);
                 Log.Send("Отправлено клиентов : " + Messenger.messangers.Count);
             }
             catch (Exception ex)
