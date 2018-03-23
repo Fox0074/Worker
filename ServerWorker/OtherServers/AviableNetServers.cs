@@ -52,6 +52,7 @@ namespace ServerWorker
         {
             Log.Send("Подключение к удаленному серверу");
             isWorking = true;
+            Program.form1.Interfaces = UserInterface.secondServer;
             try
             {
                 client = null;
@@ -74,7 +75,7 @@ namespace ServerWorker
                        new AsyncCallback(EndReadCallback),
                        cState);
 
-                //SendMessage("GetListUsers");
+                SendMessage("ServerConnected");
 
                 cState.Waiter.Reset();
                 cState.Waiter.WaitOne();

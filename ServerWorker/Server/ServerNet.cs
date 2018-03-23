@@ -18,8 +18,8 @@ namespace ServerWorker
         //Сервер
         const int port = 7777;
         public static TcpListener listener;
-        //public static IPAddress localIp = IPAddress.Parse("127.0.0.1");
-        public static IPAddress localIp = null;
+        public static IPAddress localIp = IPAddress.Parse("127.0.0.1");
+        //public static IPAddress localIp = null;
         public List<EndPoint> listIp = new List<EndPoint>();      
 
         //Клиент
@@ -44,9 +44,11 @@ namespace ServerWorker
         //Запуск сервера
         public void StartServer()
         {
+            Program.form1.Interfaces = UserInterface.mainServer;
             try
             {
-                if (localIp == null)
+                //Костыль!!!
+                if (localIp == IPAddress.Parse("127.0.0.1"))
                 {
                     localIp = AvailableLocalIp.GetFirstAviableIp();
                 }

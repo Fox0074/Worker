@@ -14,12 +14,83 @@ using System.Threading;
 
 namespace ServerWorker
 {
+    public enum UserInterface { mainServer, secondServer }
     public partial class Form1 : Form
     {
+        public delegate void InterfaceEventHandler(UserInterface arg);
+        public event InterfaceEventHandler InterfaceChanged;
+
+        private List<Control> mainControls = new List<Control>();
+        private List<Control> secondControls = new List<Control>();
+
+        private UserInterface interfaces = UserInterface.mainServer;
+        public UserInterface Interfaces
+        {
+            get { return interfaces; }
+            set
+            {
+                interfaces = value;
+                InterfaceChanged(Interfaces);              
+            }
+        }
+
 
         public Form1()
         {
             InitializeComponent();
+            //Вот я дал!
+            InterfaceChanged += (UserInterface arg) => {
+                if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.Form1_InterfaceChanged(arg); }));
+                else Program.form1.Form1_InterfaceChanged(arg);
+            };
+
+            
+
+            mainControls.Add(button1);
+            secondControls.Add(button8);
+        }
+
+        private void Form1_InterfaceChanged(UserInterface arg)
+        {
+            switch (arg)
+            {
+                case UserInterface.mainServer:
+                    {
+                        foreach(Control element in mainControls)
+                        {
+                            element.Visible = true;
+                        }
+                        foreach (Control element in secondControls)
+                        {
+                            element.Visible = false;
+                        }
+                    }
+                    break;
+                case UserInterface.secondServer:
+                    {
+                        foreach (Control element in secondControls)
+                        {
+                            element.Visible = true;
+                        }
+                        foreach (Control element in mainControls)
+                        {
+                            element.Visible = false;
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        foreach (Control element in mainControls)
+                        {
+                            element.Visible = false;
+                        }
+                        foreach (Control element in secondControls)
+                        {
+                            element.Visible = false;
+                        }
+                    }
+                    break;
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -180,7 +251,7 @@ namespace ServerWorker
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Program.aviableServer.SendMessage("GetListUsers");
+            Program.aviableServer.SendMessage("GetListUsers");         
         }
     }
 }

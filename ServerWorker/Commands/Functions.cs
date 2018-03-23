@@ -12,11 +12,12 @@ namespace ServerWorker
         public static Action onGettingLog = delegate { };
         public static Action OnGettingInfoDevice = delegate { };
 
+        //====================================>> command: HEAD_PARAMETR0_PARAMETR1_PARAMETR2_ ...
         public static void AnalysisAnswer(string answer, Messenger client)
         {
             string head;
             List<string> parametrs = new List<string>();
-            Console.WriteLine(answer);
+            
             try
             {
                 head = answer.Split('_')[0];
@@ -60,7 +61,7 @@ namespace ServerWorker
                     break;
 
                 case "Key":
-                    client.EndReadClient();
+                    //client.EndReadClient();
                     //ConnectedServers connectedServers = new ConnectedServers(client.authStream, client.client);
                     break;
 
