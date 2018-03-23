@@ -141,9 +141,16 @@ namespace ServerWorker
             }
 
             //id = authStream.RemoteIdentity;
-            Functions.AnalysisAnswer(cState.Message.ToString(), this);
-            Log.Send(id.Name + ": says " + cState.Message.ToString());
-            cState.Waiter.Set();
+            try
+            {
+                Functions.AnalysisAnswer(cState.Message.ToString(), this);
+                Log.Send(client.Client.RemoteEndPoint.ToString() + ": says " + cState.Message.ToString());
+                cState.Waiter.Set();
+            }
+            catch(Exception ex)
+            {
+                Log.Send(ex.Message);
+            }
         }
         public void EndWriteCallback(IAsyncResult ars)
         {
