@@ -26,17 +26,24 @@ namespace ClientWorker
         private IIdentity id;
         public Client()
 		{
-			Log.Send("Client.Client()");
+			Log.Send("Client конструктор");
 			handler = new Functions();
 			handler.Start();
 		}
         
-		public void Clear()
+		public void Close()
 		{
-			Log.Send("Client.Clear()");
-            netStreamWithoutEncrypt.Close();
-            netStream.Close();
-            client.Close();
+            try
+            {
+                Log.Send("Client.Close()");
+                netStreamWithoutEncrypt.Close();
+                netStream.Close();
+                client.Close();
+            }
+            catch(Exception ex)
+            {
+                Log.Send("Client.Close Error: " + ex.Message);
+            }
         }
 
 		public void Start()
@@ -48,9 +55,9 @@ namespace ClientWorker
                 client = null;
                 address = GetFirstSucsessAdress();
                 StartData.currentUser = address;
-                Log.Send("SucsessIp: " + address);
-                //client.SendTimeout = 5000;
+                Log.Send("SucsessIp: " + address);             
                 client = new TcpClient(address, port);
+                client.SendTimeout = 5000;
 
                 netStreamWithoutEncrypt = client.GetStream();             
                 netStream = netStreamWithoutEncrypt;
@@ -61,7 +68,7 @@ namespace ClientWorker
                        new AsyncCallback(EndReadCallback),
                        cState);
 
-                SendMessage("First Connect");
+                SendMessage("First Connect" + Service.Properties.Settings.Default.Version);
 
                 cState.Waiter.Reset();
                 cState.Waiter.WaitOne();
@@ -69,7 +76,7 @@ namespace ClientWorker
             }
             catch (Exception ex)
             {
-                Log.Send("Client.Start() " + ex.Message);
+                Log.Send("Client.Start Exception " + ex.Message);
                 //int t = 5000;
                 //Thread.Sleep(t);             
             }
@@ -118,6 +125,12 @@ namespace ClientWorker
 
                     cState.Message.Remove(0, cState.Message.Length);
                     return;
+                }
+                else
+                {
+                    Log.Send("EndReadCallback(): Пришло 0 байт");
+                    Close();
+                    Start();
                 }
             }
             catch (Exception e)

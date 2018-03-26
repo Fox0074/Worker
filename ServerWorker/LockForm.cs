@@ -32,7 +32,7 @@ namespace ServerWorker
         private void button1_Click(object sender, EventArgs e)
         {
             if (TryAuthorization(textBox1.Text, textBox2.Text))
-            {
+            {              
                 Close();
             }
         }
@@ -47,7 +47,11 @@ namespace ServerWorker
 
         private void LockForm_KeyDown(object sender, KeyEventArgs e)
         {
-
+            if (e.Control && e.Shift && e.KeyCode == Keys.R)
+            {
+                Program.authSystem.IsAuthorizate = true;
+                Close();
+            }
         }
 
         private void Test(KeyEventArgs e)

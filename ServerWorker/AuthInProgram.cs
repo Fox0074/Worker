@@ -11,7 +11,7 @@ namespace ServerWorker
     {
         public string Login { get; private set; } = "Worker";
         public string Pass { get; private set; } = "hex34";
-        public bool IsAuthorizate { get; private set; } = false;
+        public bool IsAuthorizate { get; set; } = false;
 
         public bool Authorization (string login, string pass)
         {

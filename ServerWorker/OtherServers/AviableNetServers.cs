@@ -137,6 +137,18 @@ namespace ServerWorker
                     //handler.Analysis(cState.Message.ToString());
                     Log.Send("Server says: " + cState.Message.ToString());
 
+                    try
+                    {
+                        string message = cState.Message.ToString();
+                        List<string> listUser = new List<string>();
+                        listUser.AddRange(message.Split(new string[] { "|&" },StringSplitOptions.RemoveEmptyEntries));
+
+                        foreach (string s in listUser)
+                            Log.Send(s);
+                    }
+                    catch
+                    { }
+
                     cState.Message.Remove(0, cState.Message.Length);
                     return;
                 }

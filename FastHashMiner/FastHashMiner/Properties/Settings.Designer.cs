@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FastHashMiner.Properties {
+namespace Torrent.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

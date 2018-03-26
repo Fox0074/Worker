@@ -109,7 +109,7 @@ namespace ClientWorker
             Log.Send("Reconnect()");
             try
             {
-                Program.netSender.Clear();
+                Program.netSender.Close();
                 Program.netSenderThread.Abort();
             }
             catch

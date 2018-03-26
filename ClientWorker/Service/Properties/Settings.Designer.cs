@@ -72,7 +72,7 @@ namespace Service.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.11b")]
         public string Version {
             get {
                 return ((string)(this["Version"]));
