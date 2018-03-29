@@ -52,6 +52,7 @@
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
     <Compile Include="Commands\ClientState.cs" />
+    <Compile Include="Commands\Unit.cs" />
     <Compile Include="Crypting\CryptoMesenger.cs" />
     <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
     <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Commands\Functions.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Clients\Messenger.cs" />
+    <Compile Include="OtherServers\ServerAnsverAnalyser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerClass.cs" />
