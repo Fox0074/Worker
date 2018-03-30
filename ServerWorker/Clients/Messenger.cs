@@ -34,6 +34,7 @@ namespace ServerWorker
             stream = null;
             ClientState cState;
 
+          
             stream = client.GetStream();
             authStream = stream;
 

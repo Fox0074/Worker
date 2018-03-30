@@ -52,7 +52,8 @@
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
     <Compile Include="Commands\ClientState.cs" />
-    <Compile Include="Commands\Unit.cs" />
+    <Compile Include="Unit\ICommand.cs" />
+    <Compile Include="Unit\Unit.cs" />
     <Compile Include="Crypting\CryptoMesenger.cs" />
     <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
     <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
