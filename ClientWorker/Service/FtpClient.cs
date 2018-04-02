@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace ClientWorker
 {
@@ -96,6 +98,57 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 Log.Send(ex.Message + "Ошибка скачивания файла");
+            }
+        }
+
+        public static void DownloadFtpDirectory(string url, string localPath)
+        {
+            FtpWebRequest listRequest = (FtpWebRequest)WebRequest.Create(url);
+            listRequest.UsePassive = true;
+            listRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            listRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass); ;
+
+            List<string> lines = new List<string>();
+
+            using (WebResponse listResponse = listRequest.GetResponse())
+            using (Stream listStream = listResponse.GetResponseStream())
+            using (StreamReader listReader = new StreamReader(listStream))
+            {
+                while (!listReader.EndOfStream)
+                {
+                    lines.Add(listReader.ReadLine());
+                }
+            }
+
+            foreach (string line in lines)
+            {
+                string[] tokens =
+                    line.Split(new[] { ' ' }, 9, StringSplitOptions.RemoveEmptyEntries);
+                string name = tokens[8];
+                string permissions = tokens[0];
+
+                string localFilePath = Path.Combine(localPath, name);
+                string fileUrl = url + "/" + name;
+
+                if (permissions[0] == 'd')
+                {
+                    Directory.CreateDirectory(localFilePath);
+                    DownloadFtpDirectory(fileUrl + "/", credentials, localFilePath);
+                }
+                else
+                {
+                    FtpWebRequest downloadRequest = (FtpWebRequest)WebRequest.Create(fileUrl);
+                    downloadRequest.UsePassive = true;
+                    downloadRequest.UseBinary = true;
+                    downloadRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                    downloadRequest.Credentials = credentials;
+
+                    using (Stream ftpStream = downloadRequest.GetResponse().GetResponseStream())
+                    using (Stream fileStream = File.Create(localFilePath))
+                    {
+                        ftpStream.CopyTo(fileStream);
+                    }
+                }
             }
         }
 

