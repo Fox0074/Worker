@@ -185,7 +185,7 @@ namespace ServerWorker
             {
                 if (Messenger.messangers.Count > listBox1.SelectedIndex)
                 {
-                    Messenger.messangers[listBox1.SelectedIndex].RequestLog();
+                    //Messenger.messangers[listBox1.SelectedIndex].RequestLog();
                     StartForm2(Messenger.messangers[listBox1.SelectedIndex]);
                 }
                 else
@@ -201,7 +201,7 @@ namespace ServerWorker
 
         private void StartForm2(Messenger messenger )
         {
-            Form2 form2 = new Form2(messenger);
+            FormUserCard form2 = new FormUserCard(messenger);
             form2.Show();
         }
 

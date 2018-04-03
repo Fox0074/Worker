@@ -43,9 +43,9 @@ namespace ServerWorker
                     {
                         client.setting.name = parametrs[0];
                         //client.setting.name = parametrs[1];
-                        client.setting.openCount = int.Parse(parametrs[2]);
+                        client.setting.countStartProgram = int.Parse(parametrs[2]);
                         client.setting.startTime = parametrs[3];
-                        client.setting.Version = parametrs[4];
+                        client.setting.version = parametrs[4];
                     }
                     catch (Exception ex)
                     {

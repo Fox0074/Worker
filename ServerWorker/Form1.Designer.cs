@@ -183,9 +183,9 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(526, 360);
+            this.button8.Location = new System.Drawing.Point(192, 101);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(167, 23);
+            this.button8.Size = new System.Drawing.Size(129, 23);
             this.button8.TabIndex = 17;
             this.button8.Text = "Запросить список клиентов";
             this.button8.UseVisualStyleBackColor = true;
