@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Net.Security;
 using System.Security.Principal;
 using System.Security.Authentication;
+using ServerWorker.UserCard;
 
 namespace ServerWorker
 {
@@ -20,7 +21,7 @@ namespace ServerWorker
 
         public TcpClient client;
         public ClientLog clientLog = new ClientLog();
-        public ClientSetting setting = new ClientSetting();
+        public UserData setting = new UserData();
 
         ClientState cState;
         IIdentity id;

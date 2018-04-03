@@ -24,7 +24,7 @@ namespace ServerWorker
             }
             else
             {
-                MessageBox.Show("Логин или пароль введены неверно", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Логин и/или пароль введены неверно", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             return result;
