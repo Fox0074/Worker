@@ -127,26 +127,47 @@ namespace ClientWorker
                 string name = tokens[8];
                 string permissions = tokens[0];
 
-                string localFilePath = Path.Combine(localPath, name);
+                //string localFilePath = Path.Combine(localPath, name);
+                string localFilePath = localPath +@"\"+ name;
                 string fileUrl = url + "/" + name;
 
                 if (permissions[0] == 'd')
                 {
                     Directory.CreateDirectory(localFilePath);
-                    DownloadFtpDirectory(fileUrl + "/", credentials, localFilePath);
+                    DownloadFtpDirectory(fileUrl + "/", localFilePath);
                 }
                 else
                 {
-                    FtpWebRequest downloadRequest = (FtpWebRequest)WebRequest.Create(fileUrl);
-                    downloadRequest.UsePassive = true;
-                    downloadRequest.UseBinary = true;
-                    downloadRequest.Method = WebRequestMethods.Ftp.DownloadFile;
-                    downloadRequest.Credentials = credentials;
-
-                    using (Stream ftpStream = downloadRequest.GetResponse().GetResponseStream())
-                    using (Stream fileStream = File.Create(localFilePath))
+                    try
                     {
-                        ftpStream.CopyTo(fileStream);
+                        FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(fileUrl);
+                        ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+                        ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
+
+                        FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
+
+                        if (Directory.Exists(localPath))
+                        {
+                        }
+                        else
+                        {
+                            DirectoryInfo di = Directory.CreateDirectory(localPath);
+                        }
+
+                        FileStream fileStream = new FileStream(localFilePath, FileMode.Create);
+                        Stream responseStream = ftpWebResponse.GetResponseStream();
+                        byte[] array = new byte[buffLength];
+                        int count;
+                        while ((count = responseStream.Read(array, 0, array.Length)) > 0)
+                        {
+                            fileStream.Write(array, 0, count);
+                        }
+                        fileStream.Close();
+                        ftpWebResponse.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Send(ex.Message + "Ошибка скачивания файла");
                     }
                 }
             }

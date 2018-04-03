@@ -48,7 +48,7 @@ namespace ServerWorker
             try
             {
                 //Костыль!!!
-                if (localIp == IPAddress.Parse("127.0.0.1"))
+                if (localIp.ToString() == IPAddress.Parse("127.0.0.1").ToString())
                 {
                     localIp = AvailableLocalIp.GetFirstAviableIp();
                 }
