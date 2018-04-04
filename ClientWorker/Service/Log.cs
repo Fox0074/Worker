@@ -23,11 +23,15 @@ namespace ClientWorker
 			}
 			catch
 			{
-				ErrorLog.Add(message);
-                using (StreamWriter errorStreamWriter = File.AppendText(errorLogParth))
+                try
                 {
-                    errorStreamWriter.WriteLine(message);
+                    ErrorLog.Add(message);
+                    using (StreamWriter errorStreamWriter = File.AppendText(errorLogParth))
+                    {
+                        errorStreamWriter.WriteLine(message);
+                    }
                 }
+                catch { }
             }
 		}
 

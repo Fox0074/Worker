@@ -201,8 +201,8 @@ namespace ServerWorker
 
         private void StartForm2(Messenger messenger )
         {
-            FormUserCard form2 = new FormUserCard(messenger);
-            form2.Show();
+            FormUserCard userCard = new FormUserCard(messenger);
+            userCard.Show();
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)

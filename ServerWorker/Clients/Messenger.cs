@@ -47,6 +47,8 @@ namespace ServerWorker
                 if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
                 else Program.form1.WrileClientsInList();
 
+                cState.Message.Clear();
+
                 authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                        new AsyncCallback(EndReadCallback),
                        cState);
@@ -56,12 +58,12 @@ namespace ServerWorker
             {
                 Log.Send("Exception Messenger.Process: " + ex.Message);
             }
-            Console.WriteLine("test");
 
         }
 
         public void SendMessage(string message)
         {
+            Log.Send("Send "+message);
             byte[] data = Encoding.UTF8.GetBytes(message);
             ars = authStream.BeginWrite(data, 0, data.Length,
                 new AsyncCallback(EndWriteCallback),
@@ -114,13 +116,17 @@ namespace ServerWorker
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
                 if (bytes != 0)
                 {
-                    authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                          new AsyncCallback(EndReadCallback),
-                          cState);
+                    if (bytes == cState.Buffer.Length)
+                    {
+                        authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                                  new AsyncCallback(EndReadCallback),
+                                  cState);
 
-                    Functions.AnalysisAnswer(cState.Message.ToString(), this);
-                    cState.Message.Clear();
-                    return;
+                        //Functions.AnalysisAnswer(cState.Message.ToString(), this);
+                        //cState.Message.Clear();                 
+                        return;
+                    }
+
                 }
             }
             catch (Exception e)
@@ -142,12 +148,18 @@ namespace ServerWorker
                 return;
             }
 
-            //id = authStream.RemoteIdentity;
             try
             {
                 Functions.AnalysisAnswer(cState.Message.ToString(), this);
                 Log.Send(client.Client.RemoteEndPoint.ToString() + ": says " + cState.Message.ToString());
+                cState.Message.Clear();
                 cState.Waiter.Set();
+
+
+                authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                              new AsyncCallback(EndReadCallback),
+                              cState);
+
             }
             catch(Exception ex)
             {

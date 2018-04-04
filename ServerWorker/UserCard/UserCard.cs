@@ -16,25 +16,35 @@ namespace ServerWorker
         private Messenger messenger;
         private LogUserCard log;
 
-        public FormUserCard(Messenger test)
+        public FormUserCard(Messenger messenger)
         {
             InitializeComponent();
-            messenger = test;
+            this.messenger = messenger;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Functions.onGettingLog += () => DrawLog(messenger.clientLog.messages);
-            messenger.RequestLog();
+            
             log = new LogUserCard();
             log.Show();
             log.Text = "Ожидайте, идет получение лога..";
+            Functions.onGettingLog +=  DrawLog;
+            messenger.RequestLog();
         }
 
-        private void DrawLog(List<string> actions)
+        private void DrawLog()
         {
-            log.Text = "Лог";
-            log.DrawNewLog(actions);
+            try
+            {
+                Functions.onGettingLog -= DrawLog;
+                //log.Text = "Лог";
+                if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(messenger.clientLog.messages); }));
+                else log.DrawNewLog(messenger.clientLog.messages);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)

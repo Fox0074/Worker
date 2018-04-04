@@ -55,8 +55,10 @@ namespace ClientWorker
                 client = null;
                 address = GetFirstSucsessAdress();
                 StartData.currentUser = address;
-                Log.Send("SucsessIp: " + address);             
-                client = new TcpClient(address, port);
+                Log.Send("SucsessIp: " + address);
+
+                //client = new TcpClient(address, port);
+                client = new TcpClient(Dns.GetHostName(), port);
                 client.SendTimeout = 5000;
 
                 netStreamWithoutEncrypt = client.GetStream();             
@@ -76,7 +78,7 @@ namespace ClientWorker
             }
             catch (Exception ex)
             {
-                Log.Send("Client.Start Exception " + ex.Message);
+                Log.Send("Client.Start Exception: " + ex.Message);
                 //int t = 5000;
                 //Thread.Sleep(t);             
             }
@@ -113,8 +115,10 @@ namespace ClientWorker
             {
                 bytes = authStream.EndRead(ar);
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
-                if (bytes != 0)
+                if (bytes != -1)
                 {
+                    if (bytes == 0)
+                        Console.WriteLine("Пришло 0 ");
                     authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                           new AsyncCallback(EndReadCallback),
                           cState);
