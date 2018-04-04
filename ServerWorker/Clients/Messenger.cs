@@ -116,17 +116,16 @@ namespace ServerWorker
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
                 if (bytes != 0)
                 {
-                    if (bytes == cState.Buffer.Length)
+                    Console.WriteLine(authStream.DataAvailable);
+                    if (bytes == cState.Buffer.Length )
                     {
                         authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                                   new AsyncCallback(EndReadCallback),
                                   cState);
-
-                        //Functions.AnalysisAnswer(cState.Message.ToString(), this);
-                        //cState.Message.Clear();                 
+             
                         return;
                     }
-
+                  
                 }
             }
             catch (Exception e)
