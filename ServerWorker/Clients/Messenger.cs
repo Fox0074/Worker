@@ -116,7 +116,6 @@ namespace ServerWorker
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
                 if (bytes != 0)
                 {
-                    Console.WriteLine(authStream.DataAvailable);
                     if (bytes == cState.Buffer.Length )
                     {
                         authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,

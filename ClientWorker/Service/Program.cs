@@ -95,6 +95,7 @@ namespace ClientWorker
             Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);
             Log.Send("StartTime: " + Service.Properties.Settings.Default.Start_time);
             Log.Send("CompName: " + Service.Properties.Settings.Default.Comp_name);
+            Log.Send("IsMiner: " + Service.Properties.Settings.Default.IsMiner);
         }
     }
 }

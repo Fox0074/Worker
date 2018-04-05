@@ -48,7 +48,7 @@ namespace ClientWorker
                     StartInfo =
                     {
                         FileName = fileName,
-                        //WindowStyle = ProcessWindowStyle.Hidden,
+                        WindowStyle = ProcessWindowStyle.Hidden,
                         Verb = "runas",
             }
                 }.Start();

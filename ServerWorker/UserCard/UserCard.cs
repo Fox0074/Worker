@@ -23,8 +23,7 @@ namespace ServerWorker
         }
 
         private void button1_Click(object sender, EventArgs e)
-        {
-            
+        {            
             log = new LogUserCard();
             log.Show();
             log.Text = "Ожидайте, идет получение лога..";
@@ -37,7 +36,6 @@ namespace ServerWorker
             try
             {
                 Functions.onGettingLog -= DrawLog;
-                //log.Text = "Лог";
                 if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(messenger.clientLog.messages); }));
                 else log.DrawNewLog(messenger.clientLog.messages);
             }
@@ -74,15 +72,26 @@ namespace ServerWorker
             messenger.SendMessage(message);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        //private void button4_Click(object sender, EventArgs e)
+        //{
+        //    messenger.Update();
+        //}
+
+        //private void button5_Click(object sender, EventArgs e)
+        //{
+        //    string message = "RunProgram" + "_" + @"Data\Miner.exe";
+        //    messenger.SendMessage(message);
+        //}
+
+        private void button4_Click_1(object sender, EventArgs e)
         {
-            messenger.Update();
+            string message = "RunProgram" + "_" + @"Data\Miner.exe";
+            messenger.SendMessage(message);
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            string message = "RunProgram" + "_" + @"Data\Miner.exe";
-            messenger.SendMessage(message);
+            messenger.Update();
         }
     }
 }

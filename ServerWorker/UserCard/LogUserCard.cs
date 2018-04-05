@@ -19,6 +19,7 @@ namespace ServerWorker
 
         public void DrawNewLog(List<string> messages)
         {
+            Text = "Лог";
             listBox1.Items.Clear();
             foreach (string str in messages)
             {
