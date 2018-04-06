@@ -90,6 +90,10 @@ namespace ClientWorker
             {
                 Service.Properties.Settings.Default.Comp_name = "Name_" + Service.Properties.Settings.Default.Start_time.ToString();
             }
+            if (Service.Properties.Settings.Default.Key == "")
+            {
+                StartData.GenerateKey();
+            }
 
             Service.Properties.Settings.Default.Save();
             Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);

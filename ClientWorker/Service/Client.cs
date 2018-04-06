@@ -70,7 +70,7 @@ namespace ClientWorker
                        new AsyncCallback(EndReadCallback),
                        cState);
 
-                SendMessage("First Connect" + Service.Properties.Settings.Default.Version);
+                SendMessage("FirstConnect" + StartData.delimiter + Service.Properties.Settings.Default.Version + StartData.delimiter + Service.Properties.Settings.Default.Key+ StartData.delimiter+ "EndFirstConnect");
 
                 cState.Waiter.Reset();
                 cState.Waiter.WaitOne();

@@ -17,5 +17,8 @@
     <Setting Name="Version" Type="System.String" Scope="User">
       <Value Profile="(Default)">0.12b</Value>
     </Setting>
+    <Setting Name="Key" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

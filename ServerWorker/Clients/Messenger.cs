@@ -24,7 +24,7 @@ namespace ServerWorker
         public TcpClient client;
         public ClientLog clientLog = new ClientLog();
         public UserData setting = new UserData();
-        IIdentity id;
+        public string key = "";
         IAsyncResult ars;
 
 
@@ -98,7 +98,7 @@ namespace ServerWorker
                 return;
             }
            // id = authStream.RemoteIdentity;
-            Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
+            //Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
             cState.Waiter.Set();
 
         }

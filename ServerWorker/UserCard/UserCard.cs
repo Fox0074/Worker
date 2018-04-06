@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,11 +16,15 @@ namespace ServerWorker
 
         private Messenger messenger;
         private LogUserCard log;
+        private UserCard.UserData userData;
 
         public FormUserCard(Messenger messenger)
         {
             InitializeComponent();
             this.messenger = messenger;
+            userData = new UserCard.UserData();
+            userData.id = messenger.key;
+            LoadUserCard();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -54,6 +59,7 @@ namespace ServerWorker
 
         private void DrawInfoDevice(List<string> _params)
         {
+            userData.infoDevice = _params;
             foreach (string str in _params)
             {
                 try
@@ -63,6 +69,39 @@ namespace ServerWorker
                 }
                 catch
                 { }
+            }
+        }
+
+        private void LoadUserCard()
+        {
+            try
+            {
+                string[] dirs = Directory.GetFiles(UserCard.UserData.parthUserCard, "*.xml");
+                foreach (string file in dirs)
+                {
+                    if (file == UserCard.UserData.parthUserCard + @"\"+ userData.id + ".xml")
+                    {
+                        userData = userData.RearDataFromFile(file);
+                        break;
+                    }
+                }
+
+                foreach (string str in userData.infoDevice)
+                {
+                    try
+                    {
+                        if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Add(str); }));
+                        else listBox2.Items.Add(str);
+                    }
+                    catch
+                    { }
+                }
+
+
+            }
+            catch (Exception e)
+            {
+                Log.Send("The process failed: " + e.ToString());
             }
         }
 
@@ -92,6 +131,12 @@ namespace ServerWorker
         private void button5_Click(object sender, EventArgs e)
         {
             messenger.Update();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (userData.id != "")
+                userData.SaveDataToFile(userData.id + ".xml");
         }
     }
 }

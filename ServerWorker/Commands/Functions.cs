@@ -65,6 +65,16 @@ namespace ServerWorker
                     //ConnectedServers connectedServers = new ConnectedServers(client.authStream, client.client);
                     break;
 
+                case "FirstConnect":
+                    try
+                    {
+                        client.key = parametrs[1];
+                    }
+                    catch(Exception ex)
+                    {
+                        Log.Send("Ошибка ключа, параметры  FirstConnect: " + parametrs + "\n"+ ex.Message);
+                    }
+                    break;
                 default:
                     Log.Send("UnknownCommand " + answer);
                     break;

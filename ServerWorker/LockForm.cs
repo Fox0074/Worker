@@ -33,7 +33,6 @@ namespace ServerWorker
                     version = "0.01b"
                 };
                 userData.SaveDataToFile("test.xml");
-                userData.RearDataFromFile("test.xml");
 
         }
 
