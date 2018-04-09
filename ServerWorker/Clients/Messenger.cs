@@ -35,7 +35,7 @@ namespace ServerWorker
             stream = null;
             ClientState cState;
 
-          
+
             stream = client.GetStream();
             authStream = stream;
 
@@ -63,7 +63,7 @@ namespace ServerWorker
 
         public void SendMessage(string message)
         {
-            Log.Send("Send "+message);
+            Log.Send("Send " + message);
             byte[] data = Encoding.UTF8.GetBytes(message);
             ars = authStream.BeginWrite(data, 0, data.Length,
                 new AsyncCallback(EndWriteCallback),
@@ -71,37 +71,6 @@ namespace ServerWorker
             ars.AsyncWaitHandle.WaitOne();
         }
 
-        public void EndAuthenticateCallback(IAsyncResult ar)
-        {
-            ClientState cState = (ClientState)ar.AsyncState;
-            TcpClient clientRequest = cState.Client;
-            NetworkStream authStream = (NetworkStream)cState.NetStream;
-            //Log.Send("Ending authentication.");
-
-            try
-            {
-                //authStream.EndAuthenticateAsServer(ar);
-            }
-            catch (AuthenticationException e)
-            {
-                Log.Send(e.Message);
-                Log.Send("Authentication failed - closing connection.");
-                cState.Waiter.Set();
-                return;
-            }
-            catch (Exception e)
-            {
-                Log.Send(e.Message);
-                Log.Send(client.Client.RemoteEndPoint + "Closing connection.");
-                cState.Waiter.Set();
-                messangers.Remove(this);
-                return;
-            }
-           // id = authStream.RemoteIdentity;
-            //Log.Send(id.Name + " was authenticated using " + id.AuthenticationType);
-            cState.Waiter.Set();
-
-        }
         public void EndReadCallback(IAsyncResult ar)
         {
             ClientState cState = (ClientState)ar.AsyncState;
@@ -116,15 +85,15 @@ namespace ServerWorker
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
                 if (bytes != 0)
                 {
-                    if (bytes == cState.Buffer.Length )
-                    {
                         authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
                                   new AsyncCallback(EndReadCallback),
                                   cState);
-             
+
+                    if (authStream.DataAvailable)
+                    {
                         return;
                     }
-                  
+
                 }
             }
             catch (Exception e)
@@ -152,14 +121,8 @@ namespace ServerWorker
                 Log.Send(client.Client.RemoteEndPoint.ToString() + ": says " + cState.Message.ToString());
                 cState.Message.Clear();
                 cState.Waiter.Set();
-
-
-                authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                              new AsyncCallback(EndReadCallback),
-                              cState);
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Send(ex.Message);
             }
@@ -217,11 +180,6 @@ namespace ServerWorker
             {
                 Log.Send("Cant close client " + ex.Message);
             }
-        }
-        public void EndReadClient()
-        {
-            authStream.EndRead(ars);
-            authStream.EndWrite(ars);
         }
     }
 }

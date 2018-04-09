@@ -14,7 +14,7 @@ namespace ClientWorker
 	{
         
 
-        private string address = "fokes1.asuscomm.com";
+        private string address = StartData.ddnsHostName[0];
         private int port = 7777;
         public TcpClient client;
         public NetworkStream netStreamWithoutEncrypt;
@@ -23,7 +23,6 @@ namespace ClientWorker
         public Functions handler;
         private ClientState cState;
         private IAsyncResult ars;
-        private IIdentity id;
         public Client()
 		{
 			Log.Send("Client конструктор");
@@ -78,9 +77,7 @@ namespace ClientWorker
             }
             catch (Exception ex)
             {
-                Log.Send("Client.Start Exception: " + ex.Message);
-                //int t = 5000;
-                //Thread.Sleep(t);             
+                Log.Send("Client.Start Exception: " + ex.Message);             
             }
             finally
             {
@@ -97,11 +94,6 @@ namespace ClientWorker
             ars.AsyncWaitHandle.WaitOne();
         }
 
-        public static void EndAuthenticateCallback(IAsyncResult ars)
-        {
-            NegotiateStream authStream = (NegotiateStream)ars.AsyncState;
-            authStream.EndAuthenticateAsClient(ars);
-        }
 
         public void EndReadCallback(IAsyncResult ar)
         {
@@ -115,15 +107,17 @@ namespace ClientWorker
             {
                 bytes = authStream.EndRead(ar);
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
-                if (bytes != -1)
+                if (bytes != 0)
                 {
-                    if (bytes == 0)
-                        Console.WriteLine("Пришло 0 ");
                     authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                          new AsyncCallback(EndReadCallback),
-                          cState);
+                      new AsyncCallback(EndReadCallback),
+                      cState);
 
-                    //id = authStream.RemoteIdentity;
+                    if (authStream.DataAvailable)
+                    {
+                        return;
+                    }
+
                     handler.Analysis(cState.Message.ToString());
                     Log.Send("Server says: " + cState.Message.ToString());
 
@@ -139,13 +133,12 @@ namespace ClientWorker
             }
             catch (Exception e)
             {
-                Log.Send("Client message exception:");
-                Log.Send(e.Message);
+                Log.Send("Client message exception:" + e.Message);
                 cState.Waiter.Set();
                 return;
             }
-            Log.Send("Connections was close on server");
-            cState.Waiter.Set();
+                Log.Send("Connections was close on server");
+                cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)
         {
@@ -195,10 +188,6 @@ namespace ClientWorker
                 }
             }
         }
-        private IPAddress[] GetIpDns(string ddns)
-		{
-			return Dns.GetHostAddresses(ddns);
-		}
 
 		private IPStatus PingIp(string hostName)
 		{
