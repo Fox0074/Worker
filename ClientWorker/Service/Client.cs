@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Service;
+using System;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Security;
@@ -17,7 +18,6 @@ namespace ClientWorker
         private string address = StartData.ddnsHostName[0];
         private int port = 7777;
         public TcpClient client;
-        public NetworkStream netStreamWithoutEncrypt;
         public NetworkStream netStream;
 
         public Functions handler;
@@ -28,14 +28,12 @@ namespace ClientWorker
 			Log.Send("Client конструктор");
 			handler = new Functions();
 			handler.Start();
-		}
-        
+		}    
 		public void Close()
 		{
             try
             {
                 Log.Send("Client.Close()");
-                netStreamWithoutEncrypt.Close();
                 netStream.Close();
                 client.Close();
             }
@@ -59,9 +57,8 @@ namespace ClientWorker
                 //client = new TcpClient(address, port);
                 client = new TcpClient(Dns.GetHostName(), port);
                 client.SendTimeout = 5000;
-
-                netStreamWithoutEncrypt = client.GetStream();             
-                netStream = netStreamWithoutEncrypt;
+           
+                netStream = client.GetStream();
 
                 cState = new ClientState(netStream, client);
 
@@ -107,11 +104,11 @@ namespace ClientWorker
             {
                 bytes = authStream.EndRead(ar);
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
-                if (bytes != 0)
+
+                if (bytes != 0 || authStream.DataAvailable)
                 {
-                    authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                      new AsyncCallback(EndReadCallback),
-                      cState);
+
+                    authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,new AsyncCallback(EndReadCallback),cState);
 
                     if (authStream.DataAvailable)
                     {
@@ -126,9 +123,10 @@ namespace ClientWorker
                 }
                 else
                 {
-                    Log.Send("EndReadCallback(): Пришло 0 байт");
+                    Log.Send("EndReadCallback(): authStream.DataAvailable = " + authStream.DataAvailable + " bytes = " + bytes);
                     Close();
                     Start();
+                    return;
                 }
             }
             catch (Exception e)
@@ -137,8 +135,6 @@ namespace ClientWorker
                 cState.Waiter.Set();
                 return;
             }
-                Log.Send("Connections was close on server");
-                cState.Waiter.Set();
         }
         public void EndWriteCallback(IAsyncResult ars)
         {
@@ -146,56 +142,12 @@ namespace ClientWorker
 
             authStream.EndWrite(ars);
         }
-
-        internal class ClientState
-        {
-            private NetworkStream authStream = null;
-            private TcpClient client = null;
-            byte[] buffer = new byte[2048];
-            StringBuilder message = null;
-            ManualResetEvent waiter = new ManualResetEvent(false);
-            internal ClientState(NetworkStream a, TcpClient theClient)
-            {
-                authStream = a;
-                client = theClient;
-            }
-            internal TcpClient Client
-            {
-                get { return client; }
-            }
-            internal NetworkStream AuthenticatedStream
-            {
-                get { return authStream; }
-            }
-            internal byte[] Buffer
-            {
-                get { return buffer; }
-            }
-            internal StringBuilder Message
-            {
-                get
-                {
-                    if (message == null)
-                        message = new StringBuilder();
-                    return message;
-                }
-            }
-            internal ManualResetEvent Waiter
-            {
-                get
-                {
-                    return waiter;
-                }
-            }
-        }
-
 		private IPStatus PingIp(string hostName)
 		{
 			Ping ping = new Ping();
 			PingReply pingReply = ping.Send(hostName);
 			return pingReply.Status;
 		}
-
 		private string GetFirstSucsessAdress()
 		{
 			string result = "";

@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="ClientState.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FtpClient.cs" />
     <Compile Include="Functions.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -47,6 +48,18 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 Log.Send("Exception DownloadFileAndRun: " + ex.Message);
+            }
+        }
+
+        public static void DeleteFile(string parth)
+        {
+            try
+            {
+                File.Delete(parth);
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Ошибка удаления файла: " + ex.Message);
             }
         }
     }

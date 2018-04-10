@@ -59,6 +59,8 @@ namespace ServerWorker
 
         private void DrawInfoDevice(List<string> _params)
         {
+            if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Clear(); }));
+            else listBox2.Items.Clear();
             userData.infoDevice = _params;
             foreach (string str in _params)
             {
@@ -137,6 +139,12 @@ namespace ServerWorker
         {
             if (userData.id != "")
                 userData.SaveDataToFile(userData.id + ".xml");
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            string message = "Reconnect";
+            messenger.SendMessage(message);
         }
     }
 }

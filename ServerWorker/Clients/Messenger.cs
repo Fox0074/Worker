@@ -83,17 +83,26 @@ namespace ServerWorker
             {
                 bytes = authStream.EndRead(ar);
                 cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
-                if (bytes != 0)
+                if (bytes != 0 || authStream.DataAvailable)
                 {
-                        authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
-                                  new AsyncCallback(EndReadCallback),
-                                  cState);
-
                     if (authStream.DataAvailable)
                     {
+                        authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                                      new AsyncCallback(EndReadCallback),
+                                      cState);
                         return;
                     }
 
+                }
+                else
+                {
+                    Log.Send("Обьект " + client.Client.RemoteEndPoint + " удален. Пришло 0 байт и поток был пуст.");
+                    messangers.Remove(this);
+                    StopClientStream();
+                    if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.WrileClientsInList(); }));
+                    else Program.form1.WrileClientsInList();
+                    cState.Waiter.Set();
+                    return;
                 }
             }
             catch (Exception e)
@@ -119,6 +128,12 @@ namespace ServerWorker
             {
                 Functions.AnalysisAnswer(cState.Message.ToString(), this);
                 Log.Send(client.Client.RemoteEndPoint.ToString() + ": says " + cState.Message.ToString());
+
+                cState.Message.Append(Encoding.UTF8.GetChars(cState.Buffer, 0, bytes));
+                authStream.BeginRead(cState.Buffer, 0, cState.Buffer.Length,
+                              new AsyncCallback(EndReadCallback),
+                              cState);
+
                 cState.Message.Clear();
                 cState.Waiter.Set();
             }
