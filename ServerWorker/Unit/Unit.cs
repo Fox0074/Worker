@@ -16,5 +16,18 @@ namespace ServerWorker.Unit
 
         protected ICommand commandBehaviour;
 
+        public Unit(string Command, object[] Parameters)
+        {
+            this.Command = Command;
+            if (Parameters != null) this.prms = Parameters;
+        }
+
+        public bool IsSync;
+        public bool IsEmpty = true;
+        public readonly string Command;
+        public object ReturnValue;
+        public object[] prms;
+        public Exception Exception;
+
     }
 }
