@@ -109,12 +109,6 @@ namespace ServerWorker
             }
         }
 
-        public static void EndAuthenticateCallback(IAsyncResult ars)
-        {
-            NetworkStream authStream = (NetworkStream)ars.AsyncState;
-           // authStream.EndAuthenticateAsClient(ars);
-        }
-
         public void EndReadCallback(IAsyncResult ar)
         {
             ClientState cState = (ClientState)ar.AsyncState;

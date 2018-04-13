@@ -94,6 +94,7 @@
     <Compile Include="Server\ServerNet.cs" />
     <Compile Include="UserCard\UserData.cs" />
     <Compile Include="UserCard\UserID.cs" />
+    <Compile Include="UsersRank\Interface1.cs" />
     <EmbeddedResource Include="UserCard\LogUserCard.resx">
       <DependentUpon>LogUserCard.cs</DependentUpon>
     </EmbeddedResource>
