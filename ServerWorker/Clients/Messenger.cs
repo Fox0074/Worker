@@ -11,13 +11,14 @@ using System.Security.Principal;
 using System.Security.Authentication;
 using ServerWorker.Commands;
 using ServerWorker.UserCard;
+using Interfaces;
 
 namespace ServerWorker
 {
     public class Messenger
     {
         public static List<Messenger> messangers = new List<Messenger>();
-
+        
         public NetworkStream stream;
         public NetworkStream authStream;
 

@@ -4,15 +4,19 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using ServerWorker.Unit;
 
-namespace ServerWorker.Unit
+namespace Interfaces
 {
+
+    public interface ICommand
+    {
+
+    }
     public class Unit
     {
         public string Identificator { get; }
         public DateTime StartdateTime { get; }
-        public IPEndPoint EndPoint { get; }
+        public IPEndPoint NextPoint { get; }
 
         protected ICommand commandBehaviour;
 
@@ -28,6 +32,5 @@ namespace ServerWorker.Unit
         public object ReturnValue;
         public object[] prms;
         public Exception Exception;
-
     }
 }
