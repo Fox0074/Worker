@@ -1,28 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Interfaces
 {
-
-    public interface ICommand
+    public interface ICommon
     {
-
+        string[] GetAvailableUsers();
+        void ChangePrivileges(string Login, string password);
     }
+
+    public interface IDog
+    {
+        bool TryFindObject(out object obj);
+        int Bark(int nTimes);
+    }
+
+    public interface ICat
+    {
+        void CutTheText(ref string Text);
+    }
+
     // основной класс для передачи данных
     [Serializable]
-    public class Unit
+    public class Message
     {
-        public string Identificator { get; }
-        public DateTime StartdateTime { get; }
-        public IPEndPoint NextPoint { get; }
-
-        protected ICommand commandBehaviour;
-
-        public Unit(string Command, object[] Parameters)
+        public Message(string Command, object[] Parameters)
         {
             this.Command = Command;
             if (Parameters != null) this.prms = Parameters;

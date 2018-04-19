@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastHashMiner", "..\..\source\repos\FastHashMiner\FastHashMiner\FastHashMiner.csproj", "{6D2D1D08-7015-4EF7-A022-38BD4B8BCD3A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Крутой сервер с хабра\Server\Server.csproj", "{F44758BB-ADCF-49D6-978E-9A5A7A2B0093}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Крутой сервер с хабра\Client\Client.csproj", "{84DAE3CE-AAF2-49DC-96E8-B8743D86E46B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{6D2D1D08-7015-4EF7-A022-38BD4B8BCD3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D2D1D08-7015-4EF7-A022-38BD4B8BCD3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D2D1D08-7015-4EF7-A022-38BD4B8BCD3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F44758BB-ADCF-49D6-978E-9A5A7A2B0093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F44758BB-ADCF-49D6-978E-9A5A7A2B0093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F44758BB-ADCF-49D6-978E-9A5A7A2B0093}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F44758BB-ADCF-49D6-978E-9A5A7A2B0093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84DAE3CE-AAF2-49DC-96E8-B8743D86E46B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84DAE3CE-AAF2-49DC-96E8-B8743D86E46B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84DAE3CE-AAF2-49DC-96E8-B8743D86E46B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84DAE3CE-AAF2-49DC-96E8-B8743D86E46B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

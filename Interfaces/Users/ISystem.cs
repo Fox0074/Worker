@@ -7,5 +7,6 @@ namespace Interfaces.Users
 {
     interface ISystem
     {
+        void GetListUsers();
     }
 }

@@ -5,7 +5,8 @@ using System.Text;
 
 namespace Interfaces.Users
 {
-    interface IUser
+    public interface IUser
     {
+        string[] GetAvailableUsers();
     }
 }

@@ -34,11 +34,12 @@ namespace ServerWorker
             LockForm lockForm = new LockForm();
             Application.Run(lockForm);
 
-            server = new ServerNet();
+            server = new ServerNet(7777);
             aviableServer = new AviableNetServers();
+            server.Start();
 
             form1 = new Form1();
-            StartServer();
+            //StartServer();
 
             Application.Run(form1);
         }
@@ -53,8 +54,9 @@ namespace ServerWorker
             {
                 if (ip.ToString() == myIp.ToString())
                 {
-                    serverThread = new Thread(new ThreadStart(server.StartServer));
-                    serverThread.Start();
+                    //TODO: раскоментить
+                    //serverThread = new Thread(new ThreadStart(server.StartServer));
+                    //serverThread.Start();
                     return;
                 }
             }

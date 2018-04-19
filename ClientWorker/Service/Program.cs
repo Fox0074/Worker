@@ -15,15 +15,31 @@ namespace ClientWorker
 		{
             Log.Send("===================================ЗАПУСК===================================");
 
-            OnProgramLoad();
-
+            //OnProgramLoad();
             netSender = new Client();
-            netSenderThread = new Thread(new ThreadStart(netSender.Start));
-			netSenderThread.Start();
+            netSender.Host = "localhost";
+            netSender.Port = 7777;
+            netSender.Events.OnError = OnError;
+            netSender.Events.OnBark = OnBark;
+            netSender.Connect(false);
 
-			Log.Send("Запуск потока");
-		}
+            //netSenderThread = new Thread(new ThreadStart(netSender.Start));
+            //netSenderThread.Start();
 
+            //Log.Send("Запуск потока");
+            Console.WriteLine("Press any key to close");
+            Console.ReadKey();
+        }
+
+        private static void OnBark(int obj)
+        {
+            Console.Write("OnBark Invoke!");
+        }
+
+        private static void OnError(Exception obj)
+        {
+            Console.Write("OnError Invoke!");
+        }
 
         private static void OnProgramLoad()
         {

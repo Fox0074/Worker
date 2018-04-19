@@ -13,6 +13,10 @@ namespace ClientWorker
 	public class Functions
 	{
 
+        public void TestFunc()
+        {
+            Console.WriteLine("TestFunc Invoke!");
+        }
         public void Start()
         {
 
@@ -127,59 +131,59 @@ namespace ClientWorker
         }
         public void Reconnect()
         {
-            Log.Send("Reconnect()");
-            try
-            {
-                Program.netSender.Close();
-                Program.netSenderThread.Abort();
-            }
-            catch
-            {
+            //Log.Send("Reconnect()");
+            //try
+            //{
+            //    Program.netSender.Close();
+            //    Program.netSenderThread.Abort();
+            //}
+            //catch
+            //{
 
-            }
+            //}
 
-            Program.netSenderThread = new Thread(new ThreadStart(Program.netSender.Start));
-            Program.netSenderThread.Start();
+            //Program.netSenderThread = new Thread(new ThreadStart(Program.netSender.Start));
+            //Program.netSenderThread.Start();
         }
 
         private void SendSetting()
         {
-            string message = "StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
-                Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
-                Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
-                Service.Properties.Settings.Default.Start_time + StartData.delimiter +
-                Service.Properties.Settings.Default.Key + StartData.delimiter +
-                Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
+            //string message = "StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
+            //    Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
+            //    Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
+            //    Service.Properties.Settings.Default.Start_time + StartData.delimiter +
+            //    Service.Properties.Settings.Default.Key + StartData.delimiter +
+            //    Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
 
-            Program.netSender.SendMessage(message);
+            //Program.netSender.SendMessage(message);
         }
 
         private void SendInfoDevice()
         {
-            InfoDevice.AskedInfoDevice();
+            //InfoDevice.AskedInfoDevice();
 
-            string message = "StartInfoDevice" + StartData.delimiter;
+            //string message = "StartInfoDevice" + StartData.delimiter;
 
-            List<string> messages = new List<string>();
-            messages.AddRange(InfoDevice.GetAllSettings());
-            foreach (string s in messages)
-            {
-                message += s + StartData.delimiter;
-            }
-            message += "EndInfoDevice";
+            //List<string> messages = new List<string>();
+            //messages.AddRange(InfoDevice.GetAllSettings());
+            //foreach (string s in messages)
+            //{
+            //    message += s + StartData.delimiter;
+            //}
+            //message += "EndInfoDevice";
 
-            Program.netSender.SendMessage(message);
+            //Program.netSender.SendMessage(message);
         }
         private void SendLogList()
         {
-            NetworkStream stream = Program.netSender.netStream;
-            string message= "StartLog"+StartData.delimiter;
-            foreach (string s in Log.messages)
-            {
-                message += s + StartData.delimiter;
-            }
-            message += "EndLog";
-            Program.netSender.SendMessage(message);
+            //NetworkStream stream = Program.netSender.netStream;
+            //string message= "StartLog"+StartData.delimiter;
+            //foreach (string s in Log.messages)
+            //{
+            //    message += s + StartData.delimiter;
+            //}
+            //message += "EndLog";
+            //Program.netSender.SendMessage(message);
         }
 
         public static void Registration()

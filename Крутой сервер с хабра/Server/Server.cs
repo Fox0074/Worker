@@ -144,6 +144,29 @@ namespace ConsoleApplication1
 
         public class User : IDisposable
         {
+            private readonly Timer _pingTimer;
+            public Type RingType { get; private set; }
+            private Ring _ClassInstance;
+            public Ring ClassInstance
+            {
+                get { return _ClassInstance; }
+                set
+                {
+                    _ClassInstance = value;
+                    RingType = _ClassInstance.GetType();
+                }
+            }
+
+            public UserType UserType = UserType.Unautorized;
+
+            public byte[] HeaderLength = BitConverter.GetBytes((int)0);
+
+            private readonly TcpClient _socket;
+            public readonly ConqurentNetworkStream nStream;
+
+            private readonly object _disposeLock = new object();
+            private bool _IsDisposed = false;
+
             public User(TcpClient Socket)
             {
                 this._socket = Socket;
@@ -158,28 +181,6 @@ namespace ConsoleApplication1
             {
                 SendMessage(nStream, new Message("OnPing", null));
             }
-
-            private readonly Timer _pingTimer;
-            public Type RingType { get; private set; }
-            private Ring _ClassInstance;
-            public Ring ClassInstance
-            {
-                get { return _ClassInstance; }
-                set
-                {
-                    _ClassInstance = value;
-                    RingType = _ClassInstance.GetType();
-                }
-            }
-            public UserType UserType = UserType.Unautorized;
-
-            public byte[] HeaderLength = BitConverter.GetBytes((int)0);
-
-            private readonly TcpClient _socket;
-            public readonly ConqurentNetworkStream nStream;
-
-            private readonly object _disposeLock = new object();
-            private bool _IsDisposed = false;
             public void Dispose()
             {
                 lock (_disposeLock)

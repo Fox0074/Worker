@@ -21,7 +21,7 @@ namespace ClientWorker
             Log.Send("UploadFile");
             FileInfo fileInfo = new FileInfo(fileName);
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
-            string uriString = "ftp://" + StartData.currentUser + "/" + fileInfo.Name;
+            string uriString = "ftp://" + StartData.currentServer + "/" + fileInfo.Name;
             reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(uriString));
 
             reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
@@ -50,7 +50,7 @@ namespace ClientWorker
             Log.Send("DownloadFile)");
             try
             {
-                string requestUriString = "ftp://" + StartData.currentUser + "/" + fileName;
+                string requestUriString = "ftp://" + StartData.currentServer + "/" + fileName;
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
                 ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
                 ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
@@ -76,7 +76,7 @@ namespace ClientWorker
         public static void DownloadF(string fName, string parth)
         {
             Log.Send("DownloadF(string, string");
-            string requestUriString = "ftp://" + StartData.currentUser + "/" + fName;
+            string requestUriString = "ftp://" + StartData.currentServer + "/" + fName;
             try
             {
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);

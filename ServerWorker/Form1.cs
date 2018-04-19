@@ -110,8 +110,8 @@ namespace ServerWorker
                 Console.WriteLine("Form1_FormClosing start");
 
                 if (Program.server != null)
-                    Program.server.StopServer();
-
+                    //Program.server.StopServer();
+                    //TODO: UnComment
                 if (Program.aviableServer != null)
                     Program.aviableServer.Close();
 
@@ -165,10 +165,11 @@ namespace ServerWorker
                 rb.AutoSize = true;
                 rb.Text = ip.ToString();
 
-                if (ip == ServerNet.localIp)
-                {
-                    rb.Checked = true;
-                }
+                //TODO: UnComment
+                //if (ip == ServerNet.localIp)
+                //{
+                //    rb.Checked = true;
+                //}
 
                 rb.Click += (object send, EventArgs ea) => SetInternetIp(rb.Text);
                 groupBox1.Controls.Add(rb);
@@ -217,16 +218,16 @@ namespace ServerWorker
                 Program.aviableServer.Close();
                 Program.serverThread.Abort();
             }
+            //TODO: UnComment
+            //if (ServerNet.localIp.ToString() != ip)
+            //{
+            //    Log.Send("Изменение ip на " + ip);
+            //    ServerNet.localIp = IPAddress.Parse(ip);
 
-            if (ServerNet.localIp.ToString() != ip)
-            {
-                Log.Send("Изменение ip на " + ip);
-                ServerNet.localIp = IPAddress.Parse(ip);
-
-                Program.server.StopServer();
-                Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
-                Program.serverThread.Start();
-            }
+            //    Program.server.StopServer();
+            //    Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
+            //    Program.serverThread.Start();
+            //}
         }
 
         private void button2_Click(object sender, EventArgs e)
