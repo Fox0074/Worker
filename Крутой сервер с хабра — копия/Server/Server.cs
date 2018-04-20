@@ -14,7 +14,7 @@ using System.Runtime.Remoting.Proxies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 
-namespace ServerWorker
+namespace ConsoleApplication1
 {
 
     public interface IEvents
@@ -35,7 +35,7 @@ namespace ServerWorker
         Cat,
     }
 
-    public class ServerNet : IEvents
+    public class UniservServer : IEvents
     {
         public IEvents Events
         {
@@ -110,7 +110,7 @@ namespace ServerWorker
                 object[] parameters = call.Args;
                 int OutArgsCount = call.MethodBase.GetParameters().Where(x => x.IsOut).Count();
 
-                Unit result = client.Execute(call.MethodName, parameters);
+                Message result = client.Execute(call.MethodName, parameters);
                 parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
                 return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
             }
@@ -203,14 +203,14 @@ namespace ServerWorker
             public Type RingType { get; private set; }
             private Ring _ClassInstance;
             private readonly object syncLock = new object();
-            private Unit _syncResult;
+            private Message _syncResult;
             private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
 
             private readonly Proxy<IDog> DogProxy;
             private readonly Proxy<ICat> CatProxy;
             private readonly Proxy<ICommon> CommonProxy;
 
-            public void SyncResult(Unit msg)
+            public void SyncResult(Message msg)
             {  // получен результат выполнения процедуры
 
                 _syncResult = msg;
@@ -266,7 +266,7 @@ namespace ServerWorker
 
             private void OnPing(object state)
             {
-                SendMessage(nStream, new Unit("OnPing", null));
+                SendMessage(nStream, new Message("OnPing", null));
             }
             public void Dispose()
             {
@@ -282,11 +282,11 @@ namespace ServerWorker
                 }
             }
 
-            public Unit Execute(string MethodName, object[] parameters)
+            public Message Execute(string MethodName, object[] parameters)
             {
                 lock (syncLock)
                 {
-                    _syncResult = new Unit(MethodName, parameters);
+                    _syncResult = new Message(MethodName, parameters);
                     _syncResult.IsSync = true;
 
                     _OnResponce.Reset();
@@ -305,10 +305,10 @@ namespace ServerWorker
         }
         #endregion
 
-        public ServerNet(int Port)
+        public UniservServer(int Port)
         {
             SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
-            //Console.Title = string.Concat("Порт: ", Port);
+            Console.Title = string.Concat("Порт: ", Port);
         }
 
         public void Start()
@@ -324,20 +324,20 @@ namespace ServerWorker
 
             User up = new User(client);
             ConnectedUsers.Add(up);
-            Log.Send("Подключился клиент: " + up.UserType);
+            Console.WriteLine("Подключился клиент: " + up.UserType);
 
-
+            
 
             try
             {
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
                 try
                 {
-                    up.Common.GetAvailableUsers();
+                    up.Common.GetAvailableUsers("asdas");
                 }
                 catch (Exception ex)
                 {
-                    Log.Send(string.Concat("-> \"", GetAllNestedMessages(ex), "\""));
+                    Console.WriteLine(string.Concat("-> \"", GetAllNestedMessages(ex), "\""));
                 }
             }
             catch (IOException)
@@ -368,7 +368,7 @@ namespace ServerWorker
                 data = new byte[dataLength];
                 up.nStream.Read(data);
 
-                Unit msg = MessageFromBinary<Unit>(data);
+                Message msg = MessageFromBinary<Message>(data);
                 if (msg.Command == "OnPing")
                 {
                     // отражаем пинг
@@ -399,7 +399,7 @@ namespace ServerWorker
                             throw new Exception(string.Concat("Не удалось выполнить делегат \"", msg.Command, "\""), ex);
                         }
                     }
-
+                    
                 }
 
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
@@ -414,7 +414,7 @@ namespace ServerWorker
 
 
 
-        private void ProcessMessage(Unit msg, User u)
+        private void ProcessMessage(Message msg, User u)
         {
             string MethodName = msg.Command;
             if (MethodName == "OnPing") return;
@@ -484,7 +484,7 @@ namespace ServerWorker
                 ConnectedDogs.AsParallel().ForAll(nStream =>
                 {
                     // инициировать событие у клиента
-                    SendMessage(nStream, new Unit("OnBark", new object[] { nTimes }));
+                    SendMessage(nStream, new Message("OnBark", new object[] { nTimes}));
                 });
 
                 return ConnectedDogs.Count();
@@ -493,7 +493,7 @@ namespace ServerWorker
 
         public class Dog_Ring1 : Ring2
         {
-            public Dog_Ring1(User u) : base(u)
+            public Dog_Ring1(User u): base(u)
             {
                 up.UserType = UserType.Dog;
             }
@@ -509,10 +509,10 @@ namespace ServerWorker
         {
             public Ring2(User u) : base(u)
             {
-
+               
             }
 
-            public string[] GetAvailableUsers()
+            public string[] GetAvailableUsers(string s)
             {
                 return new string[] { "Dog0", "Dog1", "Tom" };
             }
@@ -540,7 +540,7 @@ namespace ServerWorker
 
             public void TestFunc()
             {
-
+                
             }
         }
 
@@ -578,7 +578,7 @@ namespace ServerWorker
 #endif
         }
 
-        private static void SendMessage(ConqurentNetworkStream nStream, Unit msg)
+        private static void SendMessage(ConqurentNetworkStream nStream, Message msg)
         {
 #if USE_COMPRESSION
 
