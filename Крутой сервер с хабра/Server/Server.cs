@@ -342,8 +342,8 @@ namespace ConsoleApplication1
                 return true;
             }
         }
-
-        public class Ring2 : Ring, ICommon
+        // public class Ring2 : Ring
+        public class Ring2 : Ring, IUser
         {
             public Ring2(User u) : base(u)
             {

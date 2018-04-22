@@ -1,12 +1,14 @@
 ﻿#define USE_COMPRESSION
 
 using Interfaces;
+using ServerWorker.Server;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
@@ -30,9 +32,9 @@ namespace ServerWorker
 
     public enum UserType
     {
-        Unautorized,
-        Dog,
-        Cat,
+        User,
+        Admin,
+        System,
     }
 
     public class ServerNet : IEvents
@@ -58,256 +60,13 @@ namespace ServerWorker
 
         public const int PING_TIME = 7000;
         public System.Net.Sockets.TcpListener SERV;
-        static readonly SyncAccess ConnectedUsers = new SyncAccess();
+        public static readonly SyncAccess ConnectedUsers = new SyncAccess();
 
-        #region Синхронный доступ к юзерам
-
-        private class SyncAccess
-        {
-            private List<User> userList = new List<User>();
-            private readonly object listLock = new object();
-
-            public void Add(User item)
-            {
-                lock (listLock)
-                {
-                    userList.Add(item);
-                }
-            }
-
-            public bool Remove(User up)
-            {
-                lock (listLock)
-                {
-                    up.Dispose();
-                    return userList.Remove(up);
-                }
-            }
-
-            public User[] ToArray()
-            {
-                lock (listLock)
-                {
-                    return userList.ToArray();
-                }
-            }
-        }
-        #endregion
-
-
-        private class Proxy<T> : RealProxy where T : class
-        {
-            User client;
-
-            public Proxy(User client) : base(typeof(T))
-            {
-                this.client = client;
-            }
-
-            public override IMessage Invoke(IMessage msg)
-            {
-                IMethodCallMessage call = (IMethodCallMessage)msg;
-                object[] parameters = call.Args;
-                int OutArgsCount = call.MethodBase.GetParameters().Where(x => x.IsOut).Count();
-
-                Unit result = client.Execute(call.MethodName, parameters);
-                parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
-                return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
-            }
-        }
-
-        #region Юзер
-
-        #region FIFO
-
-        public class ConqurentNetworkStream : IDisposable
-        {
-            private readonly BlockingCollection<byte[]> _fifo = new BlockingCollection<byte[]>();
-            private readonly NetworkStream _nstream;
-            private readonly CancellationTokenSource _token = new CancellationTokenSource();
-            private readonly ManualResetEventSlim _disposeEvent = new ManualResetEventSlim(false);
-
-            public ConqurentNetworkStream(NetworkStream nstream)
-            {
-                this._nstream = nstream;
-                ThreadPool.QueueUserWorkItem(_thread);
-            }
-
-            private void _thread(object state)
-            {
-                try
-                {
-                    while (true)
-                    {
-                        try
-                        {
-                            byte[] data = _fifo.Take(_token.Token);
-                            _nstream.BeginWrite(data, 0, data.Length, null, null);
-                        }
-                        catch (InvalidOperationException)
-                        {
-                            continue;
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    _disposeEvent.Set();
-                    return;
-                }
-            }
-
-            public void Add(byte[] data)
-            {
-                _fifo.Add(data);
-            }
-
-            public int Read(byte[] data)
-            {
-                return _nstream.Read(data, 0, data.Length);
-            }
-
-            public int EndRead(IAsyncResult asyncResult)
-            {
-                return _nstream.EndRead(asyncResult);
-            }
-
-            public IAsyncResult BeginRead(byte[] data, AsyncCallback callback, object state)
-            {
-                return _nstream.BeginRead(data, 0, data.Length, callback, state);
-            }
-
-            private readonly object _disposeLock = new object();
-            private bool _IsDisposed;
-            public void Dispose()
-            {
-                lock (_disposeLock)
-                {
-                    if (!_IsDisposed)
-                    {
-                        _IsDisposed = true;
-                        _token.Cancel();
-                        _disposeEvent.Wait();
-                        _token.Dispose();
-                        _disposeEvent.Dispose();
-                        _nstream.Dispose();
-                    }
-                }
-            }
-        }
-        #endregion
-
-        public class User : IDisposable
-        {
-            private readonly Timer _pingTimer;
-            public Type RingType { get; private set; }
-            private Ring _ClassInstance;
-            private readonly object syncLock = new object();
-            private Unit _syncResult;
-            private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
-
-            private readonly Proxy<IDog> DogProxy;
-            private readonly Proxy<ICat> CatProxy;
-            private readonly Proxy<ICommon> CommonProxy;
-
-            public void SyncResult(Unit msg)
-            {  // получен результат выполнения процедуры
-
-                _syncResult = msg;
-                _syncResult.IsEmpty = false;
-
-                _OnResponce.Set();  // разблокируем поток
-            }
-
-            public ICommon Common { get; private set; }
-            public IDog Dog { get; private set; }
-            public ICat Cat { get; private set; }
-
-
-
-            public Ring ClassInstance
-            {
-                get { return _ClassInstance; }
-                set
-                {
-                    _ClassInstance = value;
-                    RingType = _ClassInstance.GetType();
-                }
-            }
-
-            public UserType UserType = UserType.Unautorized;
-
-            public byte[] HeaderLength = BitConverter.GetBytes((int)0);
-
-            private readonly TcpClient _socket;
-            public readonly ConqurentNetworkStream nStream;
-
-            private readonly object _disposeLock = new object();
-            private bool _IsDisposed = false;
-
-            public User(TcpClient Socket)
-            {
-                this._socket = Socket;
-                Socket.ReceiveTimeout = PING_TIME * 4;
-                Socket.SendTimeout = PING_TIME * 4;
-                nStream = new ConqurentNetworkStream(Socket.GetStream());
-                _pingTimer = new Timer(OnPing, null, PING_TIME, PING_TIME);
-                ClassInstance = new Ring2(this);
-
-                CommonProxy = new Proxy<ICommon>(this);
-                DogProxy = new Proxy<IDog>(this);
-                CatProxy = new Proxy<ICat>(this);
-
-                Common = (ICommon)CommonProxy.GetTransparentProxy();
-                Dog = (IDog)DogProxy.GetTransparentProxy();
-                Cat = (ICat)CatProxy.GetTransparentProxy();
-
-            }
-
-            private void OnPing(object state)
-            {
-                SendMessage(nStream, new Unit("OnPing", null));
-            }
-            public void Dispose()
-            {
-                lock (_disposeLock)
-                {
-                    if (!_IsDisposed)
-                    {
-                        _IsDisposed = true;
-                        nStream.Dispose();
-                        _pingTimer.Dispose();
-                        _socket.Close();
-                    }
-                }
-            }
-
-            public Unit Execute(string MethodName, object[] parameters)
-            {
-                lock (syncLock)
-                {
-                    _syncResult = new Unit(MethodName, parameters);
-                    _syncResult.IsSync = true;
-
-                    _OnResponce.Reset();
-                    SendMessage(nStream, _syncResult);
-                    _OnResponce.Wait();  // ожидаем ответ сервера
-
-                    if (_syncResult.IsEmpty)
-                    {// произошел дисконект, результат не получен
-                        throw new Exception(string.Concat("Ошибка при получении результата на команду \"", MethodName, "\""));
-                    }
-
-                    if (_syncResult.Exception != null) throw _syncResult.Exception;  // исключение переданное сервером
-                    return _syncResult;
-                }
-            }
-        }
-        #endregion
 
         public ServerNet(int Port)
         {
-            SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
+            //SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
+            SERV = new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), Port);
             //Console.Title = string.Concat("Порт: ", Port);
         }
 
@@ -333,16 +92,17 @@ namespace ServerWorker
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
                 try
                 {
-                    up.Common.GetAvailableUsers();
+                    Log.Send(up.UsersCom.TestFunc("OLOLO"));
                 }
                 catch (Exception ex)
                 {
                     Log.Send(string.Concat("-> \"", GetAllNestedMessages(ex), "\""));
                 }
             }
-            catch (IOException)
+            catch (IOException ex)
             {
                 ConnectedUsers.Remove(up);
+                Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
         }
 
@@ -356,6 +116,7 @@ namespace ServerWorker
             }
             return s;
         }
+
         private void OnDataReadCallback(IAsyncResult asyncResult)
         {
             User up = (User)asyncResult.AsyncState;
@@ -404,9 +165,10 @@ namespace ServerWorker
 
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 ConnectedUsers.Remove(up);
+                Log.Send("Пользователь " + up.UserType + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);
                 return;
             }
@@ -456,105 +218,6 @@ namespace ServerWorker
             }
         }
 
-        #region Кольца
-
-        public class Cat_Ring0 : Ring2, ICat
-        {
-            public Cat_Ring0(User u) : base(u)
-            {
-                up.UserType = UserType.Cat;
-            }
-
-            public void CutTheText(ref string Text)
-            {
-                Text = Text.Remove(Text.Length - 1);
-            }
-        }
-
-        public class Dog_Ring0 : Dog_Ring1, IDog
-        {
-            public Dog_Ring0(User u) : base(u)
-            {
-                up.UserType = UserType.Dog;
-            }
-
-            public int Bark(int nTimes)
-            {
-                var ConnectedDogs = ConnectedUsers.ToArray().Where(x => x.UserType == UserType.Dog).Select(x => x.nStream);
-                ConnectedDogs.AsParallel().ForAll(nStream =>
-                {
-                    // инициировать событие у клиента
-                    SendMessage(nStream, new Unit("OnBark", new object[] { nTimes }));
-                });
-
-                return ConnectedDogs.Count();
-            }
-        }
-
-        public class Dog_Ring1 : Ring2
-        {
-            public Dog_Ring1(User u) : base(u)
-            {
-                up.UserType = UserType.Dog;
-            }
-
-            public bool TryFindObject(out object obj)
-            {
-                obj = "TheBall";
-                return true;
-            }
-        }
-
-        public class Ring2 : Ring, ICommon
-        {
-            public Ring2(User u) : base(u)
-            {
-
-            }
-
-            public string[] GetAvailableUsers()
-            {
-                return new string[] { "Dog0", "Dog1", "Tom" };
-            }
-
-            public void ChangePrivileges(string Animal, string password)
-            {
-                switch (Animal)
-                {
-                    case "Dog0":
-                        if (password != "groovy!") throw new Exception("Не верный пароль");
-                        up.ClassInstance = new Dog_Ring0(up);
-                        break;
-                    case "Dog1":
-                        if (password != "_password") throw new Exception("Не верный пароль");
-                        up.ClassInstance = new Dog_Ring1(up);
-                        break;
-                    case "Tom":
-                        if (password != "TheCat") throw new Exception("Не верный пароль");
-                        up.ClassInstance = new Cat_Ring0(up);
-                        break;
-                    default:
-                        throw new Exception("Такого пользователя не существует");
-                }
-            }
-
-            public void TestFunc()
-            {
-
-            }
-        }
-
-        public abstract class Ring
-        {
-            public readonly User up;
-
-            public Ring(User up)
-            {
-                this.up = up;
-            }
-        }
-        #endregion
-
         #region Send/Receive
 
         private T MessageFromBinary<T>(byte[] BinaryData) where T : class
@@ -578,7 +241,7 @@ namespace ServerWorker
 #endif
         }
 
-        private static void SendMessage(ConqurentNetworkStream nStream, Unit msg)
+        public static void SendMessage(ConqurentNetworkStream nStream, Unit msg)
         {
 #if USE_COMPRESSION
 

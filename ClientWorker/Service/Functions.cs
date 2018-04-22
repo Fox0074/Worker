@@ -7,16 +7,31 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Interfaces;
+using Interfaces.Users;
 
 namespace ClientWorker
 {
-	public class Functions
+	public class Functions : Interfaces.Users.IUser
 	{
 
-        public void TestFunc()
+        public string TestFunc(string s)
         {
             Console.WriteLine("TestFunc Invoke!");
+            return "TestFunc Compleate";
         }
+
+        public string[] GetAvailableUsers()
+        {
+            Console.WriteLine("GetAvailableUsers Invoke!");
+            return new string[] { "User0", "User1"};
+        }
+
+        public void ChangePrivileges(string Login, string password)
+        {
+            Console.WriteLine("ChangePrivileges Invoke!");
+        }
+
         public void Start()
         {
 

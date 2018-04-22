@@ -37,6 +37,8 @@ namespace ClientWorker
         private readonly object tcpSendLock = new object();
         private readonly object syncLock = new object();
         private Unit _syncResult;
+        private Functions functions = new Functions();
+
         private Task ListenerTask;
         private CancellationTokenSource ListenerToken;
         private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
@@ -216,27 +218,27 @@ namespace ClientWorker
             if (MethodName == "OnPing") return;
 
             // ищем запрошенный метод в кольце текущего уровня
-            MethodInfo method = this.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            MethodInfo method = functions.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
             try
             {
                 if (method == null)
                 {
-                    Console.WriteLine(string.Concat(this.GetType().ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                    Console.WriteLine(string.Concat(functions.GetType().ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
                     throw new Exception(string.Concat("Метод \"", MethodName, "\" недоступен"));
                 }
 
                 try
                 {
                     // выполняем метод интерфейса
-                    msg.ReturnValue = method.Invoke(this, msg.prms);
+                    msg.ReturnValue = method.Invoke(functions, msg.prms);
                 }
                 catch (Exception ex)
                 {
                     throw ex.InnerException ?? ex;
                 }
 
-                Console.WriteLine(string.Concat(this.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                Console.WriteLine(string.Concat(functions.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")"));
 
                 // возвращаем ref и out параметры
                 msg.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? msg.prms[x.Position] : null).ToArray();

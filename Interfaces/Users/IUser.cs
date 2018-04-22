@@ -8,5 +8,7 @@ namespace Interfaces.Users
     public interface IUser
     {
         string[] GetAvailableUsers();
+        void ChangePrivileges(string Login, string password);
+        string TestFunc(string s);
     }
 }

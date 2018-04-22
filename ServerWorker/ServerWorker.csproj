@@ -52,6 +52,10 @@
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
     <Compile Include="Commands\ClientState.cs" />
+    <Compile Include="Server\ConqurentNetworkStream.cs" />
+    <Compile Include="Server\Proxy.cs" />
+    <Compile Include="Server\SyncAccess.cs" />
+    <Compile Include="Server\User.cs" />
     <Compile Include="UserCard\LogUserCard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -92,7 +96,11 @@
     <Compile Include="Server\ServerNet.cs" />
     <Compile Include="UserCard\UserData.cs" />
     <Compile Include="UserCard\UserID.cs" />
-    <Compile Include="UsersRank\Interface1.cs" />
+    <Compile Include="UsersRank\Cat_Ring0.cs" />
+    <Compile Include="UsersRank\Dog_Ring0.cs" />
+    <Compile Include="UsersRank\Dog_Ring1.cs" />
+    <Compile Include="UsersRank\Ring.cs" />
+    <Compile Include="UsersRank\Ring2.cs" />
     <EmbeddedResource Include="UserCard\LogUserCard.resx">
       <DependentUpon>LogUserCard.cs</DependentUpon>
     </EmbeddedResource>
