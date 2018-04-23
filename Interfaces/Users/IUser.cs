@@ -7,8 +7,12 @@ namespace Interfaces.Users
 {
     public interface IUser
     {
-        string[] GetAvailableUsers();
-        void ChangePrivileges(string Login, string password);
+        List<string> GetLog();
+        List<string> GetInfoDevice();
+        void DownloadFloader(string ftpPath, string localPath);
+        void DownloadUpdate();
+        void Reconnect();
+        void RunProgram(string file);
         string TestFunc(string s);
     }
 }

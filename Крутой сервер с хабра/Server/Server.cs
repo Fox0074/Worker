@@ -296,7 +296,7 @@ namespace ConsoleApplication1
 
         #region Кольца
 
-        public class Cat_Ring0 : Ring2, ICat
+        public class Cat_Ring0 : Ring2, ISystem
         {
             public Cat_Ring0(User u) : base(u)
             {
@@ -309,7 +309,7 @@ namespace ConsoleApplication1
             }
         }
 
-        public class Dog_Ring0 : Dog_Ring1, IDog
+        public class Dog_Ring0 : Dog_Ring1, IAdmin
         {
             public Dog_Ring0(User u) : base(u)
             {

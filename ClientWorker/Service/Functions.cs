@@ -12,7 +12,7 @@ using Interfaces.Users;
 
 namespace ClientWorker
 {
-	public class Functions : Interfaces.Users.IUser
+	public class Functions : IUser
 	{
 
         public string TestFunc(string s)
@@ -20,16 +20,30 @@ namespace ClientWorker
             Console.WriteLine("TestFunc Invoke!");
             return "TestFunc Compleate";
         }
-
-        public string[] GetAvailableUsers()
+        public List<string> GetLog()
         {
-            Console.WriteLine("GetAvailableUsers Invoke!");
-            return new string[] { "User0", "User1"};
+            return SendLogList();
         }
 
-        public void ChangePrivileges(string Login, string password)
+        public List<string> GetInfoDevice()
         {
-            Console.WriteLine("ChangePrivileges Invoke!");
+            throw new NotImplementedException();
+        }
+
+        public void DownloadFloader(string ftpPath, string localPath)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DownloadUpdate()
+        {
+            GetUpd();
+            Log.Send("GetUpd()");
+        }
+
+        public void RunProgram(string file)
+        {
+            throw new NotImplementedException();
         }
 
         public void Start()
@@ -49,11 +63,6 @@ namespace ClientWorker
                 case "GetInfoDevice":
                    SendInfoDevice();
                     Log.Send("SendInfoDevice()");
-                    break;
-
-                case "DownlUpd":
-                    GetUpd();
-                    Log.Send("GetUpd()");
                     break;
 
                 case "DownloadAndRun":
@@ -189,16 +198,14 @@ namespace ClientWorker
 
             //Program.netSender.SendMessage(message);
         }
-        private void SendLogList()
+        private List<string> SendLogList()
         {
-            //NetworkStream stream = Program.netSender.netStream;
-            //string message= "StartLog"+StartData.delimiter;
-            //foreach (string s in Log.messages)
-            //{
-            //    message += s + StartData.delimiter;
-            //}
-            //message += "EndLog";
-            //Program.netSender.SendMessage(message);
+            List<string> message = new List<string>();
+            foreach (string s in Log.messages)
+            {
+                message.Add(s);
+            }
+            return message;
         }
 
         public static void Registration()
@@ -242,5 +249,6 @@ namespace ClientWorker
             }.Start();
             Log.Send("Задача создана");
         }
+
     }
 }

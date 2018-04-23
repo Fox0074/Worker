@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
-    public abstract class Ring
+    public abstract class AbstractRing
     {
         public readonly User up;
 
-        public Ring(User up)
+        public AbstractRing(User up)
         {
             this.up = up;
         }

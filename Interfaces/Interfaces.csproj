@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces.cs" />
     <Compile Include="Units.cs" />
     <Compile Include="IProxyServer.cs" />
     <Compile Include="IServer.cs" />

@@ -24,10 +24,6 @@ namespace ServerWorker
             {
                 Console.WriteLine(ex.Message);
             }
-            //if (textBox!=null)
-            //{
-            //    textBox.Text = message + "\n" + textBox.Text;
-            //}
         }
     }
 }

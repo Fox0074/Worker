@@ -32,6 +32,7 @@ namespace ServerWorker
 
     public enum UserType
     {
+        Unautorized,
         User,
         Admin,
         System,
@@ -56,9 +57,7 @@ namespace ServerWorker
         Action<int> IEvents.OnBark { get; set; }
         #endregion
 
-
-
-        public const int PING_TIME = 7000;
+      
         public System.Net.Sockets.TcpListener SERV;
         public static readonly SyncAccess ConnectedUsers = new SyncAccess();
 
@@ -76,6 +75,11 @@ namespace ServerWorker
             SERV.BeginAcceptTcpClient(OnAcceptClient, null);
         }
 
+        public void Stop()
+        {
+            SERV.Stop();
+        }
+
         private void OnAcceptClient(IAsyncResult asyncResult)
         {
             var client = SERV.EndAcceptTcpClient(asyncResult);
@@ -84,39 +88,21 @@ namespace ServerWorker
             User up = new User(client);
             ConnectedUsers.Add(up);
             Log.Send("Подключился клиент: " + up.UserType);
-
-
+            Events.OnConnected.Invoke();
 
             try
             {
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
-                try
-                {
-                    Log.Send(up.UsersCom.TestFunc("OLOLO"));
-                }
-                catch (Exception ex)
-                {
-                    Log.Send(string.Concat("-> \"", GetAllNestedMessages(ex), "\""));
-                }
             }
             catch (IOException ex)
             {
                 ConnectedUsers.Remove(up);
+                Events.OnDisconnect.Invoke();
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
         }
 
-        private static string GetAllNestedMessages(Exception ex)
-        {
-            string s = ex.Message;
-            while (ex.InnerException != null)
-            {
-                ex = ex.InnerException;
-                s += string.Concat(Environment.NewLine, ex.Message);
-            }
-            return s;
-        }
-
+      
         private void OnDataReadCallback(IAsyncResult asyncResult)
         {
             User up = (User)asyncResult.AsyncState;
@@ -144,23 +130,8 @@ namespace ServerWorker
                     }
                     else
                     {
-                        // асинхронный вызов события
-                        try
-                        {
-                            // ищем соответствующий Action
-                            var pi = typeof(IEvents).GetProperty(msg.Command, BindingFlags.Instance | BindingFlags.Public);
-                            if (pi == null) throw new Exception(string.Concat("Свойство \"", msg.Command, "\" не найдено"));
-                            var delegateRef = pi.GetValue(this, null) as Delegate;
-
-                            // инициализируем событие
-                            if (delegateRef != null) ThreadPool.QueueUserWorkItem(state => delegateRef.DynamicInvoke(msg.prms));
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception(string.Concat("Не удалось выполнить делегат \"", msg.Command, "\""), ex);
-                        }
+                        ExecuteDelegate(msg);
                     }
-
                 }
 
                 up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
@@ -168,13 +139,31 @@ namespace ServerWorker
             catch (Exception ex)
             {
                 ConnectedUsers.Remove(up);
+                Events.OnDisconnect.Invoke();
                 Log.Send("Пользователь " + up.UserType + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);
                 return;
             }
         }
 
+        private void ExecuteDelegate(Unit msg)
+        {
+            // асинхронный вызов события
+            try
+            {
+                // ищем соответствующий Action
+                var pi = typeof(IEvents).GetProperty(msg.Command, BindingFlags.Instance | BindingFlags.Public);
+                if (pi == null) throw new Exception(string.Concat("Свойство \"", msg.Command, "\" не найдено"));
+                var delegateRef = pi.GetValue(this, null) as Delegate;
 
+                // инициализируем событие
+                if (delegateRef != null) ThreadPool.QueueUserWorkItem(state => delegateRef.DynamicInvoke(msg.prms));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Concat("Не удалось выполнить делегат \"", msg.Command, "\""), ex);
+            }
+        }
 
         private void ProcessMessage(Unit msg, User u)
         {

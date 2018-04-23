@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using ServerWorker.Server;
 
 namespace ServerWorker
 {
@@ -43,12 +44,35 @@ namespace ServerWorker
                 if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.Form1_InterfaceChanged(arg); }));
                 else Program.form1.Form1_InterfaceChanged(arg);
             };
+            Program.server.Events.OnConnected += UpdateClientList;
+            Program.server.Events.OnDisconnect += UpdateClientList;
 
-            
+
 
             mainControls.Add(button1);
             secondControls.Add(button8);
         }
+
+        private void UpdateClientList()
+        {
+            if (listBox1.InvokeRequired) listBox1.BeginInvoke(new Action(() =>
+            {
+                listBox1.Items.Clear();
+                foreach (User user in ServerNet.ConnectedUsers.ToArray())
+                {
+                    listBox1.Items.Add(user.EndPoint.ToString());
+                }
+            }));
+            else
+            {
+                listBox1.Items.Clear();
+                foreach (User user in ServerNet.ConnectedUsers.ToArray())
+                {
+                    listBox1.Items.Add(user.EndPoint.ToString());
+                }
+            }
+        }
+
 
         private void Form1_InterfaceChanged(UserInterface arg)
         {
@@ -179,15 +203,14 @@ namespace ServerWorker
 
         private void button6_Click(object sender, EventArgs e)
         {
-            //num = listBox1.SelectedIndex;
+            int num = listBox1.SelectedIndex;
             //Functions.onGettingLog += StartForm2;
 
             if ((listBox1.Items.Count > listBox1.SelectedIndex)&&(listBox1.SelectedIndex>=0))
             {
-                if (Messenger.messangers.Count > listBox1.SelectedIndex)
+                if (ServerNet.ConnectedUsers.ToArray().Count() > listBox1.SelectedIndex)
                 {
-                    //Messenger.messangers[listBox1.SelectedIndex].RequestLog();
-                    StartForm2(Messenger.messangers[listBox1.SelectedIndex]);
+                    StartForm2(ServerNet.ConnectedUsers.ToArray()[num]);
                 }
                 else
                 {
@@ -200,9 +223,9 @@ namespace ServerWorker
             }
         }
 
-        private void StartForm2(Messenger messenger )
+        private void StartForm2(User user )
         {
-            FormUserCard userCard = new FormUserCard(messenger);
+            FormUserCard userCard = new FormUserCard(user);
             userCard.Show();
         }
 

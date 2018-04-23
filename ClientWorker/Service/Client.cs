@@ -207,11 +207,6 @@ namespace ClientWorker
             GC.Collect(2, GCCollectionMode.Optimized);
         }
 
-        public string[] GetAvailableUsers(string s)
-        {
-            Console.WriteLine("TestFunc execute!");
-            return new string[] { "df", "tf" };
-        }
         private void ProcessMessage(Unit msg)
         {
             string MethodName = msg.Command;

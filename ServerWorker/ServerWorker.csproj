@@ -96,11 +96,11 @@
     <Compile Include="Server\ServerNet.cs" />
     <Compile Include="UserCard\UserData.cs" />
     <Compile Include="UserCard\UserID.cs" />
-    <Compile Include="UsersRank\Cat_Ring0.cs" />
-    <Compile Include="UsersRank\Dog_Ring0.cs" />
-    <Compile Include="UsersRank\Dog_Ring1.cs" />
-    <Compile Include="UsersRank\Ring.cs" />
-    <Compile Include="UsersRank\Ring2.cs" />
+    <Compile Include="UsersRank\SystemRing.cs" />
+    <Compile Include="UsersRank\AdminRing.cs" />
+    <Compile Include="UsersRank\UserRing.cs" />
+    <Compile Include="UsersRank\Main\AbstractRing.cs" />
+    <Compile Include="UsersRank\Main\ClientRing.cs" />
     <EmbeddedResource Include="UserCard\LogUserCard.resx">
       <DependentUpon>LogUserCard.cs</DependentUpon>
     </EmbeddedResource>

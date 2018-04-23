@@ -5,7 +5,9 @@ using System.Text;
 
 namespace Interfaces.Users
 {
-    interface IAdmin
+    public interface IAdmin
     {
+        bool TryFindObject(out object obj);
+        int Bark(int nTimes);
     }
 }

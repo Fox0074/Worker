@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
-    public class Dog_Ring1 : Ring2
+    public class UserRing : AbstractRing
     {
-        public Dog_Ring1(User u) : base(u)
+        public UserRing(User u) : base(u)
         {
-            up.UserType = UserType.Admin;
+            up.UserType = UserType.User;
         }
 
         public bool TryFindObject(out object obj)

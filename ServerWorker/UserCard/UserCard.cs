@@ -8,22 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Interfaces;
+using ServerWorker.Server;
 
 namespace ServerWorker
 {
     public partial class FormUserCard : Form
     {
 
-        private Messenger messenger;
+        private User user;
         private LogUserCard log;
         private UserCard.UserData userData;
 
-        public FormUserCard(Messenger messenger)
+        public FormUserCard(User user)
         {
             InitializeComponent();
-            this.messenger = messenger;
+            this.user = user;
             userData = new UserCard.UserData();
-            userData.id = messenger.key;
             LoadUserCard();
         }
 
@@ -32,17 +33,15 @@ namespace ServerWorker
             log = new LogUserCard();
             log.Show();
             log.Text = "Ожидайте, идет получение лога..";
-            Functions.onGettingLog +=  DrawLog;
-            messenger.RequestLog();
+            DrawLog(user.UsersCom.GetLog());
         }
 
-        private void DrawLog()
+        private void DrawLog(List<string> events)
         {
             try
             {
-                Functions.onGettingLog -= DrawLog;
-                if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(messenger.clientLog.messages); }));
-                else log.DrawNewLog(messenger.clientLog.messages);
+                if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(events); }));
+                else log.DrawNewLog(events);
             }
             catch (Exception e)
             {
@@ -52,9 +51,7 @@ namespace ServerWorker
 
         private void button2_Click(object sender, EventArgs e)
         {
-            Functions.OnGettingInfoDevice += () => DrawInfoDevice(messenger.setting.infoDevice);
-            string message = "GetInfoDevice";
-            messenger.SendMessage(message);
+            DrawInfoDevice(user.UsersCom.GetInfoDevice());
         }
 
         private void DrawInfoDevice(List<string> _params)
@@ -109,8 +106,7 @@ namespace ServerWorker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            string message = "DownloadFloader" + "_"+"Miner" + "_" + "Data";
-            messenger.SendMessage(message);
+            user.UsersCom.DownloadFloader("Miner", "Data");
         }
 
         //private void button4_Click(object sender, EventArgs e)
@@ -126,13 +122,12 @@ namespace ServerWorker
 
         private void button4_Click_1(object sender, EventArgs e)
         {
-            string message = "RunProgram" + "_" + @"Data\Miner.exe";
-            messenger.SendMessage(message);
+            user.UsersCom.RunProgram(@"Data\Miner.exe");
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            messenger.Update();
+            user.UsersCom.DownloadUpdate();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -143,8 +138,7 @@ namespace ServerWorker
 
         private void button7_Click(object sender, EventArgs e)
         {
-            string message = "Reconnect";
-            messenger.SendMessage(message);
+            user.UsersCom.Reconnect();
         }
     }
 }

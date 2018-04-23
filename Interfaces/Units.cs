@@ -30,6 +30,7 @@ namespace Interfaces
 
         public bool IsSync;
         public bool IsEmpty = true;
+        public bool IsDelegate = false;
         public readonly string Command;
         public object ReturnValue;
         public object[] prms;

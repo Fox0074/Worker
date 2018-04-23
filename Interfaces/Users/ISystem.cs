@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Interfaces.Users
 {
-    interface ISystem
+    public interface ISystem
     {
-        void GetListUsers();
+        void CutTheText(ref string Text);
+        string[] GetListUsers();
     }
 }

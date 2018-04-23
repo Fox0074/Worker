@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
-    public class Cat_Ring0 : Ring2, ICat
+    public class SystemRing : AdminRing
     {
-        public Cat_Ring0(User u) : base(u)
+        public SystemRing(User u) : base(u)
         {
             up.UserType = UserType.System;
         }

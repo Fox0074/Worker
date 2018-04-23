@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Interfaces.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,20 +7,25 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerWorker.UsersRank;
+using System.Net;
 
 namespace ServerWorker.Server
 {
     public class User : IDisposable
     {
+        public const int PING_TIME = 7000;
+
         private readonly Timer _pingTimer;
         public Type RingType { get; private set; }
-        private Ring _ClassInstance;
+        public EndPoint EndPoint { get; private set; }
+        private AbstractRing _ClassInstance;
         private readonly object syncLock = new object();
         private Unit _syncResult;
         private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
 
-        private readonly Proxy<IDog> DogProxy;
-        private readonly Proxy<ICat> CatProxy;
+        private readonly Proxy<IAdmin> AdminComProxy;
+        private readonly Proxy<ISystem> SystemComProxy;
         private readonly Proxy<IUser> UsersComProxy;
 
         public void SyncResult(Unit msg)
@@ -32,12 +38,12 @@ namespace ServerWorker.Server
         }
 
         public IUser UsersCom { get; private set; }
-        public IDog Dog { get; private set; }
-        public ICat Cat { get; private set; }
+        public IAdmin AdminCom { get; private set; }
+        public ISystem SystemCom { get; private set; }
 
 
 
-        public Ring ClassInstance
+        public AbstractRing ClassInstance
         {
             get { return _ClassInstance; }
             set
@@ -47,7 +53,7 @@ namespace ServerWorker.Server
             }
         }
 
-        public UserType UserType = UserType.User;
+        public UserType UserType = UserType.Unautorized;
 
         public byte[] HeaderLength = BitConverter.GetBytes((int)0);
 
@@ -64,15 +70,16 @@ namespace ServerWorker.Server
             Socket.SendTimeout = PING_TIME * 4;
             nStream = new ConqurentNetworkStream(Socket.GetStream());
             _pingTimer = new Timer(OnPing, null, PING_TIME, PING_TIME);
-            ClassInstance = new Ring2(this);
+            ClassInstance = new ClientRing(this);
+            EndPoint = Socket.Client.RemoteEndPoint;
 
             UsersComProxy = new Proxy<IUser>(this);
-            DogProxy = new Proxy<IDog>(this);
-            CatProxy = new Proxy<ICat>(this);
+            AdminComProxy = new Proxy<IAdmin>(this);
+            SystemComProxy = new Proxy<ISystem>(this);
 
             UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
-            Dog = (IDog)DogProxy.GetTransparentProxy();
-            Cat = (ICat)CatProxy.GetTransparentProxy();
+            AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
+            SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
 
         }
 
@@ -113,6 +120,17 @@ namespace ServerWorker.Server
                 if (_syncResult.Exception != null) throw _syncResult.Exception;  // исключение переданное сервером
                 return _syncResult;
             }
+        }
+
+        public static string GetAllNestedMessages(Exception ex)
+        {
+            string s = ex.Message;
+            while (ex.InnerException != null)
+            {
+                ex = ex.InnerException;
+                s += string.Concat(Environment.NewLine, ex.Message);
+            }
+            return s;
         }
     }
 }

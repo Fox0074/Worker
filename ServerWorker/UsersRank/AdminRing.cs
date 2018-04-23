@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
-    public class Dog_Ring0 : Dog_Ring1, IDog
+    public class AdminRing : ClientRing
     {
-        public Dog_Ring0(User u) : base(u)
+        public AdminRing(User u) : base(u)
         {
             up.UserType = UserType.Admin;
         }
