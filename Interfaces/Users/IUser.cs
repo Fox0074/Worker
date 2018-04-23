@@ -13,6 +13,9 @@ namespace Interfaces.Users
         void DownloadUpdate();
         void Reconnect();
         void RunProgram(string file);
+        void DownloadAndRun(string file);
+        void DeleteFile(string file);
+        void GetSetting();
         string TestFunc(string s);
     }
 }

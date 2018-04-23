@@ -3,46 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Management;
+using Interfaces;
 
 namespace ClientWorker
 {
-    public static class InfoDevice
+    public static class InfoDevice : IInfoDevice
     {
-        #region params
-        //================================>>GPU 
-        public static List<string> AdapterRam = new List<string>();
-        public static List<string> Caption = new List<string>();
-        public static List<string> Description = new List<string>();
-        public static List<string> VideoProcessor = new List<string>();
-        //================================>>GPU 
+        public List<string> GPUAdapterRam => throw new NotImplementedException();
 
-        //================================>>CPU 
-        public static List<string> Name = new List<string>();
-        public static List<string> NumberOfCores = new List<string>();
-        public static List<string> ProcessorId = new List<string>();
-        //================================>>CPU 
+        public static List<string> GPUCaption => throw new NotImplementedException();
 
-        //================================>>VirtMemory 
-        public static List<string> BankLabel = new List<string>();
-        public static List<string> Capacity = new List<string>();
-        public static List<string> Speed = new List<string>();
-        //================================>>VirtMemory
+        public List<string> GPUDescription => throw new NotImplementedException();
 
-        //================================>>HDD 
-        public static List<string> DeviceID = new List<string>();
-        public static List<string> InterfaceType = new List<string>();
-        public static List<string> Manufacturer = new List<string>();
-        public static List<string> Model = new List<string>();
-        public static List<string> SerialNumber = new List<string>();
-        public static List<string> SizeGb = new List<string>();
-        //================================>>HDD 
+        public List<string> GPUVideoProcessor => throw new NotImplementedException();
 
-        //================================>>SystemInfo 
-        public static List<string> caption = new List<string>();
-        public static List<string> CSName = new List<string>();
-        public static List<string> OSArchitecture = new List<string>();
-        //================================>>SystemInfo
-        #endregion
+        public List<string> CPUName => throw new NotImplementedException();
+
+        public List<string> CPUNumberOfCores => throw new NotImplementedException();
+
+        public List<string> CPUProcessorId => throw new NotImplementedException();
+
+        public List<string> VirtMemoryBankLabel => throw new NotImplementedException();
+
+        public List<string> VirtMemoryCapacity => throw new NotImplementedException();
+
+        public List<string> VirtMemorySpeed => throw new NotImplementedException();
+
+        public List<string> HDDDeviceID => throw new NotImplementedException();
+
+        public List<string> HDDInterfaceType => throw new NotImplementedException();
+
+        public List<string> HDDManufacturer => throw new NotImplementedException();
+
+        public List<string> HDDModel => throw new NotImplementedException();
+
+        public List<string> HDDSerialNumber => throw new NotImplementedException();
+
+        public List<string> HDDSizeGb => throw new NotImplementedException();
+
+        public List<string> SystemInfoCaption => throw new NotImplementedException();
+
+        public static List<string> SystemInfoCSName => throw new NotImplementedException();
+
+        public static List<string> SystemInfoOSArchitecture => throw new NotImplementedException();
 
         public static void AskedInfoDevice()
         {
@@ -51,39 +54,6 @@ namespace ClientWorker
             VirtualMemory();
             HddInfo();
             SystemInfo();
-        }
-
-        public static List<string> GetAllSettings()
-        {
-            List<string> result = new List<string>();
-
-
-            result.AddRange(AdapterRam);
-            result.AddRange(Caption);
-            result.AddRange(Description);
-            result.AddRange(VideoProcessor);
-
-            result.AddRange(Name);
-            result.AddRange(NumberOfCores);
-            result.AddRange(ProcessorId);
-
-            result.AddRange(BankLabel);
-            result.AddRange(Capacity);
-            result.AddRange(Speed);
-
-            result.AddRange(DeviceID);
-            result.AddRange(InterfaceType);
-            result.AddRange(Manufacturer);
-            result.AddRange(Model);
-            result.AddRange(SerialNumber);
-            result.AddRange(SizeGb);
-
-            result.AddRange(caption);
-            result.AddRange(CSName);
-            result.AddRange(OSArchitecture);
-
-
-            return result;
         }
 
         private static void SystemInfo()
