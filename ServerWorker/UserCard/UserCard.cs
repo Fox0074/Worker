@@ -54,12 +54,12 @@ namespace ServerWorker
             DrawInfoDevice(user.UsersCom.GetInfoDevice());
         }
 
-        private void DrawInfoDevice(List<string> _params)
+        private void DrawInfoDevice(IInfoDevice _params)
         {
             if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Clear(); }));
             else listBox2.Items.Clear();
             userData.infoDevice = _params;
-            foreach (string str in _params)
+            foreach (string str in _params.CPUName)
             {
                 try
                 {
@@ -85,7 +85,7 @@ namespace ServerWorker
                     }
                 }
 
-                foreach (string str in userData.infoDevice)
+                foreach (string str in userData.infoDevice.CPUName)
                 {
                     try
                     {

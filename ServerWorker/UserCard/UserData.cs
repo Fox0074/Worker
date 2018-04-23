@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
+using Interfaces;
 
 namespace ServerWorker.UserCard
 {
@@ -23,7 +24,7 @@ namespace ServerWorker.UserCard
         public string version;
         public string name;
 
-        public List<string> infoDevice = new List<string>();
+        public IInfoDevice infoDevice;
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public ClientLog clientLog;
         public static string parthUserCard = "UserCards";

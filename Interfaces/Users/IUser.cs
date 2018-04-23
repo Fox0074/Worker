@@ -8,7 +8,7 @@ namespace Interfaces.Users
     public interface IUser
     {
         List<string> GetLog();
-        List<string> GetInfoDevice();
+        IInfoDevice GetInfoDevice();
         void DownloadFloader(string ftpPath, string localPath);
         void DownloadUpdate();
         void Reconnect();

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Units.cs" />
-    <Compile Include="IServer.cs" />
+    <Compile Include="IInfoDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Users\IAdmin.cs" />
     <Compile Include="Users\IRing_0.cs" />

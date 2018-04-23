@@ -22,18 +22,6 @@ namespace ServerWorker
             this.KeyPreview = true;
             this.KeyUp += new KeyEventHandler((object e, KeyEventArgs s) =>Test(s));
             //this.button1.Click += new System.EventHandler(this.button2_Click);
-
-                UserData userData = new UserData
-                {
-                    countStartProgram = 11,
-                    dateFirstStart = "1May",
-                    infoDevice = new List<string> { "Cpu , ", "Gpu=" },
-                    startTime = "30",
-                    name = "test",
-                    version = "0.01b"
-                };
-                userData.SaveDataToFile("test.xml");
-
         }
 
         private bool TryAuthorization(string login, string pass)

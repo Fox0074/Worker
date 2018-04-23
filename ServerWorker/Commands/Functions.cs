@@ -34,7 +34,7 @@ namespace ServerWorker
             switch (head)
             {
                 case "StartInfoDevice":
-                    client.setting.infoDevice = parametrs;
+                    //client.setting.infoDevice = parametrs;
                     OnGettingInfoDevice.Invoke();
                     break;
 
