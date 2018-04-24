@@ -55,7 +55,7 @@
             "Тест"});
             this.listBox1.Location = new System.Drawing.Point(12, 43);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(174, 292);
+            this.listBox1.Size = new System.Drawing.Size(217, 292);
             this.listBox1.TabIndex = 0;
             // 
             // label1
@@ -105,7 +105,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(192, 43);
+            this.button4.Location = new System.Drawing.Point(235, 44);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(129, 23);
             this.button4.TabIndex = 6;
@@ -150,7 +150,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(192, 72);
+            this.button6.Location = new System.Drawing.Point(235, 73);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(129, 23);
             this.button6.TabIndex = 13;
@@ -183,7 +183,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(192, 101);
+            this.button8.Location = new System.Drawing.Point(235, 102);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(129, 23);
             this.button8.TabIndex = 17;

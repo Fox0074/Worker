@@ -26,6 +26,7 @@ namespace ServerWorker
         Action OnDisconnect { get; set; }
         Action OnPing { get; set; }
         Action<Exception> OnError { get; set; }
+        Action OnAuthorized { get; set; }
 
         Action<int> OnBark { get; set; }
     }
@@ -53,7 +54,7 @@ namespace ServerWorker
         Action IEvents.OnDisconnect { get; set; }
         Action IEvents.OnPing { get; set; }
         Action<Exception> IEvents.OnError { get; set; }
-
+        Action IEvents.OnAuthorized { get; set; }
         Action<int> IEvents.OnBark { get; set; }
         #endregion
 
@@ -130,7 +131,14 @@ namespace ServerWorker
                     }
                     else
                     {
-                        ExecuteDelegate(msg);
+                        if (msg.IsDelegate)
+                        {
+                            ExecuteDelegate(msg);
+                        }
+                        else
+                        {
+                            ProcessMessage(msg,up);
+                        }
                     }
                 }
 
@@ -177,10 +185,11 @@ namespace ServerWorker
             {
                 if (method == null)
                 {
-                    Console.WriteLine(string.Concat(u.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                    Log.Send(string.Concat(u.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
                     throw new Exception(string.Concat("Метод \"", MethodName, "\" недоступен"));
                 }
 
+                UserType startUserType = u.UserType;
                 try
                 {
                     // выполняем метод интерфейса
@@ -191,7 +200,7 @@ namespace ServerWorker
                     throw ex.InnerException;
                 }
 
-                Console.WriteLine(string.Concat(u.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                Log.Send(string.Concat(startUserType.ToString()," ",u.EndPoint , " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
 
                 // возвращаем ref и out параметры
                 msg.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? msg.prms[x.Position] : null).ToArray();
@@ -203,6 +212,8 @@ namespace ServerWorker
             finally
             {
                 // возвращаем результат выполнения запроса
+                //TODO: "msg.IsSync = true" хз, но работает
+                msg.IsSync = true;
                 SendMessage(u.nStream, msg);
             }
         }
@@ -212,7 +223,6 @@ namespace ServerWorker
         private T MessageFromBinary<T>(byte[] BinaryData) where T : class
         {
 #if USE_COMPRESSION
-
             using (MemoryStream memory = new MemoryStream(BinaryData))
             {
                 using (var gZipStream = new GZipStream(memory, CompressionMode.Decompress, false))

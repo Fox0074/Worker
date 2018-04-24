@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ISetting.cs" />
     <Compile Include="Units.cs" />
     <Compile Include="IInfoDevice.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

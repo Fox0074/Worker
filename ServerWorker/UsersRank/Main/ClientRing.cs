@@ -38,6 +38,7 @@ namespace ServerWorker.UsersRank
                 default:
                     throw new Exception("Такого пользователя не существует");
             }
+            Program.server.Events.OnAuthorized.Invoke();
         }
     }
 }

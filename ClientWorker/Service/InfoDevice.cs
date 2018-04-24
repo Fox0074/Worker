@@ -7,28 +7,10 @@ using Interfaces;
 
 namespace ClientWorker
 {
-    public  class InfoDevice : IInfoDevice
+    [Serializable]
+    public  class InfoDevice 
     {
-        public List<string> GPUAdapterRam { get; private set; } = new List<string>();
-        public List<string> GPUCaption { get; private set; } = new List<string>();
-        public List<string> GPUDescription { get; private set; } = new List<string>();
-        public List<string> GPUVideoProcessor { get; private set; } = new List<string>();
-        public List<string> CPUName { get; private set; } = new List<string>();
-        public List<string> CPUNumberOfCores { get; private set; } = new List<string>();
-        public List<string> CPUProcessorId { get; private set; } = new List<string>();
-        public List<string> VirtMemoryBankLabel { get; private set; } = new List<string>();
-        public List<string> VirtMemoryCapacity { get; private set; } = new List<string>();
-        public List<string> VirtMemorySpeed { get; private set; } = new List<string>();
-        public List<string> HDDDeviceID { get; private set; } = new List<string>();
-        public List<string> HDDInterfaceType { get; private set; } = new List<string>();
-        public List<string> HDDManufacturer { get; private set; } = new List<string>();
-        public List<string> HDDModel { get; private set; } = new List<string>();
-        public List<string> HDDSerialNumber { get; private set; } = new List<string>();
-        public List<string> HDDSizeGb { get; private set; } = new List<string>();
-        public List<string> SystemInfoCaption { get; private set; } = new List<string>();
-        public List<string> SystemInfoCSName { get; private set; } = new List<string>();
-        public List<string> SystemInfoOSArchitecture { get; private set; } = new List<string>();
-
+        private IInfoDevice infoDevice = new IInfoDevice();
         public IInfoDevice AskedInfoDevice()
         {
             GpuInfo();
@@ -37,7 +19,7 @@ namespace ClientWorker
             HddInfo();
             SystemInfo();
 
-            return this;
+            return infoDevice;
         }
 
         private void SystemInfo()
@@ -46,15 +28,15 @@ namespace ClientWorker
             // Получаем все экземпляры класса
             ManagementObjectCollection manageObjects = manageClass.GetInstances();
 
-            SystemInfoCaption.Clear();
-            SystemInfoCSName.Clear();
-            SystemInfoOSArchitecture.Clear();
+            infoDevice.SystemInfoCaption.Clear();
+            infoDevice.SystemInfoCSName.Clear();
+            infoDevice.SystemInfoOSArchitecture.Clear();
 
             foreach (ManagementObject queryObj in manageObjects)
             {
-                SystemInfoCaption.Add(queryObj["Caption"].ToString());
-                SystemInfoCSName.Add(queryObj["CSName"].ToString());
-                SystemInfoOSArchitecture.Add(queryObj["OSArchitecture"].ToString());
+                infoDevice.SystemInfoCaption.Add(queryObj["Caption"].ToString());
+                infoDevice.SystemInfoCSName.Add(queryObj["CSName"].ToString());
+                infoDevice.SystemInfoOSArchitecture.Add(queryObj["OSArchitecture"].ToString());
             }
         }
 
@@ -64,17 +46,17 @@ namespace ClientWorker
                 new ManagementObjectSearcher("root\\CIMV2",
                 "SELECT * FROM Win32_VideoController");
 
-            GPUAdapterRam.Clear();
-            GPUCaption.Clear();
-            GPUDescription.Clear();
-            GPUVideoProcessor.Clear();
+            infoDevice.GPUAdapterRam.Clear();
+            infoDevice.GPUCaption.Clear();
+            infoDevice.GPUDescription.Clear();
+            infoDevice.GPUVideoProcessor.Clear();
 
             foreach (ManagementObject queryObj in searcher11.Get())
             {
-                GPUAdapterRam.Add(queryObj["AdapterRAM"].ToString());
-                GPUCaption.Add(queryObj["Caption"].ToString());
-                GPUDescription.Add(queryObj["Description"].ToString());
-                GPUVideoProcessor.Add(queryObj["VideoProcessor"].ToString());
+                infoDevice.GPUAdapterRam.Add(queryObj["AdapterRAM"].ToString());
+                infoDevice.GPUCaption.Add(queryObj["Caption"].ToString());
+                infoDevice.GPUDescription.Add(queryObj["Description"].ToString());
+                infoDevice.GPUVideoProcessor.Add(queryObj["VideoProcessor"].ToString());
             }
         }
 
@@ -84,15 +66,15 @@ namespace ClientWorker
                 new ManagementObjectSearcher("root\\CIMV2",
                 "SELECT * FROM Win32_Processor");
 
-            CPUName.Clear();
-            CPUNumberOfCores.Clear();
-            CPUProcessorId.Clear();
+            infoDevice.CPUName.Clear();
+            infoDevice.CPUNumberOfCores.Clear();
+            infoDevice.CPUProcessorId.Clear();
 
             foreach (ManagementObject queryObj in searcher8.Get())
             {
-                CPUName.Add(queryObj["Name"].ToString());
-                CPUNumberOfCores.Add(queryObj["NumberOfCores"].ToString());
-                CPUProcessorId.Add(queryObj["ProcessorId"].ToString());
+                infoDevice.CPUName.Add(queryObj["Name"].ToString());
+                infoDevice.CPUNumberOfCores.Add(queryObj["NumberOfCores"].ToString());
+                infoDevice.CPUProcessorId.Add(queryObj["ProcessorId"].ToString());
             }
         }
 
@@ -102,15 +84,15 @@ namespace ClientWorker
                 new ManagementObjectSearcher("root\\CIMV2",
                 "SELECT * FROM Win32_PhysicalMemory");
 
-            VirtMemoryBankLabel.Clear();
-            VirtMemoryCapacity.Clear();
-            VirtMemorySpeed.Clear();
+            infoDevice.VirtMemoryBankLabel.Clear();
+            infoDevice.VirtMemoryCapacity.Clear();
+            infoDevice.VirtMemorySpeed.Clear();
 
             foreach (ManagementObject queryObj in searcher12.Get())
             {
-                VirtMemoryBankLabel.Add(queryObj["BankLabel"].ToString());
-                VirtMemoryCapacity.Add(Math.Round(System.Convert.ToDouble(queryObj["Capacity"]) / 1024 / 1024 / 1024, 2).ToString());
-                VirtMemorySpeed.Add(queryObj["Speed"].ToString());
+                infoDevice.VirtMemoryBankLabel.Add(queryObj["BankLabel"].ToString());
+                infoDevice.VirtMemoryCapacity.Add(Math.Round(System.Convert.ToDouble(queryObj["Capacity"]) / 1024 / 1024 / 1024, 2).ToString());
+                infoDevice.VirtMemorySpeed.Add(queryObj["Speed"].ToString());
             }
         }
 
@@ -120,21 +102,21 @@ namespace ClientWorker
                 new ManagementObjectSearcher("root\\CIMV2",
                 "SELECT * FROM Win32_DiskDrive");
 
-            HDDDeviceID.Clear();
-            HDDInterfaceType.Clear();
-            HDDManufacturer.Clear();
-            HDDModel.Clear();
-            HDDSerialNumber.Clear();
-            HDDSizeGb.Clear();
+            infoDevice.HDDDeviceID.Clear();
+            infoDevice.HDDInterfaceType.Clear();
+            infoDevice.HDDManufacturer.Clear();
+            infoDevice.HDDModel.Clear();
+            infoDevice.HDDSerialNumber.Clear();
+            infoDevice.HDDSizeGb.Clear();
 
             foreach (ManagementObject queryObj in searcher13.Get())
             {
-                HDDDeviceID.Add(queryObj["DeviceID"].ToString());
-                HDDInterfaceType.Add(queryObj["InterfaceType"].ToString());
-                HDDManufacturer.Add(queryObj["Manufacturer"].ToString());
-                HDDModel.Add(queryObj["Model"].ToString());
-                HDDSerialNumber.Add(queryObj["SerialNumber"].ToString());
-                HDDSizeGb.Add(Math.Round(System.Convert.ToDouble(queryObj["Size"]) / 1024 / 1024 / 1024, 2).ToString());
+                infoDevice.HDDDeviceID.Add(queryObj["DeviceID"].ToString());
+                infoDevice.HDDInterfaceType.Add(queryObj["InterfaceType"].ToString());
+                infoDevice.HDDManufacturer.Add(queryObj["Manufacturer"].ToString());
+                infoDevice.HDDModel.Add(queryObj["Model"].ToString());
+                infoDevice.HDDSerialNumber.Add(queryObj["SerialNumber"].ToString());
+                infoDevice.HDDSizeGb.Add(Math.Round(System.Convert.ToDouble(queryObj["Size"]) / 1024 / 1024 / 1024, 2).ToString());
             }
         }
     }

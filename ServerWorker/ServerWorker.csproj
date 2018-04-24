@@ -88,7 +88,6 @@
     </Compile>
     <Compile Include="Commands\Functions.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="Clients\Messenger.cs" />
     <Compile Include="OtherServers\ServerAnsverAnalyser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -148,6 +147,9 @@
       <Project>{6dd6bda1-05f3-4303-b30a-f3f85a2dfa38}</Project>
       <Name>Interfaces</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Clients\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

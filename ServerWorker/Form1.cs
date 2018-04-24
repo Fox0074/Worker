@@ -46,7 +46,7 @@ namespace ServerWorker
             };
             Program.server.Events.OnConnected += UpdateClientList;
             Program.server.Events.OnDisconnect += UpdateClientList;
-
+            Program.server.Events.OnAuthorized += UpdateClientList;
 
 
             mainControls.Add(button1);
@@ -60,7 +60,7 @@ namespace ServerWorker
                 listBox1.Items.Clear();
                 foreach (User user in ServerNet.ConnectedUsers.ToArray())
                 {
-                    listBox1.Items.Add(user.EndPoint.ToString());
+                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
                 }
             }));
             else
@@ -68,7 +68,7 @@ namespace ServerWorker
                 listBox1.Items.Clear();
                 foreach (User user in ServerNet.ConnectedUsers.ToArray())
                 {
-                    listBox1.Items.Add(user.EndPoint.ToString());
+                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
                 }
             }
         }
@@ -123,7 +123,7 @@ namespace ServerWorker
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Messenger.UpdateAll();
+            //Messenger.UpdateAll();
             Log.Send("Сервер: Обновить клиенты");
         }
 
@@ -155,11 +155,11 @@ namespace ServerWorker
         public  void WrileClientsInList()
         {
             listBox1.Items.Clear();
-            foreach (Messenger messang in Messenger.messangers)
+            foreach (User user in ServerNet.ConnectedUsers.ToArray())
             {
                 try
                 {
-                    listBox1.Items.Add(messang.client.Client.RemoteEndPoint);
+                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
                 }
                 catch (Exception ex)
                 {

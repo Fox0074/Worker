@@ -8,8 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Interfaces;
 using ServerWorker.Server;
+using Interfaces;
+using System.Reflection;
 
 namespace ServerWorker
 {
@@ -59,7 +60,8 @@ namespace ServerWorker
             if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Clear(); }));
             else listBox2.Items.Clear();
             userData.infoDevice = _params;
-            foreach (string str in _params.CPUName)
+
+            foreach (string str in _params.GetListInfo())
             {
                 try
                 {
@@ -70,6 +72,7 @@ namespace ServerWorker
                 { }
             }
         }
+
 
         private void LoadUserCard()
         {

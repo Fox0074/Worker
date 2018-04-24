@@ -8,7 +8,6 @@ namespace ClientWorker
 {
 	internal class Program
 	{
-        public static Thread netSenderThread;
         public static Client netSender;
         public static string nameProc;
 
@@ -24,22 +23,17 @@ namespace ClientWorker
             netSender.Events.OnBark = OnBark;
             netSender.Connect(false);
 
-            //netSenderThread = new Thread(new ThreadStart(netSender.Start));
-            //netSenderThread.Start();
-
-            //Log.Send("Запуск потока");
-            Console.WriteLine("Press any key to close");
             Console.ReadKey();
         }
 
         private static void OnBark(int obj)
         {
-            Console.Write("OnBark Invoke!");
+            Log.Send("OnBark Invoke!");
         }
 
         private static void OnError(Exception obj)
         {
-            Console.Write("OnError Invoke!");
+            Log.Send("OnError Invoke!" + obj.Message);
         }
 
         private static void OnProgramLoad()
@@ -113,10 +107,6 @@ namespace ClientWorker
             }
 
             Service.Properties.Settings.Default.Save();
-            Log.Send("CountStartProgram: " + Service.Properties.Settings.Default.Open_sum);
-            Log.Send("StartTime: " + Service.Properties.Settings.Default.Start_time);
-            Log.Send("CompName: " + Service.Properties.Settings.Default.Comp_name);
-            Log.Send("IsMiner: " + Service.Properties.Settings.Default.IsMiner);
         }
     }
 }

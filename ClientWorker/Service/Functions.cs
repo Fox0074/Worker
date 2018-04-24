@@ -27,9 +27,10 @@ namespace ClientWorker
 
         public IInfoDevice GetInfoDevice()
         {
-            InfoDevice infoDevice = new InfoDevice();           
-            IInfoDevice result = infoDevice.AskedInfoDevice();
-            return result;
+            InfoDevice infoDevice = new InfoDevice();
+            IInfoDevice t = new IInfoDevice();
+            t = infoDevice.AskedInfoDevice();
+            return t;
         }
 
         public void DownloadFloader(string ftpPath, string localPath)
@@ -103,16 +104,19 @@ namespace ClientWorker
             }
         }
 
-        private void SendSetting()
+        public ISetting SendSetting()
         {
-            //string message = "StartSetting" + StartData.delimiter + Service.Properties.Settings.Default.Comp_name + StartData.delimiter +
-            //    Service.Properties.Settings.Default.IsMiner + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Open_sum + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Start_time + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Key + StartData.delimiter +
-            //    Service.Properties.Settings.Default.Version + StartData.delimiter + "EndSetting";
+            ISetting setting = new ISetting
+            {
+                Comp_name = Service.Properties.Settings.Default.Comp_name,
+                IsMiner = Service.Properties.Settings.Default.IsMiner,
+                Open_sum = Service.Properties.Settings.Default.Open_sum,
+                Start_time = Service.Properties.Settings.Default.Start_time,
+                Key = Service.Properties.Settings.Default.Key,
+                Version = Service.Properties.Settings.Default.Version
+            };
 
-            //Program.netSender.SendMessage(message);
+            return setting;
         }
 
         private List<string> SendLogList()

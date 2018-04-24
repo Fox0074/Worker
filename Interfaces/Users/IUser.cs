@@ -17,5 +17,6 @@ namespace Interfaces.Users
         void DeleteFile(string file);
         void GetSetting();
         string TestFunc(string s);
+        ISetting SendSetting();
     }
 }
