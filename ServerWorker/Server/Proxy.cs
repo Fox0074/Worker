@@ -20,13 +20,23 @@ namespace ServerWorker.Server
 
         public override IMessage Invoke(IMessage msg)
         {
-            IMethodCallMessage call = (IMethodCallMessage)msg;
-            object[] parameters = call.Args;
-            int OutArgsCount = call.MethodBase.GetParameters().Where(x => x.IsOut).Count();
-
-            Unit result = client.Execute(call.MethodName, parameters);
-            parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
-            return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
+                IMethodCallMessage call = (IMethodCallMessage)msg;
+                object[] parameters = call.Args;
+                int OutArgsCount = call.MethodBase.GetParameters().Where(x => x.IsOut).Count();
+            try
+            {
+                Unit result = client.Execute(call.MethodName, parameters);
+                parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
+                return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
+            }
+            catch(Exception ex)
+            {
+                Log.Send(client.UserType + ", ip: " + client.EndPoint + " Передал исключение: " +
+                    ex.Message);
+                IMessage t = msg;
+                return new ReturnMessage(new Unit("",new object[] { }), parameters, OutArgsCount, call.LogicalCallContext, call); ;
+                //return new ReturnMessage(ex, call);
+            }
         }
     }
 }

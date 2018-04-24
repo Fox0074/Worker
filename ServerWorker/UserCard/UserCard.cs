@@ -55,13 +55,13 @@ namespace ServerWorker
             DrawInfoDevice(user.UsersCom.GetInfoDevice());
         }
 
-        private void DrawInfoDevice(IInfoDevice _params)
+        private void DrawInfoDevice(IInfoDevice infoDevice)
         {
             if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Clear(); }));
             else listBox2.Items.Clear();
-            userData.infoDevice = _params;
+            userData.infoDevice = infoDevice;
 
-            foreach (string str in _params.GetListInfo())
+            foreach (string str in infoDevice.GetListInfo())
             {
                 try
                 {
@@ -141,7 +141,7 @@ namespace ServerWorker
 
         private void button7_Click(object sender, EventArgs e)
         {
-            user.UsersCom.Reconnect();
+                user.UsersCom.Reconnect();
         }
     }
 }

@@ -45,6 +45,7 @@ namespace ClientWorker
         private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
         private readonly object _IsConnectedLock = new object();
         private bool _IsConnected = false;
+        private bool _IsAuthorized = false;
         private bool IsConnected
         {
             get
@@ -106,9 +107,6 @@ namespace ClientWorker
             bool b = IsConnected;
             StartAsync();
 
-            List<string> loginPass = new List<string> {"User","IUser" };
-            Unit authUint = new Unit("ChangePrivileges", loginPass.Cast<object>().ToArray());
-            SendData(authUint);
             return b;
         }
 
@@ -166,6 +164,14 @@ namespace ClientWorker
             #endregion
         }
 
+        private void Authorized()
+        {
+            string login = "User";
+            string pass = "IUser";
+            Unit authUint = new Unit("ChangePrivileges", new object[] { login, pass });
+            SendData(authUint);
+            _IsAuthorized = true;
+        }
         private void Listener()
         {
             while (true)
@@ -175,6 +181,8 @@ namespace ClientWorker
                     if (ListenerToken.IsCancellationRequested) return;
 
                     if (!IsConnected) _Connect();
+
+                    if (!_IsAuthorized) Authorized();
 
                     while (true)
                     {

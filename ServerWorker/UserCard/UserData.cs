@@ -16,26 +16,18 @@ namespace ServerWorker.UserCard
         public DateTime timeLastUpdateData;
 
         public string id;
-        public int countStartProgram;
-        public bool isMiner;
-        public string dateFirstStart;
-        public string timeFirstStart;
-        public string startTime;
-        public string version;
-        public string name;
-
+        public ISetting setting;
         public IInfoDevice infoDevice;
+
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public ClientLog clientLog;
+
         public static string parthUserCard = "UserCards";
 
 
         public void SaveDataToFile(string filename)
         {
-            if (Directory.Exists(parthUserCard))
-            {
-            }
-            else
+            if (!Directory.Exists(parthUserCard))
             {
                 DirectoryInfo di = Directory.CreateDirectory(parthUserCard);
             }

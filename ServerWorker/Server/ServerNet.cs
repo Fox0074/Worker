@@ -33,7 +33,7 @@ namespace ServerWorker
 
     public enum UserType
     {
-        Unautorized,
+        UnAuthorized,
         User,
         Admin,
         System,
@@ -106,115 +106,115 @@ namespace ServerWorker
       
         private void OnDataReadCallback(IAsyncResult asyncResult)
         {
-            User up = (User)asyncResult.AsyncState;
+            User user = (User)asyncResult.AsyncState;
             byte[] data;
 
             try
             {
-                up.nStream.EndRead(asyncResult);
-                int dataLength = BitConverter.ToInt32(up.HeaderLength, 0);
+                user.nStream.EndRead(asyncResult);
+                int dataLength = BitConverter.ToInt32(user.HeaderLength, 0);
                 data = new byte[dataLength];
-                up.nStream.Read(data);
+                user.nStream.Read(data);
 
-                Unit msg = MessageFromBinary<Unit>(data);
-                if (msg.Command == "OnPing")
+                Unit unit = MessageFromBinary<Unit>(data);
+                if (unit.Command == "OnPing")
                 {
                     // отражаем пинг
-                    SendMessage(up.nStream, msg);
+                    SendMessage(user.nStream, unit);
                     if (Events.OnPing != null) Events.OnPing.BeginInvoke(null, null);
                 }
                 else
                 {
-                    if (msg.IsSync)
+                    if (unit.IsSync)
                     {  // получен результат синхронной процедуры
-                        up.SyncResult(msg);
+                        user.SyncResult(unit);
                     }
                     else
                     {
-                        if (msg.IsDelegate)
+                        if (unit.IsDelegate)
                         {
-                            ExecuteDelegate(msg);
+                            ExecuteDelegate(unit);
                         }
                         else
                         {
-                            ProcessMessage(msg,up);
+                            ProcessMessage(unit,user);
                         }
                     }
                 }
 
-                up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
+                user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
             }
             catch (Exception ex)
             {
-                ConnectedUsers.Remove(up);
+                ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
-                Log.Send("Пользователь " + up.UserType + " удален. Ошибка: " + ex.Message);
+                Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);
                 return;
             }
         }
 
-        private void ExecuteDelegate(Unit msg)
+        private void ExecuteDelegate(Unit unit)
         {
             // асинхронный вызов события
             try
             {
                 // ищем соответствующий Action
-                var pi = typeof(IEvents).GetProperty(msg.Command, BindingFlags.Instance | BindingFlags.Public);
-                if (pi == null) throw new Exception(string.Concat("Свойство \"", msg.Command, "\" не найдено"));
+                var pi = typeof(IEvents).GetProperty(unit.Command, BindingFlags.Instance | BindingFlags.Public);
+                if (pi == null) throw new Exception(string.Concat("Свойство \"", unit.Command, "\" не найдено"));
                 var delegateRef = pi.GetValue(this, null) as Delegate;
 
                 // инициализируем событие
-                if (delegateRef != null) ThreadPool.QueueUserWorkItem(state => delegateRef.DynamicInvoke(msg.prms));
+                if (delegateRef != null) ThreadPool.QueueUserWorkItem(state => delegateRef.DynamicInvoke(unit.prms));
             }
             catch (Exception ex)
             {
-                throw new Exception(string.Concat("Не удалось выполнить делегат \"", msg.Command, "\""), ex);
+                throw new Exception(string.Concat("Не удалось выполнить делегат \"", unit.Command, "\""), ex);
             }
         }
 
-        private void ProcessMessage(Unit msg, User u)
+        private void ProcessMessage(Unit unit, User user)
         {
-            string MethodName = msg.Command;
+            string MethodName = unit.Command;
             if (MethodName == "OnPing") return;
 
             // ищем запрошенный метод в кольце текущего уровня
-            MethodInfo method = u.RingType.GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+            MethodInfo method = user.RingType.GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
             try
             {
                 if (method == null)
                 {
-                    Log.Send(string.Concat(u.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                    Log.Send(string.Concat(user.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
                     throw new Exception(string.Concat("Метод \"", MethodName, "\" недоступен"));
                 }
 
-                UserType startUserType = u.UserType;
+                UserType startUserType = user.UserType;
                 try
                 {
                     // выполняем метод интерфейса
-                    msg.ReturnValue = method.Invoke(u.ClassInstance, msg.prms);
+                    unit.ReturnValue = method.Invoke(user.ClassInstance, unit.prms);
                 }
                 catch (Exception ex)
                 {
                     throw ex.InnerException;
                 }
 
-                Log.Send(string.Concat(startUserType.ToString()," ",u.EndPoint , " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                Log.Send(string.Concat(startUserType.ToString()," ",user.EndPoint , " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
 
                 // возвращаем ref и out параметры
-                msg.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? msg.prms[x.Position] : null).ToArray();
+                unit.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? unit.prms[x.Position] : null).ToArray();
             }
             catch (Exception ex)
             {
-                msg.Exception = ex;
+                unit.Exception = ex;
             }
             finally
             {
                 // возвращаем результат выполнения запроса
                 //TODO: "msg.IsSync = true" хз, но работает
-                msg.IsSync = true;
-                SendMessage(u.nStream, msg);
+                unit.IsSync = true;
+                SendMessage(user.nStream, unit);
             }
         }
 

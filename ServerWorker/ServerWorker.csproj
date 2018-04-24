@@ -51,7 +51,6 @@
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
-    <Compile Include="Commands\ClientState.cs" />
     <Compile Include="Server\ConqurentNetworkStream.cs" />
     <Compile Include="Server\Proxy.cs" />
     <Compile Include="Server\SyncAccess.cs" />
@@ -62,7 +61,6 @@
     <Compile Include="UserCard\LogUserCard.Designer.cs">
       <DependentUpon>LogUserCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="Crypting\CryptoMesenger.cs" />
     <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
     <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
     <Compile Include="LockForm.cs">
@@ -86,9 +84,7 @@
     <Compile Include="UserCard\UserCard.Designer.cs">
       <DependentUpon>UserCard.cs</DependentUpon>
     </Compile>
-    <Compile Include="Commands\Functions.cs" />
     <Compile Include="Log.cs" />
-    <Compile Include="OtherServers\ServerAnsverAnalyser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerClass.cs" />
@@ -148,8 +144,6 @@
       <Name>Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Clients\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

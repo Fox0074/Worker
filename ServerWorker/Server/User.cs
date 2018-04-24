@@ -53,7 +53,7 @@ namespace ServerWorker.Server
             }
         }
 
-        public UserType UserType = UserType.Unautorized;
+        public UserType UserType = UserType.UnAuthorized;
 
         public byte[] HeaderLength = BitConverter.GetBytes((int)0);
 
@@ -117,7 +117,7 @@ namespace ServerWorker.Server
                     throw new Exception(string.Concat("Ошибка при получении результата на команду \"", MethodName, "\""));
                 }
 
-                if (_syncResult.Exception != null) throw _syncResult.Exception;  // исключение переданное сервером
+                if (_syncResult.Exception != null)  throw _syncResult.Exception;  // исключение переданное клиентом          
                 return _syncResult;
             }
         }

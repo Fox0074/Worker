@@ -56,7 +56,8 @@ namespace ClientWorker
 
         public void Reconnect()
         {
-            Program.netSender.ReConnect();
+            //Program.netSender.ReConnect();
+            throw new Exception("Не реализовано");
         }
 
         public void DeleteFile(string file)
