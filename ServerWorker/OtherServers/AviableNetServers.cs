@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ServerWorker
 {
-    public class AviableNetServers : ServerBehaviour
+    public class AviableNetServers 
     {
         private string address = "fokes1.asuscomm.com";
         private int port = 7777;

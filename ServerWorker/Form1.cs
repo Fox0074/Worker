@@ -123,7 +123,8 @@ namespace ServerWorker
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //Messenger.UpdateAll();
+            foreach (User user in ServerNet.ConnectedUsers.ToArray().Where(x => x.UserType == UserType.User))
+                user.UsersCom.DownloadUpdate();
             Log.Send("Сервер: Обновить клиенты");
         }
 
@@ -133,9 +134,6 @@ namespace ServerWorker
             {
                 Console.WriteLine("Form1_FormClosing start");
 
-                if (Program.server != null)
-                    //Program.server.StopServer();
-                    //TODO: UnComment
                 if (Program.aviableServer != null)
                     Program.aviableServer.Close();
 

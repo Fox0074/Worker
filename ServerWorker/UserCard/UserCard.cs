@@ -34,7 +34,7 @@ namespace ServerWorker
             log = new LogUserCard();
             log.Show();
             log.Text = "Ожидайте, идет получение лога..";
-            DrawLog(user.UsersComSync.GetLog());
+            DrawLog(user.UsersCom.GetLog());
         }
 
         private void DrawLog(List<string> events)
@@ -52,7 +52,7 @@ namespace ServerWorker
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DrawInfoDevice(user.UsersComSync.GetInfoDevice());
+            DrawInfoDevice(user.UsersCom.GetInfoDevice());
         }
 
         private void DrawInfoDevice(IInfoDevice infoDevice)
@@ -109,7 +109,7 @@ namespace ServerWorker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            user.UsersComSync.DownloadFloader("Miner", "Data");
+            user.UsersCom.DownloadFloader("Miner", "Data");
         }
 
         //private void button4_Click(object sender, EventArgs e)
@@ -125,12 +125,12 @@ namespace ServerWorker
 
         private void button4_Click_1(object sender, EventArgs e)
         {
-            user.UsersComSync.RunProgram(@"Data\Miner.exe");
+            user.UsersCom.RunProgram(@"Data\Miner.exe");
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            user.UsersComSync.DownloadUpdate();
+            user.UsersCom.DownloadUpdate();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -141,7 +141,7 @@ namespace ServerWorker
 
         private void button7_Click(object sender, EventArgs e)
         {
-                user.UsersComSync.Reconnect();
+                user.UsersCom.Reconnect();
         }
     }
 }

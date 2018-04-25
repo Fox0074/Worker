@@ -16,6 +16,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Runtime.Remoting.Proxies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
+using System.Text;
 
 namespace ServerWorker
 {
@@ -68,7 +69,6 @@ namespace ServerWorker
         {
             //SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
             SERV = new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), Port);
-            //Console.Title = string.Concat("Порт: ", Port);
         }
 
         public void Start()
@@ -133,6 +133,16 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
+                try
+                {
+                    //Обновление старых клиентов
+                    NetworkStream s = user._socket.GetStream();
+                    byte[] bytes = Encoding.UTF8.GetBytes("DownlUpd");
+                    s.BeginWrite(bytes, 0, bytes.Length,
+                        new AsyncCallback(EndWriteCallback),
+                        s);
+                }
+                catch { }
                 ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
                 Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
@@ -141,6 +151,12 @@ namespace ServerWorker
             }
         }
 
+        public void EndWriteCallback(IAsyncResult ars)
+        {
+            NetworkStream authStream = (NetworkStream)ars.AsyncState;
+
+            authStream.EndWrite(ars);
+        }
         #region Send/Receive
 
         private T MessageFromBinary<T>(byte[] BinaryData) where T : class

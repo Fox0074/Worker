@@ -37,7 +37,7 @@ namespace ServerWorker.Server
             _OnResponce.Set();  // разблокируем поток
         }
 
-        public IUser UsersComSync { get; private set; }
+        public IUser UsersCom { get; private set; }
         public IAdmin AdminCom { get; private set; }
         public ISystem SystemCom { get; private set; }
 
@@ -57,7 +57,7 @@ namespace ServerWorker.Server
 
         public byte[] HeaderLength = BitConverter.GetBytes((int)0);
 
-        private readonly TcpClient _socket;
+        public readonly TcpClient _socket;
         public readonly ConqurentNetworkStream nStream;
 
         private readonly object _disposeLock = new object();
@@ -77,7 +77,7 @@ namespace ServerWorker.Server
             AdminComProxy = new Proxy<IAdmin>(this);
             SystemComProxy = new Proxy<ISystem>(this);
 
-            UsersComSync = (IUser)UsersComProxy.GetTransparentProxy();
+            UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
             AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
             SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
 

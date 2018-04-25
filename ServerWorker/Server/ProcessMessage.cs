@@ -13,6 +13,12 @@ namespace ServerWorker.Server
     {
         public static void GuideMessage(Unit unit, User user)
         {
+            if (unit.IsDelegate)
+            {
+                ExecuteDelegate(unit);
+                return;
+            }
+
             if (unit.IsAnswer)
             {
                 if (unit.IsSync)
@@ -23,20 +29,12 @@ namespace ServerWorker.Server
                 {
                     //TODO: реализовать асинхронные вызовы
                     //Ошибка выполнения асинхронного вызова
-                    Log.Send(user.UserType.ToString() + " " + user.EndPoint + " <- " + unit.Command + " " + unit.Exception);
-                    //MessageBox.Show("Пришло необработанное асинхронное сообщение", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Log.Send(user.UserType.ToString() + " " + user.EndPoint + " <- " + unit.Command + " " + unit.Exception);                
                 }
             }
             else
-            {
-                if (unit.IsDelegate)
-                {
-                    ExecuteDelegate(unit);
-                }
-                else
-                {
+            {        
                     ProcessMessage(unit, user);
-                }
             }
         }
 
@@ -107,6 +105,7 @@ namespace ServerWorker.Server
                 {
                     if (unit.Exception != null)
                     {
+                        unit.IsAnswer = true;
                         ServerNet.SendMessage(user.nStream,unit);
                         Log.Send("Отправлена ошибка: " + unit.Exception);
                     }

@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace Interfaces
 {
-
-    public interface ICommand
-    {
-
-    }
     // основной класс для передачи данных
     [Serializable]
     public class Unit
@@ -19,8 +14,6 @@ namespace Interfaces
         public string Identificator { get; }
         public DateTime StartdateTime { get; }
         public IPEndPoint NextPoint { get; }
-
-        protected ICommand commandBehaviour;
 
         public Unit(string Command, object[] Parameters)
         {
