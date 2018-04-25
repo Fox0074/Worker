@@ -4,13 +4,14 @@ using System.Threading;
 using System.Windows.Forms;
 using Interfaces;
 
+
 namespace ClientWorker
 {
 	internal class Program
 	{
         public static Client netSender;
         public static string nameProc;
-
+        private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
         private static void Main()
 		{
             Log.Send("===================================ЗАПУСК===================================");
@@ -23,7 +24,8 @@ namespace ClientWorker
             netSender.Events.OnBark = OnBark;
             netSender.Connect(false);
 
-            Console.ReadKey();
+            _OnResponce.Wait();
+            //Console.ReadKey();
         }
 
         private static void OnBark(int obj)
