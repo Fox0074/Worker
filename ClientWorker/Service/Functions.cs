@@ -17,7 +17,7 @@ namespace ClientWorker
 
         public string TestFunc(string s)
         {
-            Console.WriteLine("TestFunc Invoke!");
+            Log.Send("TestFunc Invoke!");
             return "TestFunc Compleate";
         }
         public List<string> GetLog()
@@ -64,9 +64,19 @@ namespace ClientWorker
         {
             FileManager.DeleteFile(file);
         }
-        public void GetSetting()
+        public ISetting GetSetting()
         {
-            SendSetting();
+            ISetting setting = new ISetting
+            {
+                Comp_name = Service.Properties.Settings.Default.Comp_name,
+                IsMiner = Service.Properties.Settings.Default.IsMiner,
+                Open_sum = Service.Properties.Settings.Default.Open_sum,
+                Start_time = Service.Properties.Settings.Default.Start_time,
+                Key = Service.Properties.Settings.Default.Key,
+                Version = Service.Properties.Settings.Default.Version
+            };
+
+            return setting;
         }
 
         public void GetUpd()
@@ -103,21 +113,6 @@ namespace ClientWorker
             {
                 Log.Send("Не удалось удалить Updater: "+ex.Message);
             }
-        }
-
-        public ISetting SendSetting()
-        {
-            ISetting setting = new ISetting
-            {
-                Comp_name = Service.Properties.Settings.Default.Comp_name,
-                IsMiner = Service.Properties.Settings.Default.IsMiner,
-                Open_sum = Service.Properties.Settings.Default.Open_sum,
-                Start_time = Service.Properties.Settings.Default.Start_time,
-                Key = Service.Properties.Settings.Default.Key,
-                Version = Service.Properties.Settings.Default.Version
-            };
-
-            return setting;
         }
 
         private List<string> SendLogList()

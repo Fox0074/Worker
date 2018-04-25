@@ -52,6 +52,7 @@
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
     <Compile Include="Server\ConqurentNetworkStream.cs" />
+    <Compile Include="Server\ProcessMessage.cs" />
     <Compile Include="Server\Proxy.cs" />
     <Compile Include="Server\SyncAccess.cs" />
     <Compile Include="Server\User.cs" />

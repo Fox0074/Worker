@@ -16,8 +16,8 @@ namespace ServerWorker.UserCard
         public DateTime timeLastUpdateData;
 
         public string id;
-        public ISetting setting;
-        public IInfoDevice infoDevice;
+        public ISetting setting = new ISetting();
+        public IInfoDevice infoDevice = new IInfoDevice();
 
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public ClientLog clientLog;

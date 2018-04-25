@@ -28,6 +28,7 @@ namespace Interfaces
             if (Parameters != null) this.prms = Parameters;
         }
 
+        public bool IsAnswer = false;
         public bool IsSync;
         public bool IsEmpty = true;
         public bool IsDelegate = false;

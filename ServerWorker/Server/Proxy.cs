@@ -23,9 +23,14 @@ namespace ServerWorker.Server
                 IMethodCallMessage call = (IMethodCallMessage)msg;
                 object[] parameters = call.Args;
                 int OutArgsCount = call.MethodBase.GetParameters().Where(x => x.IsOut).Count();
+                bool IsWaitAnswer = true;
+
+            //TODO: получать возвращаемое значение метода другим способом
+            if (OutArgsCount==0 && call.MethodBase.ToString().Split(' ')[0] == "Void") IsWaitAnswer = false;
+
             try
             {
-                Unit result = client.Execute(call.MethodName, parameters);
+                Unit result = client.Execute(call.MethodName, parameters, IsWaitAnswer);
                 parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
                 return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
             }
@@ -33,8 +38,9 @@ namespace ServerWorker.Server
             {
                 Log.Send(client.UserType + ", ip: " + client.EndPoint + " Передал исключение: " +
                     ex.Message);
-                IMessage t = msg;
-                return new ReturnMessage(new Unit("",new object[] { }), parameters, OutArgsCount, call.LogicalCallContext, call); ;
+                Unit exceptionUnit = new Unit("", new object[] { });
+                exceptionUnit.Exception = ex;
+                return new ReturnMessage(exceptionUnit, parameters, OutArgsCount, call.LogicalCallContext, call); ;
                 //return new ReturnMessage(ex, call);
             }
         }

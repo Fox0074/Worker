@@ -9,6 +9,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Windows.Forms;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
@@ -125,21 +126,7 @@ namespace ServerWorker
                 }
                 else
                 {
-                    if (unit.IsSync)
-                    {  // получен результат синхронной процедуры
-                        user.SyncResult(unit);
-                    }
-                    else
-                    {
-                        if (unit.IsDelegate)
-                        {
-                            ExecuteDelegate(unit);
-                        }
-                        else
-                        {
-                            ProcessMessage(unit,user);
-                        }
-                    }
+                    ProcessMessages.GuideMessage(unit,user);
                 }
 
                 user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
@@ -151,70 +138,6 @@ namespace ServerWorker
                 Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);
                 return;
-            }
-        }
-
-        private void ExecuteDelegate(Unit unit)
-        {
-            // асинхронный вызов события
-            try
-            {
-                // ищем соответствующий Action
-                var pi = typeof(IEvents).GetProperty(unit.Command, BindingFlags.Instance | BindingFlags.Public);
-                if (pi == null) throw new Exception(string.Concat("Свойство \"", unit.Command, "\" не найдено"));
-                var delegateRef = pi.GetValue(this, null) as Delegate;
-
-                // инициализируем событие
-                if (delegateRef != null) ThreadPool.QueueUserWorkItem(state => delegateRef.DynamicInvoke(unit.prms));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Concat("Не удалось выполнить делегат \"", unit.Command, "\""), ex);
-            }
-        }
-
-        private void ProcessMessage(Unit unit, User user)
-        {
-            string MethodName = unit.Command;
-            if (MethodName == "OnPing") return;
-
-            // ищем запрошенный метод в кольце текущего уровня
-            MethodInfo method = user.RingType.GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-
-            try
-            {
-                if (method == null)
-                {
-                    Log.Send(string.Concat(user.UserType.ToString(), " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
-                    throw new Exception(string.Concat("Метод \"", MethodName, "\" недоступен"));
-                }
-
-                UserType startUserType = user.UserType;
-                try
-                {
-                    // выполняем метод интерфейса
-                    unit.ReturnValue = method.Invoke(user.ClassInstance, unit.prms);
-                }
-                catch (Exception ex)
-                {
-                    throw ex.InnerException;
-                }
-
-                Log.Send(string.Concat(startUserType.ToString()," ",user.EndPoint , " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
-
-                // возвращаем ref и out параметры
-                unit.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? unit.prms[x.Position] : null).ToArray();
-            }
-            catch (Exception ex)
-            {
-                unit.Exception = ex;
-            }
-            finally
-            {
-                // возвращаем результат выполнения запроса
-                //TODO: "msg.IsSync = true" хз, но работает
-                unit.IsSync = true;
-                SendMessage(user.nStream, unit);
             }
         }
 

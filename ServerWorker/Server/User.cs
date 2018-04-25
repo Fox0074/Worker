@@ -37,7 +37,7 @@ namespace ServerWorker.Server
             _OnResponce.Set();  // разблокируем поток
         }
 
-        public IUser UsersCom { get; private set; }
+        public IUser UsersComSync { get; private set; }
         public IAdmin AdminCom { get; private set; }
         public ISystem SystemCom { get; private set; }
 
@@ -77,7 +77,7 @@ namespace ServerWorker.Server
             AdminComProxy = new Proxy<IAdmin>(this);
             SystemComProxy = new Proxy<ISystem>(this);
 
-            UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
+            UsersComSync = (IUser)UsersComProxy.GetTransparentProxy();
             AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
             SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
 
@@ -101,18 +101,26 @@ namespace ServerWorker.Server
             }
         }
 
-        public Unit Execute(string MethodName, object[] parameters)
+        public Unit Execute(string MethodName, object[] parameters, bool IsWaitAnswer)
         {
             lock (syncLock)
             {
                 _syncResult = new Unit(MethodName, parameters);
-                _syncResult.IsSync = true;
+                _syncResult.IsSync = IsWaitAnswer;
 
-                _OnResponce.Reset();
-                ServerNet.SendMessage(nStream, _syncResult);
-                _OnResponce.Wait();  // ожидаем ответ сервера
+                if (IsWaitAnswer)
+                {
+                    _OnResponce.Reset();
+                    ServerNet.SendMessage(nStream, _syncResult);
+                    _OnResponce.Wait();  // ожидаем ответ сервера
+                }
+                else
+                {
+                    ServerNet.SendMessage(nStream, _syncResult);
+                    Log.Send(UserType.ToString() +" "+ EndPoint + " -> " + MethodName);
+                }
 
-                if (_syncResult.IsEmpty)
+                if (_syncResult.IsEmpty && IsWaitAnswer)
                 {// произошел дисконект, результат не получен
                     throw new Exception(string.Concat("Ошибка при получении результата на команду \"", MethodName, "\""));
                 }

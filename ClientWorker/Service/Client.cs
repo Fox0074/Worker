@@ -247,7 +247,7 @@ namespace ClientWorker
             {
                 if (method == null)
                 {
-                    Console.WriteLine(string.Concat(functions.GetType().ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                    Log.Send(string.Concat(functions.GetType().ToString(), " -> ", MethodName, "(", string.Join(", ", msg.prms), ")"));
                     throw new Exception(string.Concat("Метод \"", MethodName, "\" недоступен"));
                 }
 
@@ -261,7 +261,7 @@ namespace ClientWorker
                     throw ex.InnerException ?? ex;
                 }
 
-                Console.WriteLine(string.Concat(functions.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                Log.Send(string.Concat(functions.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")"));
 
                 // возвращаем ref и out параметры
                 msg.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? msg.prms[x.Position] : null).ToArray();
@@ -272,9 +272,22 @@ namespace ClientWorker
             }
             finally
             {
-                // возвращаем результат выполнения запроса
-                SendData(msg);
-                Console.WriteLine("Отправлено: " + msg.Command);
+                if (msg.IsSync)
+                {
+                    // возвращаем результат выполнения запроса
+                    msg.IsAnswer = true;
+                    SendData(msg);
+                    Log.Send("Отправлено: " + msg.Command);
+                }
+                else
+                {
+                    if (msg.Exception != null)
+                    {
+                        msg.IsAnswer = true;
+                        SendData(msg);
+                        Log.Send("Отправлена ошибка: " + msg.Exception);
+                    }
+                }
             }
         }
 

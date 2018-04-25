@@ -15,8 +15,7 @@ namespace Interfaces.Users
         void RunProgram(string file);
         void DownloadAndRun(string file);
         void DeleteFile(string file);
-        void GetSetting();
+        ISetting GetSetting();
         string TestFunc(string s);
-        ISetting SendSetting();
     }
 }
