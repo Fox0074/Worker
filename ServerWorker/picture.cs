@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace ServerWorker
 {
-    public partial class WorkerForm : Form
+    public partial class PictureForm : Form
     {
-        public WorkerForm(Bitmap BM)
+        public PictureForm(Bitmap BM)
         {
             InitializeComponent();
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;

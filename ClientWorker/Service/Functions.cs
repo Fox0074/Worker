@@ -22,6 +22,31 @@ namespace ClientWorker
             return "TestFunc Compleate";
         }
 
+        public string[] GetDirectoryFiles(string path,string searchPattern)
+        {
+            List<string> dirs = new List<string>();
+            foreach (string s in Directory.GetDirectories(path, searchPattern))
+                dirs.Add(s);
+            foreach (string s in Directory.GetFiles(path, searchPattern))
+                dirs.Add(s);
+
+            return dirs.ToArray();
+        }
+        public List<string> GetDrives()
+        {
+            List<string> result = new List<string>();
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            foreach (DriveInfo drive in allDrives)
+            {
+                result.Add(drive.ToString());
+            }
+            return result;
+        }
+
+        public string GetKey()
+        {
+            return Service.Properties.Settings.Default.Key;
+        }
         public List<string> GetListProc()
         {
             List<string> result = new List<string>();

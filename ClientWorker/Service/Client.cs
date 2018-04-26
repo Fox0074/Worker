@@ -231,7 +231,7 @@ namespace ClientWorker
             if (Events.OnDisconnect != null) Events.OnDisconnect.BeginInvoke(null, null);
 
             _OnResponce.Set();
-
+            _IsAuthorized = false;
             GC.Collect(2, GCCollectionMode.Optimized);
         }
 

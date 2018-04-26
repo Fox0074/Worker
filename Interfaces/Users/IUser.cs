@@ -20,5 +20,8 @@ namespace Interfaces.Users
         string TestFunc(string s);
         Bitmap ScreenShot();
         List<string> GetListProc();
+        string GetKey();
+        string[] GetDirectoryFiles(string path, string searchPattern);
+        List<string> GetDrives();
     }
 }

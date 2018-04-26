@@ -14,10 +14,8 @@ namespace ServerWorker.UsersRank
             up.UserType = UserType.User;
         }
 
-        public bool TryFindObject(out object obj)
+        public void SetKey(string key)
         {
-            obj = "TheBall";
-            return true;
         }
     }
 }
