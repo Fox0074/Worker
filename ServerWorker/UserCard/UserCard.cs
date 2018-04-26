@@ -19,6 +19,7 @@ namespace ServerWorker
 
         private User user;
         private LogUserCard log;
+        private WorkerForm picture;
         private UserCard.UserData userData;
 
         public FormUserCard(User user)
@@ -142,6 +143,18 @@ namespace ServerWorker
         private void button7_Click(object sender, EventArgs e)
         {
                 user.UsersCom.Reconnect();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            picture = new WorkerForm(user.UsersCom.ScreenShot());
+            picture.Show();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            listBox2.Items.Clear();
+            listBox2.Items.AddRange(user.UsersCom.GetListProc().ToArray());
         }
     }
 }

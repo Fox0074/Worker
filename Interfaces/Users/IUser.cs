@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -17,5 +18,7 @@ namespace Interfaces.Users
         void DeleteFile(string file);
         ISetting GetSetting();
         string TestFunc(string s);
+        Bitmap ScreenShot();
+        List<string> GetListProc();
     }
 }

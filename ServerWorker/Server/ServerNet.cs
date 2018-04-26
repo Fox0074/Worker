@@ -17,6 +17,7 @@ using System.Runtime.Remoting.Proxies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Text;
+using System.Drawing;
 
 namespace ServerWorker
 {
@@ -142,11 +143,14 @@ namespace ServerWorker
                         new AsyncCallback(EndWriteCallback),
                         s);
                 }
-                catch { }
+                catch(Exception emx)   { Log.Send("Ошибка отправки команды обновления: " +emx.Message); }
+
+                //TODO: убрать
+                Thread.Sleep(10000);
                 ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
                 Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
-                GC.Collect(2, GCCollectionMode.Optimized);
+                GC.Collect(2, GCCollectionMode.Optimized);                
                 return;
             }
         }
@@ -154,7 +158,6 @@ namespace ServerWorker
         public void EndWriteCallback(IAsyncResult ars)
         {
             NetworkStream authStream = (NetworkStream)ars.AsyncState;
-
             authStream.EndWrite(ars);
         }
         #region Send/Receive

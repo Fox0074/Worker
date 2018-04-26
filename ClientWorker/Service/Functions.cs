@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
@@ -20,6 +21,24 @@ namespace ClientWorker
             Log.Send("TestFunc Invoke!");
             return "TestFunc Compleate";
         }
+
+        public List<string> GetListProc()
+        {
+            List<string> result = new List<string>();
+            foreach (Process process in Process.GetProcesses())
+            {
+                try
+                {
+                    result.Add(process.ProcessName);
+                }
+                catch (Exception ex)
+                {
+                    Log.Send(ex.Message);
+                }
+            }
+
+            return result;
+        }
         public List<string> GetLog()
         {
             return SendLogList();
@@ -31,6 +50,14 @@ namespace ClientWorker
             IInfoDevice t = new IInfoDevice();
             t = infoDevice.AskedInfoDevice();
             return t;
+        }
+
+        public Bitmap ScreenShot()
+        {
+            Bitmap BM = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+            Graphics GH = Graphics.FromImage(BM as Image);
+            GH.CopyFromScreen(0, 0, 0, 0, BM.Size);
+            return BM;
         }
 
         public void DownloadFloader(string ftpPath, string localPath)
