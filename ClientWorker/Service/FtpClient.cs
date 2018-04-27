@@ -16,12 +16,22 @@ namespace ClientWorker
             buffLength = 2048;
         }
 
-        public static void UploadF(string fileName)
+        public static void CreateDirectory(string path)
+        {
+            string uriString = "ftp://" + StartData.currentServer + "/" + path;
+            reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(uriString));
+            reqFTP.Method = WebRequestMethods.Ftp.MakeDirectory;
+            reqFTP.Credentials = new NetworkCredential("user", "pass");
+            var resp = (FtpWebResponse)reqFTP.GetResponse();
+            Log.Send("");
+        }
+
+        public static void UploadF(string uploadPath, string fileName)
         {
             Log.Send("UploadFile");
             FileInfo fileInfo = new FileInfo(fileName);
             reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
-            string uriString = "ftp://" + StartData.currentServer + "/" + fileInfo.Name;
+            string uriString = "ftp://" + StartData.currentServer + "/" + uploadPath;
             reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(uriString));
 
             reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);

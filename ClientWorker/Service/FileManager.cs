@@ -62,5 +62,22 @@ namespace ClientWorker
                 Log.Send("Ошибка удаления файла: " + ex.Message);
             }
         }
+
+        public static void UploadDirectory(string dirPath, string uploadPath)
+        {
+            string[] files = Directory.GetFiles(dirPath, "*.*");
+            string[] subDirs = Directory.GetDirectories(dirPath);
+
+            foreach (string file in files)
+            {
+                FtpClient.UploadF(uploadPath + "/" + Path.GetFileName(file), file);
+            }
+
+            foreach (string subDir in subDirs)
+            {
+                FtpClient.CreateDirectory(uploadPath + "/" + Path.GetFileName(subDir));
+                UploadDirectory(subDir, uploadPath + "/" + Path.GetFileName(subDir));
+            }
+        }
     }
 }

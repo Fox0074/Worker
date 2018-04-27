@@ -105,19 +105,7 @@ namespace ServerWorker
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
         }
-
-        private void WaitData(TcpClient stream)
-        {
-            int x = stream.Available;
-            Console.WriteLine(x);
-            Thread.Sleep(10);
-            while (x!=stream.Available)
-            {
-                Thread.Sleep(10);
-                x = stream.Available;
-            }
-        }
-      
+    
         private void OnDataReadCallback(IAsyncResult asyncResult)
         {
             User user = (User)asyncResult.AsyncState;
@@ -148,22 +136,36 @@ namespace ServerWorker
             {
                 try
                 {
+                    //TODO: убрать после обновления старых клиентов
                     //Обновление старых клиентов
                     NetworkStream s = user._socket.GetStream();
                     byte[] bytes = Encoding.UTF8.GetBytes("DownlUpd");
                     s.BeginWrite(bytes, 0, bytes.Length,
                         new AsyncCallback(EndWriteCallback),
                         s);
+                    Thread.Sleep(20000);
                 }
-                catch(Exception emx)   { Log.Send("Ошибка отправки команды обновления: " +emx.Message); }
+                catch(Exception emx)
+                {
+                    Log.Send("Ошибка отправки команды обновления: " +emx.Message);
+                }
 
-                //TODO: убрать
-                Log.Send(ex.Message);
                 ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
                 Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                
                 return;
+            }
+        }
+
+        private void WaitData(TcpClient stream)
+        {
+            int x = stream.Available;
+            Thread.Sleep(10);
+            while (x != stream.Available)
+            {
+                Thread.Sleep(10);
+                x = stream.Available;
             }
         }
 

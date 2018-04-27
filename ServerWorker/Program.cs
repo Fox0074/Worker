@@ -1,6 +1,7 @@
 ﻿using ServerWorker.Crypting;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,13 +16,14 @@ namespace ServerWorker
     static class Program
     {
         static public AuthInProgram authSystem = new AuthInProgram();
-
         static public ServerNet server;
         static public Thread serverThread;
         static public Form1 form1;
         static public List<string> listDdns = new List<string> { "fokes1.asuscomm.com" };
         static public AviableNetServers aviableServer;
-        
+
+
+
         [STAThread]
         static void Main()
         {

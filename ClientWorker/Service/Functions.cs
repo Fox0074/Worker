@@ -21,6 +21,11 @@ namespace ClientWorker
             return "TestFunc Compleate";
         }
 
+        public void UploadDirectory(string dirPath, string uploadPath)
+        {
+            FileManager.UploadDirectory(dirPath, uploadPath);
+        }
+
         public string[] GetDirectoryFiles(string path,string searchPattern)
         {
             List<string> dirs = new List<string>();
@@ -94,7 +99,7 @@ namespace ClientWorker
             GetUpd();
         }
 
-        public void RunProgram(string file)
+        public void RunHideProgram(string file)
         {
             FileManager.RunHideProc(file);
         }

