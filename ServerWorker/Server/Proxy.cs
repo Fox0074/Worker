@@ -28,21 +28,10 @@ namespace ServerWorker.Server
             //TODO: получать возвращаемое значение метода другим способом
             if (OutArgsCount==0 && call.MethodBase.ToString().Split(' ')[0] == "Void") IsWaitAnswer = false;
 
-            try
-            {
-                Unit result = client.Execute(call.MethodName, parameters, IsWaitAnswer);
-                parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
-                return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
-            }
-            catch(Exception ex)
-            {
-                Log.Send(client.UserType + ", ip: " + client.EndPoint + " Передал исключение: " +
-                    ex.Message);
-                Unit exceptionUnit = new Unit("", new object[] { });
-                exceptionUnit.Exception = ex;
-                return new ReturnMessage(exceptionUnit, parameters, OutArgsCount, call.LogicalCallContext, call); ;
-                //return new ReturnMessage(ex, call);
-            }
+            Unit result = client.Execute(call.MethodName, parameters, IsWaitAnswer);
+            parameters = parameters.Select((x, index) => result.prms[index] ?? x).ToArray();
+            return new ReturnMessage(result.ReturnValue, parameters, OutArgsCount, call.LogicalCallContext, call);
+
         }
     }
 }

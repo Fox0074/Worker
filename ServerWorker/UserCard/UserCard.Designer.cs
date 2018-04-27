@@ -82,7 +82,7 @@
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(126, 25);
             this.button3.TabIndex = 4;
-            this.button3.Text = "DownloadMiner";
+            this.button3.Text = "DownloadM";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -93,7 +93,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(126, 25);
             this.button4.TabIndex = 5;
-            this.button4.Text = "RunMiner";
+            this.button4.Text = "RunM";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click_1);
             // 

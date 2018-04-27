@@ -151,7 +151,13 @@ namespace ServerWorker
 
         private void button7_Click(object sender, EventArgs e)
         {
+            try
+            {
                 user.UsersCom.Reconnect();
+            } catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void button8_Click(object sender, EventArgs e)

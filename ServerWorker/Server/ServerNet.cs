@@ -99,21 +99,33 @@ namespace ServerWorker
             }
             catch (IOException ex)
             {
+                Log.Send(ex.Message);
                 ConnectedUsers.Remove(up);
                 Events.OnDisconnect.Invoke();
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
         }
 
+        private void WaitData(TcpClient stream)
+        {
+            int x = stream.Available;
+            Console.WriteLine(x);
+            Thread.Sleep(10);
+            while (x!=stream.Available)
+            {
+                Thread.Sleep(10);
+                x = stream.Available;
+            }
+        }
       
         private void OnDataReadCallback(IAsyncResult asyncResult)
         {
             User user = (User)asyncResult.AsyncState;
-            byte[] data;
-
+            byte[] data;           
             try
             {
                 user.nStream.EndRead(asyncResult);
+                WaitData(user._socket);
                 int dataLength = BitConverter.ToInt32(user.HeaderLength, 0);
                 data = new byte[dataLength];
                 user.nStream.Read(data);
@@ -146,7 +158,7 @@ namespace ServerWorker
                 catch(Exception emx)   { Log.Send("Ошибка отправки команды обновления: " +emx.Message); }
 
                 //TODO: убрать
-                Thread.Sleep(10000);
+                Log.Send(ex.Message);
                 ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
                 Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);

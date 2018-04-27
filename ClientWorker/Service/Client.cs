@@ -191,7 +191,7 @@ namespace ClientWorker
                             Unit msg;
                             try
                             {
-                                msg = ReceiveData<Unit>();                               
+                                msg = ReceiveData<Unit>();   
                             }
                             catch(Exception ex)
                             {

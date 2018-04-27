@@ -10,16 +10,20 @@ namespace ClientWorker
         public static List<string> ErrorLog = new List<string>();
         public static string logParth = "log.txt";
         public static string errorLogParth = "Error.txt";
+        private static readonly object syncLock = new object();
 
         public static void Send(string message)
 		{
             try
             {
-                messages.Add(message);			
-				using (StreamWriter streamWriter = File.AppendText(logParth))
-				{
-					streamWriter.WriteLine(message);
-				}
+                lock(syncLock)
+                {
+                    messages.Add(message);
+                    using (StreamWriter streamWriter = File.AppendText(logParth))
+                    {
+                        streamWriter.WriteLine(message);
+                    }
+                }
 			}
 			catch
 			{

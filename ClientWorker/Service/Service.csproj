@@ -56,7 +56,9 @@
     <Compile Include="FileManager.cs" />
     <Compile Include="FtpClient.cs" />
     <Compile Include="Functions.cs" />
+    <Compile Include="interfaces\IInfoDevice.cs" />
     <Compile Include="InfoDevice.cs" />
+    <Compile Include="interfaces\ISetting.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,6 +69,11 @@
     </Compile>
     <Compile Include="Resetter.cs" />
     <Compile Include="StartData.cs" />
+    <Compile Include="interfaces\Units.cs" />
+    <Compile Include="interfaces\Users\IAdmin.cs" />
+    <Compile Include="interfaces\Users\IRing_0.cs" />
+    <Compile Include="interfaces\Users\ISystem.cs" />
+    <Compile Include="interfaces\Users\IUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -78,12 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="imageres_5374.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Interfaces\Interfaces.csproj">
-      <Project>{6dd6bda1-05f3-4303-b30a-f3f85a2dfa38}</Project>
-      <Name>Interfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

