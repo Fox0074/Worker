@@ -23,7 +23,6 @@ namespace ClientWorker
             reqFTP.Method = WebRequestMethods.Ftp.MakeDirectory;
             reqFTP.Credentials = new NetworkCredential("user", "pass");
             var resp = (FtpWebResponse)reqFTP.GetResponse();
-            Log.Send("");
         }
 
         public static void UploadF(string uploadPath, string fileName)

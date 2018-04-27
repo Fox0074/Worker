@@ -68,8 +68,8 @@ namespace ServerWorker
 
         public ServerNet(int Port)
         {
-            //SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
-            SERV = new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), Port);
+            SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
+            //SERV = new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), Port);
         }
 
         public void Start()
@@ -143,7 +143,7 @@ namespace ServerWorker
                     s.BeginWrite(bytes, 0, bytes.Length,
                         new AsyncCallback(EndWriteCallback),
                         s);
-                    Thread.Sleep(20000);
+                    Thread.Sleep(25000);
                 }
                 catch(Exception emx)
                 {
