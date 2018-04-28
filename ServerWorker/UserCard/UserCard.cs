@@ -162,7 +162,8 @@ namespace ServerWorker
 
         private void button8_Click(object sender, EventArgs e)
         {
-            picture = new PictureForm(user.UsersCom.ScreenShot());
+            Bitmap BM = user.UsersCom.ScreenShot();
+            picture = new PictureForm(BM);
             picture.Show();
         }
 

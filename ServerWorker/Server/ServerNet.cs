@@ -212,6 +212,10 @@ namespace ServerWorker
                 byte[] DataLength = BitConverter.GetBytes(BinaryData.Length);
                 byte[] DataWithHeader = DataLength.Concat(BinaryData).ToArray();
 
+                if (msg.Command == "ScreenShot")
+                {
+
+                }
                 nStream.Add(DataWithHeader);
             }
 
