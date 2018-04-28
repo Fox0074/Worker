@@ -113,9 +113,9 @@ namespace ServerWorker
             try
             {
                 user.nStream.EndRead(asyncResult);
-                WaitData(user._socket);
                 int dataLength = BitConverter.ToInt32(user.HeaderLength, 0);
                 data = new byte[dataLength];
+                WaitData(user._socket,dataLength);
                 user.nStream.Read(data);
 
                 Unit unit = MessageFromBinary<Unit>(data);
@@ -158,14 +158,13 @@ namespace ServerWorker
             }
         }
 
-        private void WaitData(TcpClient stream)
+        private void WaitData(TcpClient stream,int dataLength)
         {
-            int x = stream.Available;
-            Thread.Sleep(10);
-            while (x != stream.Available)
-            {
-                Thread.Sleep(10);
+            int x = 0;
+            while (x < dataLength)
+            {               
                 x = stream.Available;
+                Thread.Sleep(5);
             }
         }
 

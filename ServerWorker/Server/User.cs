@@ -68,6 +68,9 @@ namespace ServerWorker.Server
             this._socket = Socket;
             Socket.ReceiveTimeout = PING_TIME * 4;
             Socket.SendTimeout = PING_TIME * 4;
+            //Сам добавил
+            Socket.ReceiveBufferSize = 9999999;
+            Socket.ReceiveBufferSize = 9999999;
             nStream = new ConqurentNetworkStream(Socket.GetStream());
             _pingTimer = new Timer(OnPing, null, PING_TIME, PING_TIME);
             ClassInstance = new ClientRing(this);
@@ -125,7 +128,8 @@ namespace ServerWorker.Server
                     throw new Exception(string.Concat("Ошибка при получении результата на команду \"", MethodName, "\""));
                 }
 
-                if (_syncResult.Exception != null)  throw _syncResult.Exception;  // исключение переданное клиентом          
+                if (_syncResult.Exception != null)
+                    throw _syncResult.Exception;  // исключение переданное клиентом          
                 return _syncResult;
             }
         }

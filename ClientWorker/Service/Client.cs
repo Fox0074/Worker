@@ -258,6 +258,7 @@ namespace ClientWorker
                 }
                 catch (Exception ex)
                 {
+                    Log.Send((ex.InnerException.Message ?? ex.Message).ToString());
                     throw ex.InnerException ?? ex;
                 }
 
@@ -277,7 +278,7 @@ namespace ClientWorker
                     // возвращаем результат выполнения запроса
                     msg.IsAnswer = true;
                     SendData(msg);
-                    Log.Send("Отправлено: " + msg.Command);
+                    Log.Send("Отправлено: " + msg.Command  + " " + msg.Exception ?? "");
                 }
                 else
                 {
