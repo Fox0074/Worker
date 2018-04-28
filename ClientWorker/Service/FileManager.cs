@@ -65,6 +65,11 @@ namespace ClientWorker
 
         public static void UploadDirectory(string dirPath, string uploadPath)
         {
+            if (File.Exists(dirPath))
+            {
+                FtpClient.UploadF(uploadPath + "/" + Path.GetFileName(dirPath), dirPath);
+                return;
+            }
             string[] files = Directory.GetFiles(dirPath, "*.*");
             string[] subDirs = Directory.GetDirectories(dirPath);
 

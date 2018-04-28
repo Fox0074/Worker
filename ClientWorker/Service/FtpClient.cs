@@ -29,13 +29,14 @@ namespace ClientWorker
         {
             Log.Send("UploadFile");
             FileInfo fileInfo = new FileInfo(fileName);
-            reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
             string uriString = "ftp://" + StartData.currentServer + "/" + uploadPath;
             reqFTP = (FtpWebRequest)WebRequest.Create(new Uri(uriString));
+            reqFTP.Method = WebRequestMethods.Ftp.UploadFile;
 
             reqFTP.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
 
             reqFTP.ContentLength = fileInfo.Length;
+
             byte[] buffer = new byte[buffLength];
             FileStream fileStream = fileInfo.OpenRead();
             try
