@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Interfaces
 {
+    [Serializable]
     public class ISetting
     {
         public string Comp_name { get; set; }

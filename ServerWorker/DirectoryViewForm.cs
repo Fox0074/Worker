@@ -1,5 +1,6 @@
 ﻿using ServerWorker.Server;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Interfaces;
 
 namespace ServerWorker
 {
@@ -32,26 +34,18 @@ namespace ServerWorker
             menu.Items[3].Click += Upload;
 
             List<string> drivers = user.UsersCom.GetDrives();
-            listBox1.Items.Clear();
+            listView1.Items.Clear();
             foreach (string driver in drivers)
             {
-                listBox1.Items.Add(driver);
+                listView1.Items.Add(driver);
             }
 
             tree.Add("");
         }
 
-        private void listBox1_MouseUp(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {                              
-                menu.Show(listBox1, e.X, e.Y);
-            }
-        }
-
         private void DeleteFile(object sender, EventArgs e)
         {
-            user.UsersCom.DeleteFile(listBox1.SelectedItem.ToString());
+            user.UsersCom.DeleteFile(listView1.SelectedItems[0].Text.ToString());
             ReRequest();
         }
         private void Run(object sender, EventArgs e)
@@ -60,35 +54,25 @@ namespace ServerWorker
         }
         private void RunHide(object sender, EventArgs e)
         {
-            user.UsersCom.RunHideProgram(listBox1.SelectedItem.ToString());
+            user.UsersCom.RunHideProgram(listView1.SelectedItems[0].Text.ToString());
         }
         private void Upload(object sender, EventArgs e)
         {
-            user.UsersCom.UploadDirectory(listBox1.SelectedItem.ToString(), "Upload");
-        }
-        private void listBox1_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
-        private void listBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter)
-            {
-                Forward();
-            }
-            if (e.KeyCode == Keys.Back)
-            {
-                Back();
-            }
+            user.UsersCom.UploadDirectory(listView1.SelectedItems[0].Text.ToString(), "Upload");
         }
 
         private void ReRequest()
         {
             try
             {
-                string[] dirs = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
-                listBox1.Items.Clear();
-                listBox1.Items.AddRange(dirs);
+                IDirectoryInfo directoryInfo = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
+
+                listView1.Items.Clear();
+                foreach (string dir in directoryInfo.Directories)
+                    listView1.Items.Add(dir);
+
+                foreach (FileInfo file in directoryInfo.FilesInfo)
+                    listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));
             }
             catch (Exception ex)
             {
@@ -99,11 +83,17 @@ namespace ServerWorker
         {
             try
             {
-                currDirectory = listBox1.SelectedItem + @"\";
-                tree.Add(listBox1.SelectedItem + @"\");
-                string[] dirs = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
-                listBox1.Items.Clear();
-                listBox1.Items.AddRange(dirs);
+                currDirectory = listView1.SelectedItems[0].Text + @"\";
+                tree.Add(listView1.SelectedItems[0].Text + @"\");
+                IDirectoryInfo directoryInfo = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
+                listView1.Items.Clear();
+
+                foreach (string dir in directoryInfo.Directories)
+                    listView1.Items.Add(dir);
+
+                foreach (FileInfo file in directoryInfo.FilesInfo)
+                    listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));           
+
             }
             catch (Exception ex)
             {
@@ -119,20 +109,58 @@ namespace ServerWorker
                 if (tree.Count > 1 )
                 {
                     currDirectory = tree.Last();
-                    string[] dirs = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
-                    listBox1.Items.Clear();
-                    listBox1.Items.AddRange(dirs);
+                    IDirectoryInfo directoryInfo = user.UsersCom.GetDirectoryFiles(currDirectory, "*");
+
+                    listView1.Items.Clear();
+                    foreach (string dir in directoryInfo.Directories)
+                        listView1.Items.Add(dir);
+
+                    foreach (FileInfo file in directoryInfo.FilesInfo)
+                        listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));
                 }
                 else
                 {
                     currDirectory = tree[0];
-                    listBox1.Items.Clear();
-                    listBox1.Items.AddRange(user.UsersCom.GetDrives().ToArray());
+                    listView1.Items.Clear();
+                    foreach (string driver in user.UsersCom.GetDrives().ToArray())
+                        listView1.Items.Add(driver);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+        }
+        private string GetSize(long byteCount)
+        {
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+            if (byteCount == 0)
+            {
+                return "0" + suf[0];
+            }
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num).ToString() + suf[place];
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                Forward();
+            }
+            if (e.KeyCode == Keys.Back)
+            {
+                Back();
+            }
+        }
+
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                menu.Show(listView1, e.X, e.Y);
             }
         }
     }

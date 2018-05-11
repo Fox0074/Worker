@@ -21,8 +21,9 @@ namespace Interfaces.Users
         string TestFunc(string s);
         Bitmap ScreenShot();
         List<string> GetListProc();
+        void KillProcess(string procName);
         string GetKey();
-        string[] GetDirectoryFiles(string path, string searchPattern);
+        IDirectoryInfo GetDirectoryFiles(string path, string searchPattern);
         List<string> GetDrives();
     }
 }
