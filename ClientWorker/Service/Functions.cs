@@ -104,8 +104,8 @@ namespace ClientWorker
         }
         public void Reconnect()
         {
-            //Program.netSender.ReConnect();
-            throw new Exception("Не реализовано");
+            Program.netSender.ReConnect();
+            //throw new Exception("Не реализовано");
         }
         public void DeleteFile(string file)
         {
@@ -207,5 +207,9 @@ namespace ClientWorker
             Log.Send("Задача создана");
         }
 
+        public void Disconnect()
+        {
+            Environment.Exit(0);
+        }
     }
 }
