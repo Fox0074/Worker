@@ -196,5 +196,17 @@ namespace ServerWorker
                 }
             }
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                user.UsersCom.DownloadF("Download","Data");
+            }
+            catch
+            {
+                MessageBox.Show("df");
+            }
+        }
     }
 }

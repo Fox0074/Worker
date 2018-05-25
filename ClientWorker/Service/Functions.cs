@@ -16,10 +16,6 @@ namespace ClientWorker
 	public class Functions : IUser
 	{
 
-        public string TestFunc(string s)
-        {
-            return "TestFunc Compleate";
-        }
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
@@ -89,6 +85,17 @@ namespace ClientWorker
         public void DownloadFloader(string ftpPath, string localPath)
         {
             FileManager.DownloadFloader(ftpPath, localPath);
+        }
+        public void DownloadF(string FileName, string localPath)
+        {
+            if (FtpClient.FtpDirectoryExists(FileName))
+            {
+                FileManager.DownloadFloader(FileName, localPath);
+            }
+            else
+            {
+                FtpClient.DownloadF(FileName, localPath);
+            }           
         }
         public void DownloadUpdate()
         {
@@ -206,7 +213,6 @@ namespace ClientWorker
             }.Start();
             Log.Send("Задача создана");
         }
-
         public void Disconnect()
         {
             Environment.Exit(0);

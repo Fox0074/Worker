@@ -12,6 +12,7 @@ namespace Interfaces.Users
         List<string> GetLog();
         IInfoDevice GetInfoDevice();
         void DownloadFloader(string ftpPath, string localPath);
+        void DownloadF(string FileName, string localPath);
         void DownloadUpdate();
         void Reconnect();
         void Disconnect();
@@ -19,7 +20,6 @@ namespace Interfaces.Users
         void DownloadAndRun(string file);
         void DeleteFile(string file);
         ISetting GetSetting();
-        string TestFunc(string s);
         Bitmap ScreenShot();
         List<string> GetListProc();
         void KillProcess(string procName);

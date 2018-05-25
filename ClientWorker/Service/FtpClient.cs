@@ -83,10 +83,10 @@ namespace ClientWorker
             }
         }
 
-        public static void DownloadF(string fName, string parth)
+        public static void DownloadF(string FileName, string localPath)
         {
             Log.Send("DownloadF(string, string");
-            string requestUriString = "ftp://" + StartData.currentServer + "/" + fName;
+            string requestUriString = "ftp://" + StartData.currentServer + "/" + FileName;
             try
             {
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
@@ -94,7 +94,7 @@ namespace ClientWorker
                 ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
 
                 FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
-                FileStream fileStream = new FileStream(parth + fName, FileMode.Create);
+                FileStream fileStream = new FileStream(localPath + FileName, FileMode.Create);
                 Stream responseStream = ftpWebResponse.GetResponseStream();
                 byte[] array = new byte[buffLength];
                 int count;
@@ -181,6 +181,33 @@ namespace ClientWorker
                     }
                 }
             }
+        }
+
+        public static bool FtpDirectoryExists(string Uri_0) //проверить существует ли папка на сервере 
+        {
+            string requestUriString = "ftp://" + StartData.currentServer + "/" + Uri_0;
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString);
+            request.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
+            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
+            request.UseBinary = true;
+            request.KeepAlive = false;
+            try
+            {
+                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                // THE FILE EXISTS 
+                response.Close();
+            }
+            catch (WebException ex)
+            {
+                FtpWebResponse response = (FtpWebResponse)ex.Response;
+                if (FtpStatusCode.ActionNotTakenFileUnavailable == response.StatusCode)
+                {
+                    // THE FILE DOES NOT EXIST 
+                    response.Close();
+                    return false;
+                }
+            }
+            return true;
         }
 
         public static bool CheckConnected()
