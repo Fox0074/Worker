@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,7 +21,6 @@ namespace Updater
 
             bool isWorking = args.Length > 0 ? CheckService(args[0]) : CheckService("Service");
 
-
             if (isWorking)
             {
                 try
@@ -26,13 +28,32 @@ namespace Updater
                     string directoryName = Path.GetDirectoryName(files[0]) + "\\";
                     string fileName = Path.GetFileName(files[0]);
 
+
                     FTP.DownloadF("Service.exe", directoryName, "ServiceNew.exe");
                     procs[0].Kill();
 
                     File.Move(files[0], directoryName + "ServiceOld.exe");
                     File.Move(directoryName + "ServiceNew.exe", directoryName + fileName);
-                    File.Delete(directoryName + "ServiceOld.exe");
-
+                    try
+                    {
+                        Process p = new Process
+                        {
+                            StartInfo = new ProcessStartInfo()
+                            {
+                                FileName = "cmd.exe",
+                                Verb = "runas",
+                                Arguments = string.Format("/c del \"{0}\"", directoryName + "ServiceOld.exe"),
+                                WindowStyle = ProcessWindowStyle.Hidden
+                            }
+                        };
+                        p.Start();
+                        Thread.Sleep(5000);
+                        p.Kill();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Send("File delete Ex: " + ex.Message);
+                    }
                     new Process
                     {
                         StartInfo =
@@ -92,7 +113,12 @@ namespace Updater
 
 
         }
-       
+
+        private static void AddFileSecurity(string fileName, string v, object readData, object allow)
+        {
+            throw new NotImplementedException();
+        }
+
         private static bool CheckService(string description)
         {
             bool result = false;
