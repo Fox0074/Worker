@@ -71,8 +71,8 @@ namespace ServerWorker
                 foreach (string dir in directoryInfo.Directories)
                     listView1.Items.Add(dir);
 
-                foreach (FileInfo file in directoryInfo.FilesInfo)
-                    listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));
+                foreach (IFileInfo file in directoryInfo.FilesInfo)
+                    listView1.Items.Add(file.fullName).SubItems.Add(GetSize(file.length));
             }
             catch (Exception ex)
             {
@@ -91,8 +91,8 @@ namespace ServerWorker
                 foreach (string dir in directoryInfo.Directories)
                     listView1.Items.Add(dir);
 
-                foreach (FileInfo file in directoryInfo.FilesInfo)
-                    listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));           
+                foreach (IFileInfo file in directoryInfo.FilesInfo)
+                    listView1.Items.Add(file.fullName).SubItems.Add(GetSize(file.length));           
 
             }
             catch (Exception ex)
@@ -115,8 +115,8 @@ namespace ServerWorker
                     foreach (string dir in directoryInfo.Directories)
                         listView1.Items.Add(dir);
 
-                    foreach (FileInfo file in directoryInfo.FilesInfo)
-                        listView1.Items.Add(file.FullName).SubItems.Add(GetSize(file.Length));
+                    foreach (IFileInfo file in directoryInfo.FilesInfo)
+                        listView1.Items.Add(file.fullName).SubItems.Add(GetSize(file.length));
                 }
                 else
                 {

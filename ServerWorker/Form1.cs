@@ -172,7 +172,25 @@ namespace ServerWorker
 
         private void button4_Click(object sender, EventArgs e)
         {
-            WrileClientsInList();
+            //WrileClientsInList();
+            DialogResult result = MessageBox.Show("Вы действительно хотите обновить всех старых клиентов ?", "Предупреждение", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+            {
+                foreach (User user in ServerNet.ConnectedUsers.ToArray().Where(x => x.UserType == UserType.UnAuthorized))
+                {
+                    NetworkStream s = user._socket.GetStream();
+                    byte[] bytes = Encoding.UTF8.GetBytes("DownlUpd");
+                    s.BeginWrite(bytes, 0, bytes.Length,
+                        new AsyncCallback(EndWriteCallback),
+                        s);
+                }
+                Log.Send("Сервер: Обновить старые клиенты");
+            }
+        }
+        public void EndWriteCallback(IAsyncResult ars)
+        {
+            NetworkStream authStream = (NetworkStream)ars.AsyncState;
+            authStream.EndWrite(ars);
         }
 
         public  void WrileClientsInList()

@@ -11,6 +11,9 @@ namespace Interfaces.Users
         void UploadDirectory(string dirPath, string uploadPath);
         List<string> GetLog();
         IInfoDevice GetInfoDevice();
+        /// <summary>
+        /// Устарело, используйте DownloadF(string FileName, string localPath)
+        /// </summary>
         void DownloadFloader(string ftpPath, string localPath);
         void DownloadF(string FileName, string localPath);
         void DownloadUpdate();

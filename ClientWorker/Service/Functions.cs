@@ -27,8 +27,9 @@ namespace ClientWorker
                 directoryInfo.Directories.Add(s);
             foreach (string s in Directory.GetFiles(path, searchPattern))
             {
+
                 FileInfo fInfo = new FileInfo(s);
-                directoryInfo.FilesInfo.Add(fInfo);
+                directoryInfo.FilesInfo.Add(new IFileInfo(fInfo));
             }
 
             return directoryInfo;

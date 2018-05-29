@@ -129,7 +129,7 @@ namespace ServerWorker
 
         private void button3_Click(object sender, EventArgs e)
         {
-            user.UsersCom.DownloadFloader("Miner", "Data");
+            user.UsersCom.DownloadF("Miner", "Data");
         }
 
         //private void button4_Click(object sender, EventArgs e)
@@ -199,14 +199,7 @@ namespace ServerWorker
 
         private void button5_Click(object sender, EventArgs e)
         {
-            try
-            {
-                user.UsersCom.DownloadF("Download","Data");
-            }
-            catch
-            {
-                MessageBox.Show("df");
-            }
+
         }
     }
 }

