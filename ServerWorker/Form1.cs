@@ -48,6 +48,7 @@ namespace ServerWorker
             Program.server.Events.OnConnected += UpdateClientList;
             Program.server.Events.OnDisconnect += UpdateClientList;
             Program.server.Events.OnAuthorized += UpdateClientList;
+            UserCard.UserData.OnDataUpdate += UpdateClientList;
 
             InitContextMenuStrip();
             mainControls.Add(button1);
@@ -60,42 +61,100 @@ namespace ServerWorker
             menu.Items.Add("Открыть");
             menu.Items[0].Click += (object sender, EventArgs e) => OpenSelectedUserCard();
             menu.Items.Add("Обновить");
-            menu.Items[1].Click += (object sender, EventArgs e) => ServerNet.ConnectedUsers.ToArray()[listBox1.SelectedIndex].UsersCom.DownloadUpdate(); 
+            menu.Items[1].Click += (object sender, EventArgs e) =>
+            {
+                foreach (int index in listView1.SelectedIndices)
+                {
+                    ServerNet.ConnectedUsers.ToArray()[index].UsersCom.DownloadUpdate();
+                }
+            };
             menu.Items.Add("Reconnect");
-            menu.Items[2].Click += (object sender, EventArgs e) => ServerNet.ConnectedUsers.ToArray()[listBox1.SelectedIndex].UsersCom.Reconnect();
+            menu.Items[2].Click += (object sender, EventArgs e) => 
+            {
+                foreach (int index in listView1.SelectedIndices)
+                {
+                    ServerNet.ConnectedUsers.ToArray()[index].UsersCom.Reconnect();
+                }
+            };
             menu.Items.Add("Отключить");
-            menu.Items[3].Click += (object sender, EventArgs e) => DisconnectCurrentUser();
+            menu.Items[3].Click += (object sender, EventArgs e) => DisconnectCurrentUsers();
+            menu.Items.Add("Переименовать");
+            menu.Items[4].Click += (object sender, EventArgs e) =>
+            {
+                List<User> users = new List<User>();
+                foreach (int index in listView1.SelectedIndices)
+                {
+                    users.Add(ServerNet.ConnectedUsers.ToArray()[index]);
+                }
+                InputForm userCard = new InputForm(users.ToArray());
+                userCard.Show();
+            };
         }
 
-        private void DisconnectCurrentUser()
+        private void DisconnectCurrentUsers()
         {
-            DialogResult result = MessageBox.Show("Отключить пользователя ?","Предупреждение",MessageBoxButtons.YesNo);
+            DialogResult result = MessageBox.Show("Отключить выбранных пользователей ?","Предупреждение",MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
-                ServerNet.ConnectedUsers.ToArray()[listBox1.SelectedIndex].UsersCom.Disconnect();
+                foreach(int index in listView1.SelectedIndices)
+                {
+                    ServerNet.ConnectedUsers.ToArray()[index].UsersCom.Disconnect();
+                }
             }
         }
         private void UpdateClientList()
         {
-            if (listBox1.InvokeRequired) listBox1.BeginInvoke(new Action(() =>
+            listView1.BeginInvoke(new Action(() =>
             {
-                listBox1.Items.Clear();
+                listView1.Items.Clear();
                 foreach (User user in ServerNet.ConnectedUsers.ToArray())
                 {
-                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
+                        DrawUser(user);
                 }
+            }));
+
+
+            if (label1.InvokeRequired) label1.BeginInvoke(new Action(() =>
+            {
+                label1.Text = "Клиенты: " + ServerNet.ConnectedUsers.ToArray().Length;
             }));
             else
             {
-                listBox1.Items.Clear();
-                foreach (User user in ServerNet.ConnectedUsers.ToArray())
-                {
-                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
-                }
+                label1.Text = "Клиенты: " + ServerNet.ConnectedUsers.ToArray().Length;
             }
 
         }
 
+        private void DrawUser(User user)
+        {
+            string[] raw;
+            if (user.userData != null)
+            {
+                raw = new string[] {
+                user.UserType.ToString(),
+                user.userData.setting.Version ?? "",
+                user.userData.setting.Comp_name ?? "",
+                user.EndPoint.ToString(),
+                "",
+                user.userData.IsWorkinMiner.ToString()
+                };
+                if (user.userData.infoDevice.GPUVideoProcessor.Count > 0)
+                {
+                    raw[4] = user.userData.infoDevice.GPUVideoProcessor[0];
+                }
+            }
+            else
+            {
+                raw = new string[] {
+                user.UserType.ToString(),
+                "",
+                "",
+                user.EndPoint.ToString()
+                };
+            }
+                ListViewItem viewItem = new ListViewItem(raw);
+                listView1.Items.Add(viewItem);
+        }
 
         private void Form1_InterfaceChanged(UserInterface arg)
         {
@@ -138,10 +197,6 @@ namespace ServerWorker
                     }
                     break;
             }
-        }
-
-        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
-        {
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -193,22 +248,6 @@ namespace ServerWorker
             authStream.EndWrite(ars);
         }
 
-        public  void WrileClientsInList()
-        {
-            listBox1.Items.Clear();
-            foreach (User user in ServerNet.ConnectedUsers.ToArray())
-            {
-                try
-                {
-                    listBox1.Items.Add(user.UserType + ", ip: " + user.EndPoint);
-                }
-                catch (Exception ex)
-                {
-                    Log.Send("Send " + ex.Message);
-                }
-            }
-        }
-
 
         private void StartForm2(User user )
         {
@@ -223,31 +262,24 @@ namespace ServerWorker
 
         private void button8_Click(object sender, EventArgs e)
         {
-            Program.aviableServer.SendMessage("GetListUsers");         
+            UpdateClientList();
         }
 
-        private void listBox1_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                OpenSelectedUserCard();
-            }
-        }
 
         private void OpenSelectedUserCard()
         {
-            int num = listBox1.SelectedIndex;
-            //Functions.onGettingLog += StartForm2;
-
-            if ((listBox1.Items.Count > listBox1.SelectedIndex) && (listBox1.SelectedIndex >= 0))
+            if (listView1.SelectedIndices.Count >= 0)
             {
-                if (ServerNet.ConnectedUsers.ToArray().Count() > listBox1.SelectedIndex)
+                foreach (int index in listView1.SelectedIndices)
                 {
-                    StartForm2(ServerNet.ConnectedUsers.ToArray()[num]);
-                }
-                else
-                {
-                    Log.Send("Ошибка получения доступу к элементу, такого элемента не существует или он имеет другой индекс");
+                    if (ServerNet.ConnectedUsers.ToArray().Count() > index)
+                    {
+                        StartForm2(ServerNet.ConnectedUsers.ToArray()[index]);
+                    }
+                    else
+                    {
+                        Log.Send("Ошибка получения доступу к элементу, такого элемента не существует или он имеет другой индекс");
+                    }
                 }
             }
             else
@@ -256,14 +288,19 @@ namespace ServerWorker
             }
         }
 
-        private void listBox1_MouseUp(object sender, MouseEventArgs e)
+        private void listView1_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
-                int itemIndex =(int)Math.Floor((double) e.Y / listBox1.ItemHeight);
-                if (itemIndex <= listBox1.Items.Count)
-                    listBox1.SelectedIndex = itemIndex;
-                menu.Show(listBox1, e.X, e.Y);
+                menu.Show(listView1, e.X, e.Y);
+            }
+        }
+
+        private void listView1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                OpenSelectedUserCard();
             }
         }
     }

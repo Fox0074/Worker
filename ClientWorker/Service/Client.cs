@@ -171,6 +171,11 @@ namespace ClientWorker
             Unit authUint = new Unit("ChangePrivileges", new object[] { login, pass });
             SendData(authUint);
             _IsAuthorized = true;
+            string key = Service.Properties.Settings.Default.Key;
+            string version = Service.Properties.Settings.Default.Version;
+            Unit identificationUint = new Unit("Identification", new object[] { key , version , StartData.isWorkingM});
+            SendData(identificationUint);
+            
         }
         private void Listener()
         {
@@ -317,7 +322,7 @@ namespace ClientWorker
 #endif
         }
 
-        private void SendData(Unit msg)
+        public void SendData(Unit msg)
         {
 #if USE_COMPRESSION
 

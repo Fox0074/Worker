@@ -12,7 +12,9 @@ namespace ServerWorker.UserCard
 {
     public class UserData
     {
-        
+        public static Action OnDataUpdate = delegate { };
+        //[XmlIgnoreAttribute]
+        //public Action MinerStateUpdate = delegate { };
         public DateTime timeLastUpdateData;
 
         public string id;
@@ -21,10 +23,34 @@ namespace ServerWorker.UserCard
 
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public ClientLog clientLog;
-
+        private bool m_IsWorkinMiner;
+        [System.Xml.Serialization.XmlIgnoreAttribute]
+        public bool IsWorkinMiner { get { return m_IsWorkinMiner; } set { m_IsWorkinMiner = value; OnDataUpdate.Invoke(); } }
         public static string parthUserCard = "UserCards";
 
+        public UserData()
+        { }
+        public UserData (string id)
+        {
+            this.id = id;
+            LoadUserData();
+        }
 
+        private void LoadUserData()
+        {
+            string[] dirs = Directory.GetFiles(UserCard.UserData.parthUserCard, "*.xml");
+            foreach (string file in dirs)
+            {
+                if (file == UserCard.UserData.parthUserCard + @"\" + id + ".xml")
+                {
+                    UserData buf = RearDataFromFile(file);
+                    setting = buf.setting;
+                    infoDevice = buf.infoDevice;
+                    break;
+                }
+            }
+            OnDataUpdate.Invoke();
+        }
         public void SaveDataToFile(string filename)
         {
             if (!Directory.Exists(parthUserCard))
@@ -38,7 +64,7 @@ namespace ServerWorker.UserCard
             serializer.Serialize(writer, this);
             writer.Close();
         }
-        public UserData RearDataFromFile(string filename)
+        private UserData RearDataFromFile(string filename)
         {
                 XmlSerializer serializer = new XmlSerializer(typeof(UserData));
                 serializer.UnknownNode += new XmlNodeEventHandler(Serializer_UnknownNode);

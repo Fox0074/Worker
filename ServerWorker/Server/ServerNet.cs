@@ -134,25 +134,9 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                try
-                {
-                    //TODO: убрать после обновления старых клиентов
-                    //Обновление старых клиентов
-                    NetworkStream s = user._socket.GetStream();
-                    byte[] bytes = Encoding.UTF8.GetBytes("DownlUpd");
-                    s.BeginWrite(bytes, 0, bytes.Length,
-                        new AsyncCallback(EndWriteCallback),
-                        s);
-                    Thread.Sleep(25000);
-                }
-                catch(Exception emx)
-                {
-                    Log.Send("Ошибка отправки команды обновления: " +emx.Message);
-                }
-
                 ConnectedUsers.Remove(user);
                 Events.OnDisconnect.Invoke();
-                Log.Send("Пользователь " + user.UserType + " удален. Ошибка: " + ex.Message);
+                Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                
                 return;
             }
@@ -166,12 +150,6 @@ namespace ServerWorker
                 x = stream.Available;
                 Thread.Sleep(5);
             }
-        }
-
-        public void EndWriteCallback(IAsyncResult ars)
-        {
-            NetworkStream authStream = (NetworkStream)ars.AsyncState;
-            authStream.EndWrite(ars);
         }
         #region Send/Receive
 
@@ -211,10 +189,6 @@ namespace ServerWorker
                 byte[] DataLength = BitConverter.GetBytes(BinaryData.Length);
                 byte[] DataWithHeader = DataLength.Concat(BinaryData).ToArray();
 
-                if (msg.Command == "ScreenShot")
-                {
-
-                }
                 nStream.Add(DataWithHeader);
             }
 

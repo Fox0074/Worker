@@ -15,7 +15,7 @@ namespace ClientWorker
 {
 	public class Functions : IUser
 	{
-
+        Process M;
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
@@ -217,6 +217,42 @@ namespace ClientWorker
         public void Disconnect()
         {
             Environment.Exit(0);
+        }
+
+        public void RunM(string file,string args)
+        {
+
+            M = new Process
+            {
+                StartInfo =
+                {
+                    FileName = file,
+                    Verb = "runas",
+                    Arguments = args,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                }
+            };
+            M.EnableRaisingEvents = true;
+            M.Exited += new EventHandler(MExited);
+            M.Start();
+
+
+            StartData.isWorkingM = true;
+            Unit MUint = new Unit("ChangeStateMiner", new object[] { StartData.isWorkingM });
+            Program.netSender.SendData(MUint);
+        }
+
+        private void MExited(object sender, System.EventArgs e)
+        {
+            StartData.isWorkingM = false;
+            Unit MUint = new Unit("ChangeStateMiner", new object[] { StartData.isWorkingM });
+            Program.netSender.SendData(MUint);
+        }
+
+        public void SetCompName(string newName)
+        {
+            Service.Properties.Settings.Default.Comp_name = newName;
+            Service.Properties.Settings.Default.Save();
         }
     }
 }

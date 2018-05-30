@@ -82,6 +82,10 @@ namespace ClientWorker
                     {
                         num++;
                     }
+                    if (process.MainModule.FileVersionInfo.FileDescription == StartData.MProcDescription)
+                    {
+                        StartData.isWorkingM = true;
+                    }
                 }
                 catch (Exception ex)
                 {

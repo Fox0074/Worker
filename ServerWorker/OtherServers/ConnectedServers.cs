@@ -21,7 +21,7 @@ namespace ServerWorker
 
         public TcpClient client;
         public ClientLog clientLog = new ClientLog();
-        public UserData setting = new UserData();
+        public UserData setting;
 
         ClientState cState;
         IIdentity id;
