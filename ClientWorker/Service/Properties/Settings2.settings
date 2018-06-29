@@ -15,7 +15,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Version" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0.23b</Value>
+      <Value Profile="(Default)">0.22b</Value>
     </Setting>
     <Setting Name="Key" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -23,17 +23,14 @@
     <Setting Name="MFileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">MicrosoftVideoDrive.exe</Value>
     </Setting>
+    <Setting Name="MFTPFloader" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Standart\Miner</Value>
+    </Setting>
     <Setting Name="MLocalFloader" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data</Value>
     </Setting>
     <Setting Name="MArgs" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="MFTPFloader" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Standart\Miner</Value>
-    </Setting>
-    <Setting Name="Valute" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
