@@ -41,9 +41,17 @@ namespace ClientWorker
 
         public static void DetermineLogParth()
         {
-            if (Directory.GetCurrentDirectory() == Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory))
+            try
             {
+                if (!Directory.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + StartData.floaderNewCopy))
+                {
+                    Directory.CreateDirectory(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + StartData.floaderNewCopy);
+                }
                 logParth = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + StartData.floaderNewCopy + "log.txt";
+            }
+            catch (Exception ex)
+            {
+                Log.Send("Log Error : " + ex.Message);
             }
         }
     }
