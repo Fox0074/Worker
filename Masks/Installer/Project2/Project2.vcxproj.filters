@@ -38,7 +38,7 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="icon1.ico">
+    <Image Include="..\..\..\..\..\Desktop\icon.ico">
       <Filter>Файлы ресурсов</Filter>
     </Image>
     <Image Include="..\Icons\Icon.ico">

