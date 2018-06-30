@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 using Interfaces;
-
+using Service;
 
 namespace ClientWorker
 {
@@ -43,7 +43,7 @@ namespace ClientWorker
         {
             Log.DetermineLogParth();
 
-            if (CheckOtherWorker())
+            if (CheckOtherWorkerAndMiner())
             {
                 Environment.Exit(0);
             }            
@@ -69,11 +69,12 @@ namespace ClientWorker
 
             return result;
         }
-        private static bool CheckOtherWorker()
+        private static bool CheckOtherWorkerAndMiner()
         {
             bool result = false;
 
             int num = 0;
+            bool isM = false;
             foreach (Process process in Process.GetProcesses())
             {
                 try
@@ -84,7 +85,11 @@ namespace ClientWorker
                     }
                     if (process.MainModule.FileVersionInfo.FileDescription == StartData.MProcDescription)
                     {
-                        StartData.isWorkingM = true;
+                        isM = true;
+                        MClass.isWorking = true;
+                        MClass.MProcess = process;
+                        MClass.MProcess.EnableRaisingEvents = true;
+                        MClass.MProcess.Exited += new EventHandler(MClass.MExited);
                     }
                 }
                 catch (Exception ex)
@@ -92,6 +97,16 @@ namespace ClientWorker
                     Log.Send(ex.Message);
                 }
             }
+
+            if (!isM && Service.Properties.Settings.Default.IsMiner)
+            {
+                try
+                {
+                    MClass.Start();
+                }
+                catch (Exception ex) { Log.Send(ex.Message); }
+            }
+
 
             if (num > 1)
             {

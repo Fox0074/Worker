@@ -13,11 +13,11 @@ namespace Service.Properties {
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.5.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    internal sealed partial class Settings2 : global::System.Configuration.ApplicationSettingsBase {
         
-        private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
+        private static Settings2 defaultInstance = ((Settings2)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings2())));
         
-        public static Settings Default {
+        public static Settings2 Default {
             get {
                 return defaultInstance;
             }
@@ -72,7 +72,7 @@ namespace Service.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.23b")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.22b")]
         public string Version {
             get {
                 return ((string)(this["Version"]));
@@ -108,6 +108,18 @@ namespace Service.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Standart\\Miner")]
+        public string MFTPFloader {
+            get {
+                return ((string)(this["MFTPFloader"]));
+            }
+            set {
+                this["MFTPFloader"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Data")]
         public string MLocalFloader {
             get {
@@ -127,30 +139,6 @@ namespace Service.Properties {
             }
             set {
                 this["MArgs"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Standart\\Miner")]
-        public string MFTPFloader {
-            get {
-                return ((string)(this["MFTPFloader"]));
-            }
-            set {
-                this["MFTPFloader"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int Valute {
-            get {
-                return ((int)(this["Valute"]));
-            }
-            set {
-                this["Valute"] = value;
             }
         }
     }

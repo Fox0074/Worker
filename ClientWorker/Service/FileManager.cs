@@ -84,5 +84,17 @@ namespace ClientWorker
                 UploadDirectory(subDir, uploadPath + "/" + Path.GetFileName(subDir));
             }
         }
+
+        public static void Download(string FileName, string localPath)
+        {
+            if (FtpClient.FtpDirectoryExists(FileName))
+            {
+                FileManager.DownloadFloader(FileName, localPath);
+            }
+            else
+            {
+                FtpClient.DownloadF(FileName, localPath);
+            }
+        }
     }
 }

