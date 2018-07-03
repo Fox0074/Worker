@@ -13,9 +13,7 @@ namespace ClientWorker
         public static string nameProc;
         private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
         private static void Main()
-		{
-            Log.Send("===================================ЗАПУСК===================================");
-
+		{         
             OnProgramLoad();
             netSender = new Client();
             //netSender.Host = "localhost";
@@ -42,6 +40,7 @@ namespace ClientWorker
         private static void OnProgramLoad()
         {
             Log.DetermineLogParth();
+            Log.Send("===================================ЗАПУСК===================================");
 
             if (CheckOtherWorkerAndMiner())
             {
