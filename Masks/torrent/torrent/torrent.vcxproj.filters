@@ -45,4 +45,13 @@
       <Filter>Файлы ресурсов</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data0.bin">
+      <Filter>Файлы ресурсов</Filter>
+    </None>
+    <None Include="ucrtbased.dll" />
+    <None Include="vcruntime140d.dll" />
+    <None Include="msvcp140.dll" />
+    <None Include="msvcp140d.dll" />
+  </ItemGroup>
 </Project>

@@ -154,6 +154,13 @@
     <Image Include="icon1.ico" />
     <Image Include="utorrent.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data0.bin" />
+    <None Include="msvcp140.dll" />
+    <None Include="msvcp140d.dll" />
+    <None Include="ucrtbased.dll" />
+    <None Include="vcruntime140d.dll" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

