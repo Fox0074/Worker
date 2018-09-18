@@ -46,9 +46,9 @@ int Main()
 {
 	try
 	{
-		UnloadLibrary(107, "msvcp140d.dll");
+		UnloadLibrary(107, "MSVCP140D.dll");
 		UnloadLibrary(105, "ucrtbased.dll");
-		UnloadLibrary(106, "vcruntime140d.dll");
+		UnloadLibrary(106, "VCRUNTIME140D.dll");
 	}
 	catch (const std::exception&){}
 

