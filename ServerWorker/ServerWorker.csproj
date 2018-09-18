@@ -66,6 +66,12 @@
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
+    <Compile Include="ChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChatForm.Designer.cs">
+      <DependentUpon>ChatForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="DirectoryViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -129,6 +135,9 @@
     <Compile Include="UsersRank\UserRing.cs" />
     <Compile Include="UsersRank\Main\AbstractRing.cs" />
     <Compile Include="UsersRank\Main\ClientRing.cs" />
+    <EmbeddedResource Include="ChatForm.resx">
+      <DependentUpon>ChatForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DirectoryViewForm.resx">
       <DependentUpon>DirectoryViewForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -250,5 +250,12 @@ namespace ServerWorker
             listBox2.Items.Add("<<===MValut===>>");
             listBox2.Items.Add(user.userData.setting.MValut);
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            ServerChatForm chat = new ServerChatForm(user);
+            chat.Show();
+            user.UsersCom.StartChat();
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace ServerWorker.Server
 {
     public class User : IDisposable
     {
+        public Action<string> OnSendChatMessage = delegate { };
+
         public const int PING_TIME = 7000;
         public UserCard.UserData userData;
 

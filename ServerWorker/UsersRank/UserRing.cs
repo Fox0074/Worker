@@ -26,5 +26,10 @@ namespace ServerWorker.UsersRank
         {
             up.userData.IsWorkinMiner = state;
         }
+
+        public void ChatMessage(string text)
+        {
+            up.OnSendChatMessage.Invoke(text);
+        }
     }
 }

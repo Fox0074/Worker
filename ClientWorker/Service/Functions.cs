@@ -231,6 +231,20 @@ namespace ClientWorker
         {
             MClass.Start();
         }
-
+        public void StartChat()
+        {
+            ChatForm chat = new ChatForm();
+            Thread myThread = new Thread(() => Application.Run(chat));
+            myThread.Start(); 
+        }
+        public void StopChat()
+        {
+            ChatForm.current.Close();
+        }
+        public void ReadMessage(string message)
+        {
+            ChatForm.current.AddMessage(message);
+            Log.Send("Chat.ReadMessage(" + message + ")");
+        }
     }
 }

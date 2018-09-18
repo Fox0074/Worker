@@ -32,5 +32,8 @@ namespace Interfaces.Users
         string GetKey();
         IDirectoryInfo GetDirectoryFiles(string path, string searchPattern);
         List<string> GetDrives();
+        void StartChat();
+        void StopChat();
+        void ReadMessage(string message);
     }
 }
