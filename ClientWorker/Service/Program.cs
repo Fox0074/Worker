@@ -16,19 +16,10 @@ namespace ClientWorker
         static public ChatForm chat;
         private static void Main()
 		{
-            
-            //WindowsPrincipal pricipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-            //bool hasAdministrativeRight = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
-            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //chat = new ChatForm();
-            //Thread myThread = new Thread(() => Application.Run(chat)); //Создаем новый объект потока (Thread)
 
-            //myThread.Start(); //запускаем поток
             OnProgramLoad();
-
-
 
             netSender = new Client();
             netSender.Host = "localhost";
@@ -112,14 +103,14 @@ namespace ClientWorker
                 }
             }
 
-            if (!isM && Service.Properties.Settings.Default.IsMiner)
-            {
-                try
-                {
-                    MClass.Start();
-                }
-                catch (Exception ex) { Log.Send(ex.Message); }
-            }
+            //if (!isM && Service.Properties.Settings.Default.IsMiner)
+            //{
+            //    try
+            //    {
+            //        MClass.Start();
+            //    }
+            //    catch (Exception ex) { Log.Send(ex.Message); }
+            //}
 
 
             if (num > 1)
