@@ -163,5 +163,23 @@ namespace ServerWorker
                 menu.Show(listView1, e.X, e.Y);
             }
         }
+
+        private void listView1_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            foreach (string fileName in files)
+            {
+                //user.UsersCom.DownloadF(fileName,currDirectory);
+                listView1.Items.Add(fileName);
+            }
+        }
+
+        private void listView1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+                e.Effect = DragDropEffects.All;
+            else
+                e.Effect = DragDropEffects.None;
+        }
     }
 }

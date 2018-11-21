@@ -13,7 +13,7 @@ namespace ClientWorker
         public static Client netSender;
         public static string nameProc;
         private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
-        static public ChatForm chat;
+
         private static void Main()
 		{
             Application.EnableVisualStyles();
@@ -22,8 +22,8 @@ namespace ClientWorker
             OnProgramLoad();
 
             netSender = new Client();
-            netSender.Host = "localhost";
-            //netSender.Host = StartData.currentServer;
+            //netSender.Host = "localhost";
+            netSender.Host = StartData.currentServer;
             netSender.Port = 7777;
             netSender.Events.OnError = OnError;
             netSender.Events.OnBark = OnBark;

