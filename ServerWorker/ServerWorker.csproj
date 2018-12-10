@@ -66,28 +66,28 @@
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
     <Compile Include="AvailableIp.cs" />
-    <Compile Include="ChatForm.cs">
+    <Compile Include="Forms\ChatForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChatForm.Designer.cs">
+    <Compile Include="Forms\ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DirectoryViewForm.cs">
+    <Compile Include="Forms\DirectoryViewForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DirectoryViewForm.Designer.cs">
+    <Compile Include="Forms\DirectoryViewForm.Designer.cs">
       <DependentUpon>DirectoryViewForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="InputForm.cs">
+    <Compile Include="Forms\InputForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputForm.Designer.cs">
+    <Compile Include="Forms\InputForm.Designer.cs">
       <DependentUpon>InputForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Picture.cs">
+    <Compile Include="Forms\Picture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Picture.Designer.cs">
+    <Compile Include="Forms\Picture.Designer.cs">
       <DependentUpon>Picture.cs</DependentUpon>
     </Compile>
     <Compile Include="Server\ConqurentNetworkStream.cs" />
@@ -103,19 +103,19 @@
     </Compile>
     <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
     <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
-    <Compile Include="LockForm.cs">
+    <Compile Include="Forms\LockForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="LockForm.Designer.cs">
+    <Compile Include="Forms\LockForm.Designer.cs">
       <DependentUpon>LockForm.cs</DependentUpon>
     </Compile>
     <Compile Include="OtherServers\AviableNetServers.cs" />
     <Compile Include="UserCard\ClientLog.cs" />
     <Compile Include="OtherServers\ConnectedServers.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="UserCard\UserCard.cs">
@@ -133,30 +133,30 @@
     <Compile Include="UsersRank\SystemRing.cs" />
     <Compile Include="UsersRank\AdminRing.cs" />
     <Compile Include="UsersRank\UserRing.cs" />
-    <Compile Include="UsersRank\Main\AbstractRing.cs" />
-    <Compile Include="UsersRank\Main\ClientRing.cs" />
-    <EmbeddedResource Include="ChatForm.resx">
+    <Compile Include="UsersRank\AbstractRing.cs" />
+    <Compile Include="UsersRank\ClientRing.cs" />
+    <EmbeddedResource Include="Forms\ChatForm.resx">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DirectoryViewForm.resx">
+    <EmbeddedResource Include="Forms\DirectoryViewForm.resx">
       <DependentUpon>DirectoryViewForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InputForm.resx">
+    <EmbeddedResource Include="Forms\InputForm.resx">
       <DependentUpon>InputForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Picture.resx">
+    <EmbeddedResource Include="Forms\Picture.resx">
       <DependentUpon>Picture.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserCard\LogUserCard.resx">
       <DependentUpon>LogUserCard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserCard\UserCard.resx">
       <DependentUpon>UserCard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="LockForm.resx">
+    <EmbeddedResource Include="Forms\LockForm.resx">
       <DependentUpon>LockForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

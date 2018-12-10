@@ -1,20 +1,16 @@
 ﻿#define USE_COMPRESSION
 
 using Interfaces;
+using Service;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Proxies;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
-using ClientWorker;
-using System.Collections.Generic;
-using Service;
 
 namespace ClientWorker
 {
@@ -175,9 +171,9 @@ namespace ClientWorker
             string key = Service.Properties.Settings.Default.Key;
             string version = Service.Properties.Settings.Default.Version;
             Unit identificationUint = new Unit("Identification", new object[] { key , version , MClass.isWorking});
-            SendData(identificationUint);
-            
+            SendData(identificationUint);   
         }
+
         private void Listener()
         {
             while (true)
