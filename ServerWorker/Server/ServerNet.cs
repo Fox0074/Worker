@@ -18,6 +18,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Text;
 using System.Drawing;
+using System.Runtime.Serialization;
 
 namespace ServerWorker
 {
@@ -153,6 +154,17 @@ namespace ServerWorker
         }
         #region Send/Receive
 
+        sealed class DeserializeBinder : SerializationBinder
+        {
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                //TODO: Профиксиль после перевода на 24 либо 25 версию
+                if (typeName.Split('.').Last() == "Unit") return typeof(Unit);
+                return Type.GetType(typeName);
+
+            }
+        }
+
         private T MessageFromBinary<T>(byte[] BinaryData) where T : class
         {
 #if USE_COMPRESSION
@@ -161,6 +173,7 @@ namespace ServerWorker
                 using (var gZipStream = new GZipStream(memory, CompressionMode.Decompress, false))
                 {
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
+                    binaryFormatter.Binder = new DeserializeBinder();
                     return (T)binaryFormatter.Deserialize(gZipStream);
                 }
             }

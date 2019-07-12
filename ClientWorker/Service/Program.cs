@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Data;
+using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Principal;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using Interfaces;
@@ -29,9 +33,9 @@ namespace ClientWorker
             netSender.Events.OnBark = OnBark;
             netSender.Connect(false);
 
-
             _OnResponce.Wait();
         }
+
 
         private static void OnBark(int obj)
         {

