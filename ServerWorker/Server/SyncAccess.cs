@@ -35,5 +35,13 @@ namespace ServerWorker.Server
                 return userList.ToArray();
             }
         }
+
+        public int IndexOf(User user)
+        {
+            lock (listLock)
+            {
+                return userList.IndexOf(user);
+            }
+        }
     }
 }

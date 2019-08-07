@@ -69,6 +69,10 @@ namespace ServerWorker
             }
 
             MySQLManager.Send(data);
+
+            user.userData.IsGettingLoginData = true;
+            if (user.userData.id != "")
+                user.userData.SaveDataToFile(user.userData.id + ".xml");
         }
 
         private void ReRequest()

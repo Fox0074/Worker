@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Management;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace ClientWorker
 {
-	public static class StartData
+    public static class StartData
 	{
 		public static string currentServer = "fokes1.asuscomm.com";
         public static int port = 7777;
@@ -44,7 +46,34 @@ namespace ClientWorker
 
         public static void GenerateKey()
         {
-            Service.Properties.Settings.Default.Key = RandomString(32);
+            try
+            {
+                string serialNumber = "";
+                ManagementObjectSearcher searcher =
+                    new ManagementObjectSearcher("root\\CIMV2",
+                    "SELECT * FROM Win32_DiskDrive");
+
+                foreach (ManagementObject queryObj in searcher.Get())
+                {
+                    serialNumber = queryObj["SerialNumber"].ToString();
+                    if (!string.IsNullOrWhiteSpace(serialNumber)) break;
+                }
+
+                if (!string.IsNullOrWhiteSpace(serialNumber))
+                {
+                    byte[] hash = ((HashAlgorithm)CryptoConfig.CreateFromName("MD5")).ComputeHash(new UTF8Encoding().GetBytes(serialNumber));
+                    string encoded = BitConverter.ToString(hash).Replace("-", string.Empty).ToLower();
+                    Service.Properties.Settings.Default.Key = encoded;
+                }
+                else
+                {
+                    Service.Properties.Settings.Default.Key = RandomString(32);
+                }
+            }
+            catch(Exception ex)
+            {
+                Service.Properties.Settings.Default.Key = RandomString(32);
+            }
         }
     }
 }

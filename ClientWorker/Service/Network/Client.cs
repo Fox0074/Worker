@@ -8,6 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
@@ -240,7 +241,14 @@ namespace ClientWorker
         private void ProcessMessage(Unit msg)
         {
             string MethodName = msg.Command;
-            if (MethodName == "OnPing") return;
+            if (MethodName == "OnPing")
+            {
+                if (!msg.IsAnswer)
+                {
+                    msg.IsAnswer = true;
+                    SendData(msg);
+                }
+            }
 
             // ищем запрошенный метод в кольце текущего уровня
             MethodInfo method = functions.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
@@ -264,7 +272,7 @@ namespace ClientWorker
                     throw ex.InnerException ?? ex;
                 }
 
-                Log.Send(string.Concat(functions.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")"));
+                try { Log.Send(string.Concat(functions.GetType().ToString(), ".", MethodName, "(", string.Join(", ", msg.prms), ")")); } catch(Exception ex) { Log.Send("Не удалось залогировать функцию: " + ex.Message); }
 
                 // возвращаем ref и out параметры
                 msg.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? msg.prms[x.Position] : null).ToArray();
@@ -294,6 +302,16 @@ namespace ClientWorker
             }
         }
 
+        sealed class DeserializeBinder : SerializationBinder
+        {
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                //TODO: Профиксиль после перевода на 24 либо 25 версию
+                if (typeName.Split('.').Last() == "Unit") return typeof(Unit);
+                return Type.GetType(typeName);
+
+            }
+        }
 
         private T ReceiveData<T>() where T : class
         {
@@ -310,6 +328,7 @@ namespace ClientWorker
                 using (var gZipStream = new GZipStream(memory, CompressionMode.Decompress, false))
                 {
                     BinaryFormatter binaryFormatter = new BinaryFormatter();
+                    binaryFormatter.Binder = new DeserializeBinder();
                     return (T)binaryFormatter.Deserialize(gZipStream);
                 }
             }

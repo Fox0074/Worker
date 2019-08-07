@@ -21,6 +21,7 @@ namespace ServerWorker.UserCard
         public ISetting setting = new ISetting();
         public IInfoDevice infoDevice = new IInfoDevice();
 
+        public bool IsGettingLoginData { get; set; }
         [System.Xml.Serialization.XmlIgnoreAttribute]
         public ClientLog clientLog;
         private bool m_IsWorkinMiner;
@@ -38,18 +39,23 @@ namespace ServerWorker.UserCard
 
         private void LoadUserData()
         {
-            string[] dirs = Directory.GetFiles(UserCard.UserData.parthUserCard, "*.xml");
-            foreach (string file in dirs)
+            try
             {
-                if (file == UserCard.UserData.parthUserCard + @"\" + id + ".xml")
+                string[] dirs = Directory.GetFiles(UserCard.UserData.parthUserCard, "*.xml");
+                foreach (string file in dirs)
                 {
-                    UserData buf = RearDataFromFile(file);
-                    setting = buf.setting;
-                    infoDevice = buf.infoDevice;
-                    break;
+                    if (file == UserCard.UserData.parthUserCard + @"\" + id + ".xml")
+                    {
+                        UserData buf = RearDataFromFile(file);
+                        setting = buf.setting;
+                        infoDevice = buf.infoDevice;
+                        IsGettingLoginData = buf.IsGettingLoginData;
+                        break;
+                    }
                 }
+                OnDataUpdate.Invoke();
             }
-            OnDataUpdate.Invoke();
+            catch { }
         }
         public void SaveDataToFile(string filename)
         {

@@ -3,22 +3,13 @@
 using Interfaces;
 using ServerWorker.Server;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Windows.Forms;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Proxies;
+using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Text;
-using System.Drawing;
-using System.Runtime.Serialization;
 
 namespace ServerWorker
 {
@@ -26,8 +17,8 @@ namespace ServerWorker
     public interface IEvents
     {
         Action OnStartConnect { get; set; }
-        Action OnConnected { get; set; }
-        Action OnDisconnect { get; set; }
+        Action<User> OnConnected { get; set; }
+        Action<User> OnDisconnect { get; set; }
         Action OnPing { get; set; }
         Action<Exception> OnError { get; set; }
         Action OnAuthorized { get; set; }
@@ -50,12 +41,11 @@ namespace ServerWorker
             get { return this; }
         }
 
-
         #region События
 
         Action IEvents.OnStartConnect { get; set; }
-        Action IEvents.OnConnected { get; set; }
-        Action IEvents.OnDisconnect { get; set; }
+        Action<User> IEvents.OnConnected { get; set; }
+        Action<User> IEvents.OnDisconnect { get; set; }
         Action IEvents.OnPing { get; set; }
         Action<Exception> IEvents.OnError { get; set; }
         Action IEvents.OnAuthorized { get; set; }
@@ -89,20 +79,20 @@ namespace ServerWorker
             var client = SERV.EndAcceptTcpClient(asyncResult);
             SERV.BeginAcceptTcpClient(OnAcceptClient, null);
 
-            User up = new User(client);
-            ConnectedUsers.Add(up);
-            Log.Send("Подключился клиент: " + up.UserType);
-            Events.OnConnected.Invoke();
+            User user = new User(client);
+            ConnectedUsers.Add(user);
+            Log.Send("Подключился клиент: " + user.UserType);
+            Events.OnConnected.Invoke(user);
 
             try
             {
-                up.nStream.BeginRead(up.HeaderLength, OnDataReadCallback, up);
+                user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
             }
             catch (IOException ex)
             {
                 Log.Send(ex.Message);
-                ConnectedUsers.Remove(up);
-                Events.OnDisconnect.Invoke();
+                Events.OnDisconnect.Invoke(user);
+                ConnectedUsers.Remove(user);
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
         }
@@ -122,9 +112,13 @@ namespace ServerWorker
                 Unit unit = MessageFromBinary<Unit>(data);
                 if (unit.Command == "OnPing")
                 {
-                    // отражаем пинг
-                    SendMessage(user.nStream, unit);
-                    if (Events.OnPing != null) Events.OnPing.BeginInvoke(null, null);
+                    if (unit.IsAnswer) user.PingResponce();
+                    else
+                    {
+                        unit.IsAnswer = true;
+                        SendMessage(user.nStream, unit);
+                        if (Events.OnPing != null) Events.OnPing.BeginInvoke(null, null);
+                    }
                 }
                 else
                 {
@@ -135,8 +129,8 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                ConnectedUsers.Remove(user);
-                Events.OnDisconnect.Invoke();
+                Events.OnDisconnect.Invoke(user);
+                ConnectedUsers.Remove(user);               
                 Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                
                 return;

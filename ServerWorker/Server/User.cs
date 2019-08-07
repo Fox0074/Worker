@@ -9,13 +9,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ServerWorker.UsersRank;
 using System.Net;
+using System.Diagnostics;
 
 namespace ServerWorker.Server
 {
     public class User : IDisposable
     {
         public Action<string> OnSendChatMessage = delegate { };
+        public event Action<User> OnPingUpdate = delegate { };
 
+        public long Ping;
         public const int PING_TIME = 7000;
         public UserCard.UserData userData;
 
@@ -26,6 +29,7 @@ namespace ServerWorker.Server
         private readonly object syncLock = new object();
         private Unit _syncResult;
         private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
+        private Stopwatch stopWatch = new Stopwatch();
 
         private readonly Proxy<IAdmin> AdminComProxy;
         private readonly Proxy<ISystem> SystemComProxy;
@@ -92,7 +96,19 @@ namespace ServerWorker.Server
         private void OnPing(object state)
         {
             ServerNet.SendMessage(nStream, new Unit("OnPing", null));
+            stopWatch.Restart();
         }
+
+        public void PingResponce()
+        {
+            stopWatch.Stop();
+            if (Ping != stopWatch.ElapsedMilliseconds)
+            {
+                Ping = stopWatch.ElapsedMilliseconds;
+                OnPingUpdate(this);
+            }
+        }
+
         public void Dispose()
         {
             lock (_disposeLock)

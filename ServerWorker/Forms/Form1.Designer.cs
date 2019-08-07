@@ -52,6 +52,8 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // label1
@@ -69,7 +71,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(741, 43);
+            this.button1.Location = new System.Drawing.Point(863, 42);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(129, 23);
             this.button1.TabIndex = 2;
@@ -79,7 +81,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(741, 71);
+            this.button4.Location = new System.Drawing.Point(863, 71);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(129, 23);
             this.button4.TabIndex = 6;
@@ -109,7 +111,7 @@
             this.listBox2.ItemHeight = 16;
             this.listBox2.Location = new System.Drawing.Point(12, 395);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(858, 132);
+            this.listBox2.Size = new System.Drawing.Size(954, 132);
             this.listBox2.TabIndex = 12;
             // 
             // button7
@@ -124,7 +126,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(741, 100);
+            this.button8.Location = new System.Drawing.Point(863, 100);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(129, 23);
             this.button8.TabIndex = 17;
@@ -146,7 +148,9 @@
             this.columnHeader3,
             this.columnHeader4,
             this.columnHeader5,
-            this.columnHeader6});
+            this.columnHeader6,
+            this.columnHeader7,
+            this.columnHeader8});
             this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.Font = new System.Drawing.Font("Arial", 9.75F);
             this.listView1.ForeColor = System.Drawing.Color.Lime;
@@ -154,9 +158,9 @@
             listViewItem1.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
             listViewItem1});
-            this.listView1.Location = new System.Drawing.Point(12, 43);
+            this.listView1.Location = new System.Drawing.Point(12, 42);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(723, 292);
+            this.listView1.Size = new System.Drawing.Size(845, 292);
             this.listView1.TabIndex = 18;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -178,7 +182,7 @@
             // 
             this.columnHeader3.Tag = "CompName";
             this.columnHeader3.Text = "Имя компьютера";
-            this.columnHeader3.Width = 222;
+            this.columnHeader3.Width = 206;
             // 
             // columnHeader4
             // 
@@ -190,12 +194,24 @@
             // 
             this.columnHeader5.Tag = "VideoDriver";
             this.columnHeader5.Text = "Видеокарта";
-            this.columnHeader5.Width = 164;
+            this.columnHeader5.Width = 140;
             // 
             // columnHeader6
             // 
             this.columnHeader6.Tag = "Miner";
             this.columnHeader6.Text = "Майнер";
+            this.columnHeader6.Width = 59;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Tag = "GetPass";
+            this.columnHeader7.Text = "Пароли";
+            this.columnHeader7.Width = 58;
+            // 
+            // columnHeader8
+            // 
+            this.columnHeader8.Tag = "Ping";
+            this.columnHeader8.Text = "Ping";
             // 
             // Form1
             // 
@@ -205,7 +221,7 @@
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(882, 541);
+            this.ClientSize = new System.Drawing.Size(1004, 541);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
@@ -240,6 +256,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ColumnHeader columnHeader8;
     }
 }
 
