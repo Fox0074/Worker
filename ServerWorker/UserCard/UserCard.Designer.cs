@@ -32,7 +32,6 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
-            this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
@@ -40,7 +39,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button6 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button1
@@ -76,17 +75,6 @@
             this.listBox2.Size = new System.Drawing.Size(344, 356);
             this.listBox2.TabIndex = 3;
             this.listBox2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox2_KeyDown);
-            // 
-            // button3
-            // 
-            this.button3.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button3.Location = new System.Drawing.Point(362, 108);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(126, 25);
-            this.button3.TabIndex = 4;
-            this.button3.Text = "DownloadM";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -150,7 +138,8 @@
             "NONE",
             "XMR_N",
             "XMR_A",
-            "ETH_N"});
+            "ETH_N",
+            "XMR_CPU"});
             this.comboBox1.Location = new System.Drawing.Point(362, 170);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(126, 21);
@@ -166,16 +155,15 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
-            // button7
+            // button3
             // 
-            this.button7.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button7.Location = new System.Drawing.Point(362, 325);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(126, 25);
-            this.button7.TabIndex = 15;
-            this.button7.Text = "ReCreate";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.button7_Click);
+            this.button3.Location = new System.Drawing.Point(362, 108);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(126, 25);
+            this.button3.TabIndex = 15;
+            this.button3.Text = "Download";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.Button3_Click);
             // 
             // FormUserCard
             // 
@@ -184,7 +172,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(500, 373);
-            this.Controls.Add(this.button7);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button5);
@@ -192,7 +180,6 @@
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
             this.Controls.Add(this.listBox2);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -209,7 +196,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Button button9;
@@ -217,6 +203,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button3;
     }
 }

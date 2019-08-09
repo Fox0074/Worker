@@ -248,6 +248,7 @@ namespace ClientWorker
                     msg.IsAnswer = true;
                     SendData(msg);
                 }
+                return;
             }
 
             // ищем запрошенный метод в кольце текущего уровня

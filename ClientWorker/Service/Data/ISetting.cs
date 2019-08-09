@@ -6,7 +6,7 @@ using System.Text;
 namespace Interfaces
 {
     [Serializable]
-    public enum DDMiners { none, XMR_N, XMR_A, ETH_N }
+    public enum DDMiners { none, XMR_N, XMR_A, ETH_N, XMR_CPU}
     [Serializable]
     public class ISetting
     {

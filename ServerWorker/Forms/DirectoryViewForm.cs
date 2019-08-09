@@ -51,7 +51,7 @@ namespace ServerWorker
         }
         private void RunHide(object sender, EventArgs e)
         {
-            user.UsersCom.RunHideProgram(listView1.SelectedItems[0].Text.ToString());
+            user.UsersCom.RunProgram(listView1.SelectedItems[0].Text.ToString(),"runas","",System.Diagnostics.ProcessWindowStyle.Hidden,false);
         }
         private void Upload(object sender, EventArgs e)
         {

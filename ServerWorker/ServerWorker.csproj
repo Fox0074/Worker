@@ -99,6 +99,12 @@
     <Compile Include="Server\Proxy.cs" />
     <Compile Include="Server\SyncAccess.cs" />
     <Compile Include="Server\User.cs" />
+    <Compile Include="UserCard\Download.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserCard\Download.Designer.cs">
+      <DependentUpon>Download.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserCard\LogUserCard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -150,6 +156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Picture.resx">
       <DependentUpon>Picture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserCard\Download.resx">
+      <DependentUpon>Download.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserCard\LogUserCard.resx">
       <DependentUpon>LogUserCard.cs</DependentUpon>

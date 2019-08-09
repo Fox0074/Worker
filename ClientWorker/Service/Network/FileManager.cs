@@ -12,9 +12,9 @@ namespace ClientWorker
             FtpClient.DownloadFtpDirectory("ftp://" + StartData.currentServer + "/" + floader, localPath);
         }
 
-        public static void RunHideProc(string fileName)
+        public static void RunProc(string fileName, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
         {
-            Log.Send("RunHideProc");
+            Log.Send("RunProc");
             try
             {
                 new Process
@@ -22,24 +22,26 @@ namespace ClientWorker
                     StartInfo =
                     {
                         FileName = fileName,
-                        WindowStyle = ProcessWindowStyle.Hidden,
-                        Verb = "runas",
-            }
+                        WindowStyle = style,
+                        Verb = verb,
+                        Arguments = args,
+                        UseShellExecute = useShellExecute
+                    }
                 }.Start();
             }
             catch (Exception ex)
             {
-                Log.Send("RunHideProc failed: " + ex.ToString());
+                Log.Send("RunProc failed: " + ex.ToString());
             }
         }
 
-        public static void DownloadFileAndRun(string fileName)
+        public static void DownloadFileAndRun(string fileName, string localPath, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
         {
             Log.Send("DownloadFileAndRun");
             try
             {
-                FtpClient.DownloadF(fileName);
-                RunHideProc(fileName);
+                FtpClient.DownloadF(fileName,localPath);
+                RunProc(fileName, verb, args, style, useShellExecute);
             }
             catch (Exception ex)
             {

