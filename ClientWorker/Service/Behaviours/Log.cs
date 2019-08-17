@@ -4,7 +4,7 @@ using System.IO;
 
 namespace ClientWorker
 {
-	public static class Log
+    public static class Log
 	{
         public static List<string> messages = new List<string>();
         public static List<string> ErrorLog = new List<string>();

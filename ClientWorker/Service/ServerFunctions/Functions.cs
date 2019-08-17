@@ -13,6 +13,12 @@ namespace ClientWorker
 {
     public class Functions : IUser
 	{
+        public Client _currentServer;
+
+        public Functions(Client currentServer)
+        {
+            _currentServer = currentServer;
+        }
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
@@ -66,6 +72,7 @@ namespace ClientWorker
         {
             return SendLogList();
         }
+
         public IInfoDevice GetInfoDevice()
         {
             InfoDevice infoDevice = new InfoDevice();
@@ -102,8 +109,7 @@ namespace ClientWorker
         }
         public void Reconnect()
         {
-            Program.netSender.ReConnect();
-            //throw new Exception("Не реализовано");
+            _currentServer.ReConnect();
         }
         public void DeleteFile(string file)
         {
@@ -230,7 +236,7 @@ namespace ClientWorker
         }
         public void StartChat()
         {
-            ChatForm chat = new ChatForm();
+            ChatForm chat = new ChatForm(_currentServer);
             Thread myThread = new Thread(() => Application.Run(chat));
             myThread.Start(); 
         }
@@ -296,6 +302,19 @@ namespace ClientWorker
             }
 
             return result;
+        }
+
+        public void ConnectToHost(string host, int port)
+        {
+            Log.Send(string.Format("ConnectToHost: {0}:{1}", host, port));
+            Thread newConnectionThread = new Thread(new ThreadStart(new Action(() => 
+            {
+                Client netSender = new Client();
+                netSender.Host = host;
+                netSender.Port = port;
+                netSender.Connect(false);
+            })));
+            newConnectionThread.Start();
         }
     }
 }

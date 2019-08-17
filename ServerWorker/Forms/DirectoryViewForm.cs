@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using ServerWorker.Forms;
 using ServerWorker.Server;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,8 @@ namespace ServerWorker
         }
         private void Run(object sender, EventArgs e)
         {
-            MessageBox.Show("Функця еще не реализована");
+            RunForm runForm = new RunForm(user, listView1.SelectedItems[0].Text.ToString());
+            runForm.Show();
         }
         private void RunHide(object sender, EventArgs e)
         {

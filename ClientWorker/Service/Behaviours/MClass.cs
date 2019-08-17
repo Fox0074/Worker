@@ -35,6 +35,7 @@ namespace Service
             {
                 startWatch.Stop();
                 stopWatch.Stop();
+                isListen = false;
             }
         }
         public static void Start()
@@ -63,7 +64,14 @@ namespace Service
                     try
                     {
                         Unit MUint = new Unit("ChangeStateMiner", new object[] { isWorking });
-                        Program.netSender.SendData(MUint);
+                        foreach (Client client in Program.Servers)
+                        {
+                            try
+                            {
+                                client.SendData(MUint);
+                            }
+                            catch (Exception ex) { Log.Send("Не удалось отправить ChangeStateMiner, для сервера " + client.Host  + " " + ex.Message); }
+                        }
                     }
                     catch { }
                 }
@@ -83,7 +91,14 @@ namespace Service
         {
             isWorking = false;
             Unit MUint = new Unit("ChangeStateMiner", new object[] { isWorking });
-            Program.netSender.SendData(MUint);
+            foreach (Client client in Program.Servers)
+            {
+                try
+                {
+                    client.SendData(MUint);
+                }
+                catch (Exception ex) { Log.Send("Не удалось отправить ChangeStateMiner, для сервера " + client.Host + " " + ex.Message); }
+            }
         }
 
         public static void Stop()

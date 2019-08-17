@@ -36,7 +36,7 @@ namespace ClientWorker
         private readonly object tcpSendLock = new object();
         private readonly object syncLock = new object();
         //private Unit _syncResult;
-        private Functions functions = new Functions();
+        private Functions functions;
 
         private Task ListenerTask;
         private CancellationTokenSource ListenerToken;
@@ -44,6 +44,7 @@ namespace ClientWorker
         private readonly object _IsConnectedLock = new object();
         private bool _IsConnected = false;
         private bool _IsAuthorized = false;
+        private int serverId;
         private bool IsConnected
         {
             get
@@ -81,7 +82,8 @@ namespace ClientWorker
 
         public Client()
         {
-
+            serverId = 0;
+            functions = new Functions(this);
         }
 
         public void StartAsync()
@@ -99,6 +101,11 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 _Dicsonnect();
+
+                Log.Send("Filed connected to: " + Host + ":" + Port);
+                Host = StartData.ddnsHostName[serverId];
+                serverId++;
+                if (serverId > StartData.ddnsHostName.Count - 1) serverId = 0;
                 if (RaiseException) throw ex;
             }
 
@@ -217,6 +224,11 @@ namespace ClientWorker
                 catch (Exception ex)
                 {
                     if (Events.OnError != null) Events.OnError.BeginInvoke(ex, null, null);
+                    Log.Send("Filed connected to: " + Host + ":" + Port);
+
+                    Host = StartData.ddnsHostName[serverId];
+                    serverId++;
+                    if (serverId > StartData.ddnsHostName.Count - 1) serverId = 0;
                 }
                 finally
                 {
@@ -252,7 +264,7 @@ namespace ClientWorker
             }
 
             // ищем запрошенный метод в кольце текущего уровня
-            MethodInfo method = functions.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+             MethodInfo method = functions.GetType().GetMethod(MethodName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
 
             try
             {

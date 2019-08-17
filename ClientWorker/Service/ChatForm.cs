@@ -16,10 +16,12 @@ namespace Service
     {
         public static ChatForm current;
         public static bool isWorking = false;
+        private Client client;
 
-        public ChatForm()
+        public ChatForm(Client client)
         {          
             InitializeComponent();
+            this.client = client;
             current = this;
             isWorking = true;
             Log.Send("Chat.isWorking = true");
@@ -35,7 +37,7 @@ namespace Service
         {
             AddMessage(text);
             Unit MUint = new Unit("ChatMessage", new object[] { text });
-            Program.netSender.SendData(MUint);
+            client.SendData(MUint);
             Log.Send("Chat.Send(" + text + ")");
         }
 

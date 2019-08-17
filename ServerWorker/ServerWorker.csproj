@@ -93,6 +93,12 @@
     <Compile Include="Forms\Picture.Designer.cs">
       <DependentUpon>Picture.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\RunForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RunForm.Designer.cs">
+      <DependentUpon>RunForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MySQLManager.cs" />
     <Compile Include="Server\ConqurentNetworkStream.cs" />
     <Compile Include="Server\ProcessMessage.cs" />
@@ -156,6 +162,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Picture.resx">
       <DependentUpon>Picture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\RunForm.resx">
+      <DependentUpon>RunForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserCard\Download.resx">
       <DependentUpon>Download.cs</DependentUpon>

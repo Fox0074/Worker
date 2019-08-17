@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 
 namespace ClientWorker
 {
-	public static class FtpClient
+    public static class FtpClient
 	{
         private static FtpWebRequest reqFTP;
         private static int buffLength = 2048;
@@ -92,6 +91,13 @@ namespace ClientWorker
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);
                 ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
                 ftpWebRequest.Credentials = new NetworkCredential(StartData.ftpUser, StartData.ftpPass);
+
+                List<string> splitPath = new List<string>(FileName.Split('\\'));
+                var directory = localPath + FileName.Replace(splitPath[splitPath.Count - 1], "");
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
 
                 FtpWebResponse ftpWebResponse = (FtpWebResponse)ftpWebRequest.GetResponse();
                 FileStream fileStream = new FileStream(localPath + FileName, FileMode.Create);

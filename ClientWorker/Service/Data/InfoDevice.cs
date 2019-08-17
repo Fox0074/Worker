@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Interfaces;
+using System;
 using System.Management;
-using Interfaces;
 
 namespace ClientWorker
 {
@@ -13,11 +10,11 @@ namespace ClientWorker
         private IInfoDevice infoDevice = new IInfoDevice();
         public IInfoDevice AskedInfoDevice()
         {
-            GpuInfo();
-            CpuInfo();
-            VirtualMemory();
-            HddInfo();
-            SystemInfo();
+            try { GpuInfo(); } catch { Log.Send("Не удалось выполнить GpuInfo()"); }
+            try { CpuInfo(); } catch { Log.Send("Не удалось выполнить CpuInfo()"); }
+            try { VirtualMemory(); } catch { Log.Send("Не удалось выполнить VirtualMemoryInfo()"); }
+            try { HddInfo(); } catch { Log.Send("Не удалось выполнить HddInfo()"); }
+            try { SystemInfo(); } catch { Log.Send("Не удалось выполнить SystemInfo()"); }
 
             return infoDevice;
         }
