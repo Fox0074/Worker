@@ -6,6 +6,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -32,7 +33,7 @@ namespace ClientWorker
         public const int TIMEOUT = 30000;
         public int Port;
         public string Host;
-        private TcpClient ServerSocket;
+        public TcpClient ServerSocket;
         private readonly object tcpSendLock = new object();
         private readonly object syncLock = new object();
         //private Unit _syncResult;
@@ -101,11 +102,6 @@ namespace ClientWorker
             catch (Exception ex)
             {
                 _Dicsonnect();
-
-                Log.Send("Filed connected to: " + Host + ":" + Port);
-                Host = StartData.ddnsHostName[serverId];
-                serverId++;
-                if (serverId > StartData.ddnsHostName.Count - 1) serverId = 0;
                 if (RaiseException) throw ex;
             }
 
@@ -161,8 +157,8 @@ namespace ClientWorker
             ServerSocket.SendTimeout = TIMEOUT;
 
             #region Подключение
-
             if (Events.OnStartConnect != null) Events.OnStartConnect.BeginInvoke(null, null);
+
             ServerSocket.Connect(Host, Port);
             if (Events.OnConnected != null) Events.OnConnected.BeginInvoke(null, null);
             IsConnected = true;
@@ -224,22 +220,34 @@ namespace ClientWorker
                 catch (Exception ex)
                 {
                     if (Events.OnError != null) Events.OnError.BeginInvoke(ex, null, null);
-                    Log.Send("Filed connected to: " + Host + ":" + Port);
-
-                    Host = StartData.ddnsHostName[serverId];
-                    serverId++;
-                    if (serverId > StartData.ddnsHostName.Count - 1) serverId = 0;
+                    Log.Send("Filed connected to: " + Host + ":" + Port + "Error: " + ex.Message);
                 }
                 finally
                 {
                     _Dicsonnect();
                 }
 
+                if (StartData.ddnsHostName.Contains(Host))
+                {
+                    foreach (Client client in Program.Servers)
+                    {
+                        if (client.IsConnected && StartData.ddnsHostName.Contains(client.Host) && client != this)
+                        {
+                            Program.Servers.Remove(this);
+                            return;
+                        }
+                    }
+
+                    Host = StartData.ddnsHostName[serverId];
+                    serverId++;
+                    if (serverId > StartData.ddnsHostName.Count - 1) serverId = 0;
+                }
+
                 Thread.Sleep(2000);
             }
         }
 
-        private void _Dicsonnect()
+        public void _Dicsonnect()
         {
             if (ServerSocket != null) ServerSocket.Close();
             IsConnected = false;

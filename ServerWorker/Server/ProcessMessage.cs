@@ -84,7 +84,14 @@ namespace ServerWorker.Server
                     throw ex.InnerException;
                 }
 
-                Log.Send(string.Concat(startUserType.ToString(), " ", user.EndPoint, " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
+                if (Program.authSystem.sessionLoginData.userType == UserType.System || MethodName != "ChangePrivileges")
+                {
+                    Log.Send(string.Concat(startUserType.ToString(), " ", user.EndPoint, " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
+                }
+                else
+                {
+                    Log.Send(string.Concat(startUserType.ToString(), " ", user.EndPoint, " -> ", MethodName, "(Login, Pass)"));
+                }
 
                 // возвращаем ref и out параметры
                 unit.prms = method.GetParameters().Select(x => x.ParameterType.IsByRef ? unit.prms[x.Position] : null).ToArray();

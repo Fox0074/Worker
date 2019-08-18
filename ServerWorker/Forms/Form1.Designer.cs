@@ -54,6 +54,7 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -213,6 +214,17 @@
             this.columnHeader8.Tag = "Ping";
             this.columnHeader8.Text = "Ping";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(863, 300);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(129, 34);
+            this.button2.TabIndex = 19;
+            this.button2.Text = "Подключиться к серверу";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Visible = false;
+            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -222,6 +234,7 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1004, 541);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
@@ -258,6 +271,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
+        private System.Windows.Forms.Button button2;
     }
 }
 

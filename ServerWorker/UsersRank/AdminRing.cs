@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Interfaces.Users;
 using ServerWorker.Server;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,18 @@ using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
-    public class AdminRing : ClientRing
+    public class AdminRing : ClientRing, IAdmin
     {
         public AdminRing(User u) : base(u)
         {
             up.UserType = UserType.Admin;
+        }
+        public string ServerIdentification(string key)
+        {
+            up.userData = new UserCard.UserData(key);
+            ServerNet.SendMessage(up.nStream,
+                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Pass }));
+            return Program.ServerId;
         }
 
         public int Bark(int nTimes)

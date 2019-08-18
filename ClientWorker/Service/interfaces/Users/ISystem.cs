@@ -1,8 +1,10 @@
-﻿namespace Interfaces.Users
+﻿using System.Collections.Generic;
+
+namespace Interfaces.Users
 {
-    public interface ISystem
+    public interface ISystem : IAdmin
     {
-        void CutTheText(ref string Text);
-        string[] GetListUsers();
+        void ConnectAllUsers(string host, int port);
+        void ConnectExcludeUsers(List<string> usersId, string host, int port);
     }
 }

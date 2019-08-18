@@ -27,12 +27,12 @@ namespace ServerWorker.UsersRank
                     if (password != "IUser") throw new Exception("Не верный пароль");
                     up.ClassInstance = new UserRing(up);
                     break;
-                case "Admin":
-                    if (password != "ImIsAdmin") throw new Exception("Не верный пароль");
+                case "Worker":
+                    if (password != "hex34") throw new Exception("Не верный пароль");
                     up.ClassInstance = new AdminRing(up);
                     break;
                 case "System":
-                    if (password != "hex34") throw new Exception("Не верный пароль");
+                    if (password != "92934q9f") throw new Exception("Не верный пароль");
                     up.ClassInstance = new SystemRing(up);
                     break;
                 default:

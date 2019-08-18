@@ -15,7 +15,7 @@ namespace ServerWorker
     public partial class Download : Form
     {
         User user;
-        string ftpDirectory = "D:\\WorkerLoad\\";
+        string ftpDirectory = "C:\\inetpub\\wwwroot\\";
         string poofFtpDirectory = "Poof";
         public Download(User user)
         {

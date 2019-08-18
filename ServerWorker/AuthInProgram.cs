@@ -7,27 +7,45 @@ using System.Windows.Forms;
 
 namespace ServerWorker
 {
+    public class SessionLoginData
+    {
+        public string Login { get; private set; }
+        public string Pass { get; private set; }
+        public UserType userType;
+        public SessionLoginData(string login, string pass)
+        {
+            Login = login;
+            Pass = pass;
+        }
+    }
     public class AuthInProgram
     {
-        public string Login { get; private set; } = "Worker";
-        public string Pass { get; private set; } = "hex34";
         public bool IsAuthorizate { get; set; } = false;
-
-        public bool Authorization (string login, string pass)
+        public SessionLoginData sessionLoginData;
+        public bool Authorization (SessionLoginData loginData)
         {
-            bool result = false;
-
-            if ((login==Login)&&(pass==Pass))
+            IsAuthorizate = false;
+            foreach (var data in aviableLoginData)
             {
-                result = true;
-                IsAuthorizate = true;
+                if (data.Login == loginData.Login && data.Pass == loginData.Pass)
+                {
+                    sessionLoginData = loginData;
+                    sessionLoginData.userType = data.userType;
+                    IsAuthorizate = true;
+                }
             }
-            else
+            if (!IsAuthorizate)
             {
                 MessageBox.Show("Логин и/или пароль введены неверно", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
-            return result;
+            return IsAuthorizate;
         }
+
+        private List<SessionLoginData> aviableLoginData = new List<SessionLoginData>()
+        {
+            new SessionLoginData("Worker","hex34"){ userType = UserType.Admin},
+            new SessionLoginData("System","92934q9f"){ userType = UserType.System}
+        };
     }
 }

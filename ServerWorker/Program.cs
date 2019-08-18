@@ -19,9 +19,7 @@ namespace ServerWorker
         static public ServerNet server;
         static public Thread serverThread;
         static public Form1 form1;
-        static public List<string> listDdns = new List<string> { "fokes1.asuscomm.com" };
-        static public AviableNetServers aviableServer;
-
+        static public string ServerId = "FoxServer";
 
 
         [STAThread]
@@ -37,34 +35,12 @@ namespace ServerWorker
             Application.Run(lockForm);
 
             server = new ServerNet(7777);
-            aviableServer = new AviableNetServers();
             server.Start();
 
             form1 = new Form1();
             //StartServer();
 
             Application.Run(form1);
-        }
-
-        static void StartServer()
-        {
-            IPAddress[] ipAddress = Dns.GetHostAddresses(listDdns[0]);
-
-            string externalip = new WebClient().DownloadString("http://icanhazip.com");
-            IPAddress myIp = IPAddress.Parse(externalip.Replace("\n",""));
-            foreach (IPAddress ip in ipAddress)
-            {
-                if (ip.ToString() == myIp.ToString())
-                {
-                    //TODO: раскоментить
-                    //serverThread = new Thread(new ThreadStart(server.StartServer));
-                    //serverThread.Start();
-                    return;
-                }
-            }
-
-            serverThread = new Thread(new ThreadStart(aviableServer.Start));
-            serverThread.Start();
         }
     }
 }

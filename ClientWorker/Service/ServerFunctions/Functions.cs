@@ -307,14 +307,23 @@ namespace ClientWorker
         public void ConnectToHost(string host, int port)
         {
             Log.Send(string.Format("ConnectToHost: {0}:{1}", host, port));
+
+            Client netSender = new Client();
+            netSender.Host = host;
+            netSender.Port = port;
+
+            foreach (Client client in Program.Servers)
+            {
+                if (client.Host == host) throw new Exception("Такое подключение уже существует");
+            }
+            
             Thread newConnectionThread = new Thread(new ThreadStart(new Action(() => 
             {
-                Client netSender = new Client();
-                netSender.Host = host;
-                netSender.Port = port;
                 netSender.Connect(false);
+                
             })));
             newConnectionThread.Start();
+            Program.Servers.Add(netSender);
         }
     }
 }

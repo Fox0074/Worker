@@ -2,7 +2,6 @@
 {
     public interface IAdmin
     {
-        bool TryFindObject(out object obj);
-        int Bark(int nTimes);
+        string ServerIdentification(string key);
     }
 }

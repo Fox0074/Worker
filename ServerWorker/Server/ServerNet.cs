@@ -3,6 +3,7 @@
 using Interfaces;
 using ServerWorker.Server;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -56,11 +57,36 @@ namespace ServerWorker
       
         public System.Net.Sockets.TcpListener SERV;
         public static readonly SyncAccess ConnectedUsers = new SyncAccess();
+        public static readonly SyncAccess ConnectedServers = new SyncAccess();
+
+        public ServerNet()
+        {
+        }
 
         public ServerNet(int Port)
         {
             SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
-            //SERV = new System.Net.Sockets.TcpListener(IPAddress.Parse("127.0.0.1"), Port);
+        }
+        public User ConnectionToServer(string host)
+        {
+            try
+            {
+                TcpClient ServerSocket = new System.Net.Sockets.TcpClient();
+                ServerSocket.ReceiveBufferSize = 8192;
+                ServerSocket.SendBufferSize = 8192;
+                ServerSocket.ReceiveTimeout = 30000;
+                ServerSocket.SendTimeout = 30000;
+
+                ServerSocket.Connect(host, 7777);
+                var user = new User(ServerSocket);
+                ConnectedUsers.Add(user);
+                user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
+                SendMessage(user.nStream, new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Pass }));
+                var serverId = user.SystemCom.ServerIdentification(Program.ServerId);
+                if (serverId != null) user.userData = new UserCard.UserData(serverId);
+                return user;
+            }
+            catch (Exception ex) { return null; }
         }
 
         public void Start()
