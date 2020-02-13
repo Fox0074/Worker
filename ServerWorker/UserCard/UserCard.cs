@@ -19,7 +19,7 @@ namespace ServerWorker
 
         private User user;
         private LogUserCard log;
-        private PictureForm picture;
+        //private PictureForm picture;
 
         
 
@@ -163,8 +163,8 @@ namespace ServerWorker
             try
             {
                 Bitmap BM = user.UsersCom.ScreenShot();
-                picture = new PictureForm(BM);
-                picture.Show();
+                //picture = new PictureForm(BM);
+                //picture.Show();
             }
             catch (Exception ex)
             {
