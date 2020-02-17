@@ -32,8 +32,8 @@ namespace ServerWorker
 
         public void AddMessage(string text)
         {
-            if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { listBox1.Items.Add(text); }));
-            else listBox1.Items.Add(text);
+            //if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { listBox1.Items.Add(text); }));
+            //else listBox1.Items.Add(text);
         }
 
 

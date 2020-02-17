@@ -68,75 +68,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
-    <Compile Include="Forms\ChatForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ChatForm.Designer.cs">
-      <DependentUpon>ChatForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\DirectoryViewForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\DirectoryViewForm.Designer.cs">
-      <DependentUpon>DirectoryViewForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\InputForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\InputForm.Designer.cs">
-      <DependentUpon>InputForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\RunForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\RunForm.Designer.cs">
-      <DependentUpon>RunForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="MySQLManager.cs" />
-    <Compile Include="ServerCard\ServerCard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ServerCard\ServerCard.Designer.cs">
-      <DependentUpon>ServerCard.cs</DependentUpon>
-    </Compile>
     <Compile Include="Server\ConqurentNetworkStream.cs" />
     <Compile Include="Server\ProcessMessage.cs" />
     <Compile Include="Server\Proxy.cs" />
     <Compile Include="Server\SyncAccess.cs" />
     <Compile Include="Server\User.cs" />
-    <Compile Include="UserCard\Download.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserCard\Download.Designer.cs">
-      <DependentUpon>Download.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserCard\LogUserCard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserCard\LogUserCard.Designer.cs">
-      <DependentUpon>LogUserCard.cs</DependentUpon>
-    </Compile>
     <Compile Include="Crypting\AsymmetricalDecrypt.cs" />
     <Compile Include="Crypting\AsymmetricalEncrypt.cs" />
-    <Compile Include="Forms\LockForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\LockForm.Designer.cs">
-      <DependentUpon>LockForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserCard\ClientLog.cs" />
-    <Compile Include="Forms\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UserCard\UserCard.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserCard\UserCard.Designer.cs">
-      <DependentUpon>UserCard.cs</DependentUpon>
-    </Compile>
     <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -148,36 +88,6 @@
     <Compile Include="UsersRank\UserRing.cs" />
     <Compile Include="UsersRank\AbstractRing.cs" />
     <Compile Include="UsersRank\ClientRing.cs" />
-    <EmbeddedResource Include="Forms\ChatForm.resx">
-      <DependentUpon>ChatForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\DirectoryViewForm.resx">
-      <DependentUpon>DirectoryViewForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InputForm.resx">
-      <DependentUpon>InputForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\RunForm.resx">
-      <DependentUpon>RunForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ServerCard\ServerCard.resx">
-      <DependentUpon>ServerCard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserCard\Download.resx">
-      <DependentUpon>Download.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserCard\LogUserCard.resx">
-      <DependentUpon>LogUserCard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UserCard\UserCard.resx">
-      <DependentUpon>UserCard.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\LockForm.resx">
-      <DependentUpon>LockForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -196,6 +106,98 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="View\ChatForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ChatForm.Designer.cs">
+      <DependentUpon>ChatForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\ChatForm.resx">
+      <DependentUpon>ChatForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\DirectoryViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\DirectoryViewForm.Designer.cs">
+      <DependentUpon>DirectoryViewForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\DirectoryViewForm.resx">
+      <DependentUpon>DirectoryViewForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\InputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\InputForm.Designer.cs">
+      <DependentUpon>InputForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\InputForm.resx">
+      <DependentUpon>InputForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\LockForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\LockForm.Designer.cs">
+      <DependentUpon>LockForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\LockForm.resx">
+      <DependentUpon>LockForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\RunForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\RunForm.Designer.cs">
+      <DependentUpon>RunForm.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\RunForm.resx">
+      <DependentUpon>RunForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\ServerCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ServerCard.Designer.cs">
+      <DependentUpon>ServerCard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\ServerCard.resx">
+      <DependentUpon>ServerCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\Download.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Download.Designer.cs">
+      <DependentUpon>Download.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\Download.resx">
+      <DependentUpon>Download.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\LogUserCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\LogUserCard.Designer.cs">
+      <DependentUpon>LogUserCard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\LogUserCard.resx">
+      <DependentUpon>LogUserCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="View\UserCard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UserCard.Designer.cs">
+      <DependentUpon>UserCard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="View\UserCard.resx">
+      <DependentUpon>UserCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="ConsoleView\ConsoleView.cs" />
+    <Compile Include="ConsoleView\ConsoleViewInstaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -225,6 +227,10 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="View\" />
+    <Folder Include="ConsoleView\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

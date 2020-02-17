@@ -1,4 +1,5 @@
-﻿using ServerWorker.Crypting;
+﻿using ServerWorker.ConsoleView;
+using ServerWorker.Crypting;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -18,29 +19,42 @@ namespace ServerWorker
         static public AuthInProgram authSystem = new AuthInProgram();
         static public ServerNet server;
         static public Thread serverThread;
+        static public ConsoleViewInstaller Console;
         static public Form1 form1;
         static public string ServerId = "FoxServer";
 
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            if (args.Length > 0)
+            {
+                if (args[0] == "-GUI")
+                {
+                    Application.EnableVisualStyles();
+                    Application.SetCompatibleTextRenderingDefault(false);
 
-            AsymmetricalEncrypt encrypt = new AsymmetricalEncrypt();
-            AsymmetricalDecrypt decrypt = new AsymmetricalDecrypt(encrypt.RsaEncryptParametrs);
+                    LockForm lockForm = new LockForm();
+                    Application.Run(lockForm);
 
-            LockForm lockForm = new LockForm();
-            Application.Run(lockForm);
+                    StartServer(7777);
 
-            server = new ServerNet(7777);
-            server.Start();
+                    form1 = new Form1();
+                    Application.Run(form1);
+                }
+            }
+            else
+            {
+                Console = new ConsoleViewInstaller();
+                Console.Autorize();
+                Console.StartCommandLineThread();
+            }
+        }
 
-            form1 = new Form1();
-            //StartServer();
-
-            Application.Run(form1);
+        public static void StartServer(int port)
+        {
+            server = new ServerNet(port);
+            serverThread = new Thread(new ThreadStart(server.Start));
         }
     }
 }

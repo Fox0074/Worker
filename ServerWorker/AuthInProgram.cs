@@ -34,10 +34,6 @@ namespace ServerWorker
                     IsAuthorizate = true;
                 }
             }
-            if (!IsAuthorizate)
-            {
-                MessageBox.Show("Логин и/или пароль введены неверно", "Ошибка авторизации", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
 
             return IsAuthorizate;
         }

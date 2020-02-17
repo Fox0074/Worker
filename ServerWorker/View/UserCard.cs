@@ -86,8 +86,8 @@ namespace ServerWorker
         {
             try
             {
-                if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(events); }));
-                else log.DrawNewLog(events);
+                //if (log.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { log.DrawNewLog(events); }));
+                //else log.DrawNewLog(events);
             }
             catch (Exception e)
             {

@@ -17,8 +17,8 @@ namespace ServerWorker
         {
             try
             {
-                if (Program.form1.listBox2.InvokeRequired) Program.form1.listBox2.BeginInvoke(new Action(() => { Program.form1.listBox2.Items.Add(message); }));
-                else Program.form1.listBox2.Items.Add(message);
+                //if (Program.form1.listBox2.InvokeRequired) Program.form1.listBox2.BeginInvoke(new Action(() => { Program.form1.listBox2.Items.Add(message); }));
+                //else Program.form1.listBox2.Items.Add(message);
             }
             catch(Exception ex)
             {

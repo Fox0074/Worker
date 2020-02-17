@@ -42,10 +42,10 @@ namespace ServerWorker
         {
             InitializeComponent();
             //Вот я дал!
-            InterfaceChanged += (UserInterface arg) => {
-                if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.Form1_InterfaceChanged(arg); }));
-                else Program.form1.Form1_InterfaceChanged(arg);
-            };
+            //InterfaceChanged += (UserInterface arg) => {
+            //    if (Program.form1.InvokeRequired) Program.form1.BeginInvoke(new Action(() => { Program.form1.Form1_InterfaceChanged(arg); }));
+            //    else Program.form1.Form1_InterfaceChanged(arg);
+            //};
 
 
             Program.server.Events.OnAuthorized += UpdateClientList;
