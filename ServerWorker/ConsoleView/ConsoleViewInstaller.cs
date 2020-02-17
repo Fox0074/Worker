@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace ServerWorker.ConsoleView
 {
@@ -30,12 +31,20 @@ namespace ServerWorker.ConsoleView
                 if (!isAutorize) Console.Write(">>Неверный логин или пароль\n");
 
             } while (!isAutorize);
+
+            View.OnProgramClose += OnProgramClose;
         }
 
         public void StartCommandLineThread()
         {
             CommandThread = new Thread(new ThreadStart(View.CommandLineThread));
             CommandThread.Start();
+        }
+
+        public void OnProgramClose()
+        {
+            Program.server.Stop();
+            Program.serverThread.Abort();
         }
     }
 }
