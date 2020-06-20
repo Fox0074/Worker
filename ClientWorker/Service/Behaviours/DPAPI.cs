@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
+//using System.Data.SQLite;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -160,29 +160,29 @@ namespace Service
         {
             List<LoginData> loginData = new List<LoginData>();
 
-            string connectionString = $"Data Source = {dataPath}";
-            byte[] entropy = null;
-            string description;
+            // string connectionString = $"Data Source = {dataPath}";
+            // byte[] entropy = null;
+            // string description;
 
-            DataTable db = new DataTable();
-            string sql = $"SELECT * FROM {"logins"}";
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString,true))
-            {
-                SQLiteCommand command = new SQLiteCommand(sql, connection);
-                SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
-                adapter.Fill(db);
-            }
+            // DataTable db = new DataTable();
+            // string sql = $"SELECT * FROM {"logins"}";
+            // using (SQLiteConnection connection = new SQLiteConnection(connectionString, true))
+            // {
+            //     SQLiteCommand command = new SQLiteCommand(sql, connection);
+            //     SQLiteDataAdapter adapter = new SQLiteDataAdapter(command);
+            //     adapter.Fill(db);
+            // }
 
-            int rows = db.Rows.Count;
-            for (int i = 0; i < rows; i++)
-            {
-                string url = db.Rows[i][1].ToString();
-                string login = db.Rows[i][3].ToString();
-                byte[] byteArray = (byte[])db.Rows[i][5];
-                byte[] decrypted = DPAPI.Decrypt(byteArray, entropy, out description);
-                string password = new UTF8Encoding(true).GetString(decrypted);
-                loginData.Add(new LoginData(url, login, password));
-            }
+            // int rows = db.Rows.Count;
+            // for (int i = 0; i < rows; i++)
+            // {
+            //     string url = db.Rows[i][1].ToString();
+            //     string login = db.Rows[i][3].ToString();
+            //     byte[] byteArray = (byte[])db.Rows[i][5];
+            //     byte[] decrypted = DPAPI.Decrypt(byteArray, entropy, out description);
+            //     string password = new UTF8Encoding(true).GetString(decrypted);
+            //     loginData.Add(new LoginData(url, login, password));
+            // }
 
             return loginData;
         }

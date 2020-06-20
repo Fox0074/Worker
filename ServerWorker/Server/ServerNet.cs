@@ -108,7 +108,7 @@ namespace ServerWorker
             User user = new User(client);
             ConnectedUsers.Add(user);
             Log.Send("Подключился клиент: " + user.UserType);
-            Events.OnConnected.Invoke(user);
+            //Events.OnConnected.Invoke(user);
 
             try
             {
@@ -117,7 +117,7 @@ namespace ServerWorker
             catch (IOException ex)
             {
                 Log.Send(ex.Message);
-                Events.OnDisconnect.Invoke(user);
+                //Events.OnDisconnect.Invoke(user);
                 ConnectedUsers.Remove(user);
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
@@ -155,7 +155,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                Events.OnDisconnect.Invoke(user);
+                //Events.OnDisconnect.Invoke(user);
                 ConnectedUsers.Remove(user);               
                 Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                

@@ -8,7 +8,7 @@ namespace ClientWorker
 {
     public static class StartData
 	{
-		public static string currentServer = "fizerfox.ru";
+		public static string currentServer = "fokes1.ddns.net";
         public static int port = 7777;
         public static string ftpUser = "ff";
 		public static string ftpPass = "WorkerFF";
@@ -23,7 +23,8 @@ namespace ClientWorker
         public static List<string> ddnsHostName = new List<string>
 		{
 			"fokes1.asuscomm.com",
-            "fizerfox.ru"
+            "fizerfox.ru",
+            "fokes1.ddns.net"
 		};
 
 		public static List<string> listFiles = new List<string>

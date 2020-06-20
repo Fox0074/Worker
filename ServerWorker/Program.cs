@@ -55,6 +55,7 @@ namespace ServerWorker
         {
             server = new ServerNet(port);
             serverThread = new Thread(new ThreadStart(server.Start));
+            serverThread.Start();
         }
     }
 }
