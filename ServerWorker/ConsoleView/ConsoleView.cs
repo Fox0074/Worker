@@ -25,6 +25,7 @@ namespace ServerWorker.ConsoleView
                 ObjectParametrs.AddRange(stringRequest.Split(' ').ToList());
                 Command = StringParametrs[0];
                 StringParametrs.RemoveAt(0);
+                ObjectParametrs.RemoveAt(0);
             }
         }
         private class CommandResult
@@ -90,6 +91,8 @@ namespace ServerWorker.ConsoleView
                 if (inputKey == null) continue;
                     switch(inputKey.Key)
                     {
+                        case ConsoleKey.Enter:
+                            continue;
                         case ConsoleKey.Backspace:
                             if (inputResult.Length > -1)
                             {
@@ -155,9 +158,8 @@ namespace ServerWorker.ConsoleView
                     }
             } while(inputKey.Key != ConsoleKey.Enter);
 
-            _positionCommandLog = _commandsLog.Count-1;
-            int xyq =Console.WindowHeight;
-            Console.SetCursorPosition(Console.CursorLeft,xyq-1);
+            _positionCommandLog = Math.Max(0,_commandsLog.Count-1);
+            Console.SetCursorPosition(Console.CursorLeft,Console.WindowHeight-1);
             return inputResult;
         }
 
