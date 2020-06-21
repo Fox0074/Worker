@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Net;
+
 namespace ServerWorker.ConsoleView
 {
     public class ConsoleViewCommands
@@ -30,6 +33,28 @@ namespace ServerWorker.ConsoleView
             {
                 Console.WriteLine(user.EndPoint);
             }
+        }
+
+        public void UpdateAllUsers()
+        {
+            foreach (var user in ServerNet.ConnectedUsers.ToArray())
+            {
+                UpdateUser(user.EndPoint.ToString());
+            }
+        }
+
+        public void UpdateUser(string userEndPoint)
+        {
+            var user = ServerNet.ConnectedUsers.ToArray().FirstOrDefault(usr => usr.EndPoint.ToString() == userEndPoint);
+
+            if (user == null)
+            {
+                Console.WriteLine("Пользователь с адресом {0} не найден", userEndPoint);
+                return;
+            }
+            
+            Console.WriteLine(user.EndPoint + " >> DownloadUpdate");
+            user.UsersCom.DownloadUpdate();
         }
     }
 }

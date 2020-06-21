@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -7,6 +8,25 @@ namespace ServerWorker.ConsoleView
     public class ConsoleView
     {
         public Action OnProgramClose = delegate { };
+        private List<string> _commandsLog = new List<string>();
+        private int _positionCommandLog;
+        private class CommandRequest
+        {
+            public string Source;
+            public string Command;
+            public List<object> ObjectParametrs = new List<object>();
+            public List<string> StringParametrs = new List<string>();
+
+            public CommandRequest(string stringRequest)
+            {
+                Source = stringRequest;
+                StringParametrs.AddRange(stringRequest.Split(' ').ToList());
+                //TODO: привидение типов
+                ObjectParametrs.AddRange(stringRequest.Split(' ').ToList());
+                Command = StringParametrs[0];
+                StringParametrs.RemoveAt(0);
+            }
+        }
         private class CommandResult
         {
             public bool Success;
@@ -18,18 +38,30 @@ namespace ServerWorker.ConsoleView
         public ConsoleView()
         {
             _commands = new ConsoleViewCommands();
+            _positionCommandLog = _commandsLog.Count-1;
             AppDomain.CurrentDomain.ProcessExit += (arg1,arg2) => OnProgramClose.Invoke();
         }
 
         public void CommandLineThread()
         {
-            string command;
+            CommandRequest commandRequest;
             do
             {
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Command >> ");
-                command = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.White;
+                commandRequest = new CommandRequest(SymbolycInputRead("Command >> ", ConsoleColor.Red));
 
-                var result = ProcessMessage(command, null, _commands);
+                if (!string.IsNullOrWhiteSpace(commandRequest.Command)) 
+                {
+                    _commandsLog.Add(commandRequest.Source);
+                    _positionCommandLog++;
+                }
+
+                var result = ProcessMessage(
+                    commandRequest.Command, 
+                    commandRequest.ObjectParametrs.Count > 0 ? commandRequest.ObjectParametrs.ToArray() : null, 
+                    _commands);
 
                 if (result.Success)
                 {
@@ -41,8 +73,94 @@ namespace ServerWorker.ConsoleView
                 }
 
                
-            } while (command.ToLower() != "exit");
+            } while (commandRequest.Command.ToLower() != "exit");
         }
+
+        private string SymbolycInputRead(string startInput, System.ConsoleColor startMessageColor)
+        {
+            string inputResult = "";
+            ConsoleKeyInfo inputKey;
+
+            var startCursorPosX = Console.CursorLeft;    
+            do
+            {
+                var currentCursorPosX = Console.CursorLeft;    
+                var currentCursorPosY = Console.CursorTop;    
+                inputKey = Console.ReadKey();
+                if (inputKey == null) continue;
+                    switch(inputKey.Key)
+                    {
+                        case ConsoleKey.Backspace:
+                            if (inputResult.Length > -1)
+                            {
+                                inputResult = inputResult.Remove(inputResult.Length - 1,1);
+                            }
+                            break;
+                        case ConsoleKey.UpArrow:
+                            if (_positionCommandLog > 0)
+                            {
+                                _positionCommandLog--;
+
+                                Console.SetCursorPosition(startCursorPosX ,Console.CursorTop);
+                                for (int i = startCursorPosX; i< Console.WindowWidth;i++) Console.Write(" ");
+                                Console.SetCursorPosition(startCursorPosX ,Console.CursorTop);
+
+                                inputResult = _commandsLog[_positionCommandLog];
+                                Console.Write(inputResult);
+                            }
+                            break;
+                        case ConsoleKey.DownArrow:
+                            if (_positionCommandLog < _commandsLog.Count-1)
+                            {
+                                _positionCommandLog++;
+
+                                Console.SetCursorPosition(startCursorPosX ,Console.CursorTop);
+                                for (int i = startCursorPosX; i< Console.WindowWidth;i++) Console.Write(" ");
+                                Console.SetCursorPosition(startCursorPosX ,Console.CursorTop);
+
+                                inputResult = _commandsLog[_positionCommandLog];
+                                Console.Write(inputResult);
+                            }
+                            break;
+                        case ConsoleKey.Tab:
+                                MethodInfo[] methods = _commands.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
+                                var searchResults = methods.Select(x => x.Name).Where(x => x.Contains(inputResult)).ToList();
+                                if (searchResults.Count > 0)
+                                {
+                                    if (searchResults.Count == 1 && searchResults[0] != inputResult) 
+                                    {
+                                        Console.SetCursorPosition(currentCursorPosX - inputResult.Length,Console.CursorTop);
+                                        inputResult = searchResults[0]; 
+                                        Console.Write(inputResult);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine();
+                                        foreach(var result in searchResults) 
+                                        {
+                                            Console.WriteLine(result);
+                                        } 
+
+                                        Console.ForegroundColor = startMessageColor;             
+                                        Console.Write(startInput); 
+                                        Console.ForegroundColor = ConsoleColor.White; 
+
+                                        Console.Write(inputResult);          
+                                    }
+                                }
+                            break;
+                        default:
+                            inputResult += inputKey.KeyChar;
+                        break;
+                    }
+            } while(inputKey.Key != ConsoleKey.Enter);
+
+            _positionCommandLog = _commandsLog.Count-1;
+            int xyq =Console.WindowHeight;
+            Console.SetCursorPosition(Console.CursorLeft,xyq-1);
+            return inputResult;
+        }
+
 
         private CommandResult ProcessMessage(string MethodName, object[] parametrs, object classInstance)
         {
