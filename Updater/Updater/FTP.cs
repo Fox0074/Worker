@@ -16,7 +16,7 @@ namespace Updater
         public static void DownloadF(string fName, string parth, string newFName)
         {
             Log.Send("DownloadF(string, string");
-            string requestUriString = "ftp://" + "fokes1.asuscomm.com/" + fName;
+            string requestUriString = "ftp://" + "fizerfox.ru/" + fName;
             try
             {
                 FtpWebRequest ftpWebRequest = (FtpWebRequest)WebRequest.Create(requestUriString);

