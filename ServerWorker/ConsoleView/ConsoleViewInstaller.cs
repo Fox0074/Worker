@@ -34,7 +34,7 @@ namespace ServerWorker.ConsoleView
                         case ConsoleKey.Enter:
                             continue;
                         case ConsoleKey.Backspace:
-                            pass = pass.Remove(pass.Length - 1,1);
+                            pass = pass.Length > 0 ? pass.Remove(pass.Length - 1,1) : pass;
                             break;
                         default:
                             pass += inputKey.KeyChar;

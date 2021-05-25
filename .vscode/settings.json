@@ -1,0 +1,4 @@
+{
+    "csharp.semanticHighlighting.enabled": true,
+    "editor.minimap.enabled": false
+}

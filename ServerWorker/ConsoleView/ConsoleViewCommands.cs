@@ -1,23 +1,28 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
+using System.Collections.Generic;
 
 namespace ServerWorker.ConsoleView
 {
     public class ConsoleViewCommands
     {
+
+        private List<String> _excludedMethods = new List<string>() 
+        {
+            "Equals",
+            "GetHashCode",
+            "GetType",
+            "ToString"
+        };
         public ConsoleViewCommands()
         {
         }
 
         public void Help()
         {
-            var methods = GetType().GetMethods();
-
-            foreach (var method in methods)
-            {
-                Console.WriteLine(method.Name);
-            }
+            var methods = GetType().GetMethods().ToList();
+            methods.Where(x => !_excludedMethods.Contains(x.Name)).ToList().ForEach(x => Console.WriteLine(x.Name));
         }
 
         public void StartServer()

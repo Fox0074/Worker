@@ -59,6 +59,12 @@ namespace ServerWorker.ConsoleView
                     _positionCommandLog++;
                 }
 
+                var aviableMethods = _commands.GetType().GetMethods().ToList();
+
+                aviableMethods.ForEach(x => 
+                commandRequest.Command = x.Name.ToLower() == commandRequest.Command.ToLower() ? 
+                x.Name : commandRequest.Command);
+
                 var result = ProcessMessage(
                     commandRequest.Command, 
                     commandRequest.ObjectParametrs.Count > 0 ? commandRequest.ObjectParametrs.ToArray() : null, 
@@ -96,7 +102,7 @@ namespace ServerWorker.ConsoleView
                         case ConsoleKey.Backspace:
                             if (inputResult.Length > -1)
                             {
-                                inputResult = inputResult.Remove(inputResult.Length - 1,1);
+                                inputResult = inputResult.Length > 0 ? inputResult.Remove(inputResult.Length - 1,1) : inputResult;
                             }
                             break;
                         case ConsoleKey.UpArrow:
