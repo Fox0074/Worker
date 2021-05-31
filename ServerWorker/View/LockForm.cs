@@ -26,7 +26,7 @@ namespace ServerWorker
 
         private bool TryAuthorization(string login, string pass)
         {
-            return Program.authSystem.Authorization(new SessionLoginData( login,pass));
+            return Program.authSystem.Authorization(login,pass);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -49,7 +49,7 @@ namespace ServerWorker
         {
             if (e.Control && e.Shift && e.KeyCode == Keys.R)
             {
-                Program.authSystem.Authorization(new SessionLoginData("System","92934q9f"));
+                Program.authSystem.Authorization("System","92934q9f");
                 Program.authSystem.IsAuthorizate = true;
                 Close();
             }

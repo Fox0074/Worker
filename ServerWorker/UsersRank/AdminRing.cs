@@ -19,7 +19,7 @@ namespace ServerWorker.UsersRank
         {
             up.userData = new UserCard.UserData(key);
             ServerNet.SendMessage(up.nStream,
-                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Pass }));
+                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Md5Pass }));
             return Program.ServerId;
         }
 
@@ -28,7 +28,6 @@ namespace ServerWorker.UsersRank
             var ConnectedDogs = ServerNet.ConnectedUsers.ToArray().Where(x => x.UserType == UserType.Admin).Select(x => x.nStream);
             ConnectedDogs.AsParallel().ForAll(nStream =>
             {
-                // инициировать событие у клиента
                 ServerNet.SendMessage(nStream, new Unit("OnBark", new object[] { nTimes }));
             });
 

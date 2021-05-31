@@ -43,7 +43,7 @@ namespace ServerWorker.ConsoleView
                 } while(inputKey.Key != ConsoleKey.Enter);
                 Console.WriteLine();
 
-                isAutorize = Program.authSystem.Authorization(new SessionLoginData(login, pass));
+                isAutorize = Program.authSystem.Authorization(login, pass);
 
                 if (!isAutorize) Console.Write(">>Неверный логин или пароль\n");
 

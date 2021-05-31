@@ -81,12 +81,14 @@ namespace ServerWorker
                 var user = new User(ServerSocket);
                 ConnectedUsers.Add(user);
                 user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
-                SendMessage(user.nStream, new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Pass }));
+                SendMessage(user.nStream, new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Md5Pass }));
                 var serverId = user.SystemCom.ServerIdentification(Program.ServerId);
                 if (serverId != null) user.userData = new UserCard.UserData(serverId);
                 return user;
             }
             catch (Exception ex) { return null; }
+
+            throw new Exception("Заполнение пароля"); 
         }
 
         public void Start()

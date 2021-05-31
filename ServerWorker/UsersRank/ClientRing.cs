@@ -19,24 +19,26 @@ namespace ServerWorker.UsersRank
             return new string[] { "User", "Admin", "System" };
         }
 
-        public void ChangePrivileges(string Animal, string password)
+        public void ChangePrivileges(string login, string password)
         {
-            switch (Animal)
+            var loginData = SessionLoginData.GetSessionData(login,password);
+            
+            if (loginData == null)
+                throw new Exception("Ошибка авторизации");
+
+            switch (loginData.userType)
             {
-                case "User":
-                    if (password != "IUser") throw new Exception("Не верный пароль");
+                case UserType.User:
                     up.ClassInstance = new UserRing(up);
                     break;
-                case "Worker":
-                    if (password != "hex34") throw new Exception("Не верный пароль");
+                case UserType.Admin:
                     up.ClassInstance = new AdminRing(up);
                     break;
-                case "System":
-                    if (password != "92934q9f") throw new Exception("Не верный пароль");
+                case UserType.System:
                     up.ClassInstance = new SystemRing(up);
                     break;
                 default:
-                    throw new Exception("Такого пользователя не существует");
+                    throw new Exception("Новые права не могут быть назначены");
             }
             Program.server.Events.OnAuthorized.Invoke();
         }
