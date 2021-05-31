@@ -61,5 +61,10 @@ namespace ServerWorker.ConsoleView
             Console.WriteLine(user.EndPoint + " >> DownloadUpdate");
             user.UsersCom.DownloadUpdate();
         }
+
+        public void Exit()
+        {
+            
+        }
     }
 }

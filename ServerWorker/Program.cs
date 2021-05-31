@@ -57,5 +57,11 @@ namespace ServerWorker
             serverThread = new Thread(new ThreadStart(server.Start));
             serverThread.Start();
         }
+
+        public static void StopServer()
+        {
+            server?.Stop();
+            serverThread?.Abort();
+        }
     }
 }

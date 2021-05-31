@@ -100,10 +100,11 @@ namespace ServerWorker.ConsoleView
                         case ConsoleKey.Enter:
                             continue;
                         case ConsoleKey.Backspace:
-                            if (inputResult.Length > -1)
+                            if (inputResult.Length > 0)
                             {
                                 inputResult = inputResult.Length > 0 ? inputResult.Remove(inputResult.Length - 1,1) : inputResult;
-                            }
+                            } else
+                                Console.SetCursorPosition(currentCursorPosX, Console.CursorTop);
                             break;
                         case ConsoleKey.UpArrow:
                             if (_positionCommandLog > 0)
@@ -133,7 +134,7 @@ namespace ServerWorker.ConsoleView
                             break;
                         case ConsoleKey.Tab:
                                 MethodInfo[] methods = _commands.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-                                var searchResults = methods.Select(x => x.Name).Where(x => x.Contains(inputResult)).ToList();
+                                var searchResults = methods.Select(x => x.Name).Where(x => x.ToLower().Contains(inputResult)).ToList();
                                 if (searchResults.Count > 0)
                                 {
                                     if (searchResults.Count == 1 && searchResults[0] != inputResult) 
@@ -157,6 +158,8 @@ namespace ServerWorker.ConsoleView
                                         Console.Write(inputResult);          
                                     }
                                 }
+                                else
+                                    Console.SetCursorPosition(currentCursorPosX, Console.CursorTop);
                             break;
                         default:
                             inputResult += inputKey.KeyChar;

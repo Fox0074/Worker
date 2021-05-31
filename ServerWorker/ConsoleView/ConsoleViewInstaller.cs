@@ -60,8 +60,8 @@ namespace ServerWorker.ConsoleView
 
         public void OnProgramClose()
         {
-            Program.server.Stop();
-            Program.serverThread.Abort();
+            Program.server?.Stop();
+            Program.serverThread?.Abort();
         }
     }
 }
