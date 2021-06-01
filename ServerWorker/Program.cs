@@ -23,7 +23,6 @@ namespace ServerWorker
         static public Form1 form1;
         static public string ServerId = "FoxServer";
 
-
         [STAThread]
         static void Main(string[] args)
         {

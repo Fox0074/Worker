@@ -8,7 +8,7 @@ namespace ClientWorker
 {
     public static class StartData
 	{
-		public static string currentServer = "fokes1.ddns.net";
+		public static string currentServer = "185.195.27.144";
         public static int port = 7777;
         public static string ftpUser = "ff";
 		public static string ftpPass = "oTEDLaRbXg";

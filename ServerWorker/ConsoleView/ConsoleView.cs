@@ -34,11 +34,11 @@ namespace ServerWorker.ConsoleView
             public object ReturnValue;
         }
 
-        private ConsoleViewCommands _commands;
+        private IConsoleCommands _commands;
 
         public ConsoleView()
         {
-            _commands = new ConsoleViewCommands();
+            SwitchCommander(new ConsoleViewCommands());
             _positionCommandLog = _commandsLog.Count-1;
             AppDomain.CurrentDomain.ProcessExit += (arg1,arg2) => OnProgramClose.Invoke();
         }
@@ -102,9 +102,12 @@ namespace ServerWorker.ConsoleView
                         case ConsoleKey.Backspace:
                             if (inputResult.Length > 0)
                             {
-                                inputResult = inputResult.Length > 0 ? inputResult.Remove(inputResult.Length - 1,1) : inputResult;
-                            } else
-                                Console.SetCursorPosition(currentCursorPosX, Console.CursorTop);
+                                inputResult = inputResult.Remove(inputResult.Length - 1,1);
+                            }
+                            else
+                            {
+                                 Console.SetCursorPosition(startCursorPosX ,Console.CursorTop);
+                            }
                             break;
                         case ConsoleKey.UpArrow:
                             if (_positionCommandLog > 0)
@@ -210,6 +213,12 @@ namespace ServerWorker.ConsoleView
 
             result.Success = true;
             return result;
+        }
+
+        private void SwitchCommander(IConsoleCommands commander)
+        {
+            _commands = commander;
+            _commands.SwithCommander += SwitchCommander;
         }
 
 

