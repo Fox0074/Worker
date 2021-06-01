@@ -199,6 +199,8 @@
     <Compile Include="ConsoleView\ConsoleView.cs" />
     <Compile Include="ConsoleView\ConsoleViewInstaller.cs" />
     <Compile Include="ConsoleView\ConsoleViewCommands.cs" />
+    <Compile Include="ConsoleView\ConsoleViewUserCommands.cs" />
+    <Compile Include="ConsoleView\IConsoleCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
