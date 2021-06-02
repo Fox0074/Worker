@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ServerWorker
 {
@@ -11,14 +7,16 @@ namespace ServerWorker
     {
 
         public static Action<string> UpdateAction = delegate { };
-        
+        public static List<string> LogHisory = new List<string>();
 
         public static void Send(string message)
         {
             try
             {
-                //if (Program.form1.listBox2.InvokeRequired) Program.form1.listBox2.BeginInvoke(new Action(() => { Program.form1.listBox2.Items.Add(message); }));
-                //else Program.form1.listBox2.Items.Add(message);
+                LogHisory.Add(message);
+                if (LogHisory.Count > 5000)
+                    LogHisory.RemoveAt(4999);
+                UpdateAction.Invoke(message);
             }
             catch(Exception ex)
             {

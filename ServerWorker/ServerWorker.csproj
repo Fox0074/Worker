@@ -68,6 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInProgram.cs" />
+    <Compile Include="Interfaces\Users\IAdmin.cs" />
+    <Compile Include="Interfaces\Users\ISystem.cs" />
     <Compile Include="MySQLManager.cs" />
     <Compile Include="Server\ConqurentNetworkStream.cs" />
     <Compile Include="Server\ProcessMessage.cs" />
@@ -232,9 +234,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="View\" />
-    <Folder Include="ConsoleView\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

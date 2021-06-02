@@ -1,9 +1,5 @@
 ﻿using ServerWorker.Server;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ServerWorker.UsersRank
 {
@@ -40,7 +36,7 @@ namespace ServerWorker.UsersRank
                 default:
                     throw new Exception("Новые права не могут быть назначены");
             }
-            Program.server.Events.OnAuthorized.Invoke();
+            Program.server?.Events.OnAuthorized.Invoke();
         }
     }
 }

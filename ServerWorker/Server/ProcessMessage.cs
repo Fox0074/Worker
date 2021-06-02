@@ -15,11 +15,18 @@ namespace ServerWorker.Server
         {
             if (unit.EndPoint != null)
             {
-                var endUser = ServerNet.ConnectedUsers.ToArray().FirstOrDefault(x => x.EndPoint == unit.EndPoint);
-                 if (!unit.IsSync)
-                 {
-                     ServerNet.SendMessage(endUser.nStream, unit);
-                 }
+                if (Program.server == null)
+                {
+                    if (unit.IsAnswer) return;
+                }
+                var endUser = ServerNet.ConnectedUsers.ToArray().FirstOrDefault(x => x.EndPoint.ToString() == unit.EndPoint.ToString());
+
+                var result = endUser.Execute(unit.Command, unit.prms, unit.IsAnswer);
+
+                if (result.Exception != null || result.IsAnswer)
+                    ServerNet.SendMessage(user.nStream, result);
+
+                return;
             }
 
             if (unit.IsDelegate)
@@ -93,7 +100,7 @@ namespace ServerWorker.Server
                     throw ex.InnerException;
                 }
 
-                if (Program.authSystem.sessionLoginData.userType == UserType.System || MethodName != "ChangePrivileges")
+                if (Program.authSystem.SessionLoginData.userType == UserType.System || MethodName != "ChangePrivileges")
                 {
                     Log.Send(string.Concat(startUserType.ToString(), " ", user.EndPoint, " -> ", MethodName, "(", string.Join(", ", unit.prms), ")"));
                 }

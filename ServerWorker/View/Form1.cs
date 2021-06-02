@@ -47,7 +47,7 @@ namespace ServerWorker
             //    else Program.form1.Form1_InterfaceChanged(arg);
             //};
 
-
+            Log.UpdateAction += UpdateLog;
             Program.server.Events.OnAuthorized += UpdateClientList;
             UserCard.UserData.OnDataUpdate += UpdateClientList;
             Program.server.Events.OnConnected += (User user) => { user.OnPingUpdate += UpdatePing; UpdateClientList(); };
@@ -55,7 +55,7 @@ namespace ServerWorker
             InitContextMenuStrip();
             mainControls.Add(button1);
             secondControls.Add(button8);
-            if (Program.authSystem.sessionLoginData.userType == UserType.System) button2.Visible = true;
+            if (Program.authSystem.SessionLoginData.userType == UserType.System) button2.Visible = true;
         }
 
         private void InitContextMenuStrip()
@@ -376,6 +376,12 @@ namespace ServerWorker
             ServerCard.ServerCard serverCard = user == null ?  new ServerCard.ServerCard() : new ServerCard.ServerCard(user);
             Thread newFormThread = new Thread(new ThreadStart(() => { Application.Run(serverCard); }));
             newFormThread.Start();
+        }
+
+        private void UpdateLog(string message)
+        {
+            if (listBox2.InvokeRequired) listBox2.BeginInvoke(new Action(() => { listBox2.Items.Add(message); }));
+            else listBox2.Items.Add(message);
         }
     }
 }

@@ -13,6 +13,14 @@ using System.Diagnostics;
 
 namespace ServerWorker.Server
 {
+    [Serializable]
+    public class UserInfo
+    {
+        public UserCard.UserData userData;
+        public UserType UserType;
+        public EndPoint EndPoint;
+    }
+
     public class User : IDisposable
     {
         public Action<string> OnSendChatMessage = delegate { };
@@ -21,17 +29,23 @@ namespace ServerWorker.Server
         public long Ping;
         public const int PING_TIME = 7000;
         public UserCard.UserData userData;
-
-        public bool IsProxyUser = false;
-
+        public bool _isProxyUser = false;
         private readonly Timer _pingTimer;
         public Type RingType { get; private set; }
-        public EndPoint EndPoint { get; private set; }
+        public EndPoint EndPoint;
         private AbstractRing _ClassInstance;
         private readonly object syncLock = new object();
         private Unit _syncResult;
         private readonly ManualResetEventSlim _OnResponce = new ManualResetEventSlim(false);
         private Stopwatch stopWatch = new Stopwatch();
+
+        public UserType UserType = UserType.UnAuthorized;
+
+        public byte[] HeaderLength = BitConverter.GetBytes((int)0);
+        public readonly TcpClient _socket;
+        public readonly ConqurentNetworkStream nStream;
+        private readonly object _disposeLock = new object();
+        private bool _IsDisposed = false;
 
         private readonly Proxy<IAdmin> AdminComProxy;
         private readonly Proxy<ISystem> SystemComProxy;
@@ -50,8 +64,6 @@ namespace ServerWorker.Server
         public IAdmin AdminCom { get; private set; }
         public ISystem SystemCom { get; private set; }
 
-
-
         public AbstractRing ClassInstance
         {
             get { return _ClassInstance; }
@@ -61,16 +73,6 @@ namespace ServerWorker.Server
                 RingType = _ClassInstance.GetType();
             }
         }
-
-        public UserType UserType = UserType.UnAuthorized;
-
-        public byte[] HeaderLength = BitConverter.GetBytes((int)0);
-
-        public readonly TcpClient _socket;
-        public readonly ConqurentNetworkStream nStream;
-
-        private readonly object _disposeLock = new object();
-        private bool _IsDisposed = false;
 
         public User(TcpClient Socket)
         {
@@ -94,29 +96,30 @@ namespace ServerWorker.Server
 
         }
 
-        public User(EndPoint proxyUser)
+        public User(UserInfo proxyUser)
         {
-            IsProxyUser = true;
-            ClassInstance = new ClientRing(this);
-            EndPoint = proxyUser;
-
-            UsersComProxy = new Proxy<IUser>(this);
-            AdminComProxy = new Proxy<IAdmin>(this);
-            SystemComProxy = new Proxy<ISystem>(this);
-
-            UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
-            AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
-            SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
-
-        }
-
-        public User(User proxyUser)
-        {
-            IsProxyUser = true;
-
-            ClassInstance = proxyUser.ClassInstance;
-            EndPoint = proxyUser.EndPoint;
+            _isProxyUser = true;
             
+            EndPoint = proxyUser.EndPoint;
+            userData = proxyUser.userData;
+            UserType = proxyUser.UserType;
+
+            switch(UserType)
+            {
+                case UserType.User:
+                    ClassInstance = new UserRing(this);
+                    break;
+                case UserType.Admin:
+                    ClassInstance = new AdminRing(this);
+                    break;
+                case UserType.System:
+                    ClassInstance = new SystemRing(this);
+                    break;
+                default:
+                    ClassInstance = new ClientRing(this);
+                    break;
+            }
+
             UsersComProxy = new Proxy<IUser>(this);
             AdminComProxy = new Proxy<IAdmin>(this);
             SystemComProxy = new Proxy<ISystem>(this);
@@ -124,7 +127,10 @@ namespace ServerWorker.Server
             UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
             AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
             SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
+
         }
+
+
 
         private void OnPing(object state)
         {
@@ -160,15 +166,14 @@ namespace ServerWorker.Server
         {
             lock (syncLock)
             {
-
                 _syncResult = new Unit(MethodName, parameters);
                 _syncResult.IsSync = IsWaitAnswer;
-                _syncResult.EndPoint = IsProxyUser ? EndPoint : null;
+                _syncResult.EndPoint = _isProxyUser ? EndPoint : null;
                 if (IsWaitAnswer)
                 {
                     _OnResponce.Reset();
 
-                    if (IsProxyUser)
+                    if (!_isProxyUser)
                         ServerNet.SendMessage(nStream, _syncResult);
                     else
                         SubServer.SendMessage(_syncResult);
@@ -177,7 +182,7 @@ namespace ServerWorker.Server
                 }
                 else
                 {
-                    if (IsProxyUser)
+                    if (!_isProxyUser)
                         ServerNet.SendMessage(nStream, _syncResult);
                     else
                         SubServer.SendMessage(_syncResult);

@@ -15,12 +15,10 @@ namespace ServerWorker
 {
     public class SubServer
     {
-        public static readonly SyncAccess ConnectedProxyUsers = new SyncAccess();
-        public static User MainServer;
+        public User ServerUser;
 
         public SubServer(string host, string pass)
         {
-
             TcpClient ServerSocket = new System.Net.Sockets.TcpClient();
             ServerSocket.ReceiveBufferSize = 8192;
             ServerSocket.SendBufferSize = 8192;
@@ -28,13 +26,16 @@ namespace ServerWorker
             ServerSocket.SendTimeout = 30000;
 
             ServerSocket.Connect(host, 7777);
-            MainServer = new User(ServerSocket);
-            ConnectedProxyUsers.Add(MainServer);
-            MainServer.nStream.BeginRead(MainServer.HeaderLength, OnDataReadCallback, MainServer);
-            SendMessage(new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, pass }));
+            ServerUser = new User(ServerSocket);
+            ServerUser.nStream.BeginRead(ServerUser.HeaderLength, OnDataReadCallback, ServerUser);
+            Program.SubServer = this;
+            SendMessage(new Unit("ChangePrivileges", new string[] { Program.authSystem.SessionLoginData.Login, pass }));
 
-            // var serverId = user.SystemCom.ServerIdentification(Program.ServerId, pass);
-            // if (serverId != null) user.userData = new UserCard.UserData(serverId);
+            var serverId = ServerUser.SystemCom.ServerIdentification(Program.ServerId);
+            if (serverId != null)
+                ServerUser.userData = new UserCard.UserData(serverId);
+
+            ServerUser.UserType = ServerUser.AdminCom.GetUsertype();
         }
     
         private void OnDataReadCallback(IAsyncResult asyncResult)
@@ -68,7 +69,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                ConnectedProxyUsers.Remove(user);               
+                ServerNet.ConnectedUsers.Remove(user);               
                 Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                
                 return;
@@ -131,7 +132,7 @@ namespace ServerWorker
                 byte[] DataLength = BitConverter.GetBytes(BinaryData.Length);
                 byte[] DataWithHeader = DataLength.Concat(BinaryData).ToArray();
 
-                MainServer.nStream.Add(DataWithHeader);
+                Program.SubServer.ServerUser.nStream.Add(DataWithHeader);
             }
 
 #else

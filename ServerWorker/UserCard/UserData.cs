@@ -10,6 +10,7 @@ using Interfaces;
 
 namespace ServerWorker.UserCard
 {
+    [Serializable]
     public class UserData
     {
         public static Action OnDataUpdate = delegate { };

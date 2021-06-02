@@ -12,6 +12,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Threading.Tasks;
+using ServerWorker.UserCard;
 
 namespace ServerWorker
 {
@@ -24,10 +25,9 @@ namespace ServerWorker
         Action OnPing { get; set; }
         Action<Exception> OnError { get; set; }
         Action OnAuthorized { get; set; }
-
-        Action<int> OnBark { get; set; }
     }
 
+    [Serializable]
     public enum UserType
     {
         UnAuthorized,
@@ -45,16 +45,15 @@ namespace ServerWorker
 
         #region События
 
-        Action IEvents.OnStartConnect { get; set; }
-        Action<User> IEvents.OnConnected { get; set; }
-        Action<User> IEvents.OnDisconnect { get; set; }
-        Action IEvents.OnPing { get; set; }
-        Action<Exception> IEvents.OnError { get; set; }
-        Action IEvents.OnAuthorized { get; set; }
-        Action<int> IEvents.OnBark { get; set; }
+        Action IEvents.OnStartConnect { get; set; } = delegate { };
+        Action<User> IEvents.OnConnected { get; set; } = delegate { };
+        Action<User> IEvents.OnDisconnect { get; set; } = delegate { };
+        Action IEvents.OnPing { get; set; } = delegate { };
+        Action<Exception> IEvents.OnError { get; set; } = delegate { };
+        Action IEvents.OnAuthorized { get; set; } = delegate { };
         #endregion
 
-      
+
         public System.Net.Sockets.TcpListener SERV;
         public static readonly SyncAccess ConnectedUsers = new SyncAccess();
         public static readonly SyncAccess ConnectedServers = new SyncAccess();
@@ -82,7 +81,7 @@ namespace ServerWorker
             User user = new User(client);
             ConnectedUsers.Add(user);
             Log.Send("Подключился клиент: " + user.UserType);
-            //Events.OnConnected.Invoke(user);
+            Events.OnConnected.Invoke(user);
 
             try
             {
@@ -91,7 +90,7 @@ namespace ServerWorker
             catch (IOException ex)
             {
                 Log.Send(ex.Message);
-                //Events.OnDisconnect.Invoke(user);
+                Events.OnDisconnect.Invoke(user);
                 ConnectedUsers.Remove(user);
                 Log.Send("Не удалось подключить пользователя: " + ex.Message);
             }
@@ -129,7 +128,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                //Events.OnDisconnect.Invoke(user);
+                Events.OnDisconnect.Invoke(user);
                 ConnectedUsers.Remove(user);               
                 Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                

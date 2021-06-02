@@ -16,17 +16,23 @@ namespace ServerWorker.UsersRank
         {
             up.UserType = UserType.Admin;
         }
-        public string ServerIdentification(string key, string pass)
+        public string ServerIdentification(string key)
         {
             up.userData = new UserCard.UserData(key);
-            ServerNet.SendMessage(up.nStream,
-                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, pass}));
             return Program.ServerId;
         }
 
-        public EndPoint[] GetUsers()
+        public UserType GetUsertype()
         {
-            return ServerNet.ConnectedUsers.ToArray().Select(x => x.EndPoint).ToArray();
+            return Program.authSystem.SessionLoginData.userType;
+        }
+
+        public UserInfo[] GetUsers()
+        {
+            List<UserInfo> list = new List<UserInfo>();
+            var z = ServerNet.ConnectedUsers.ToArray();
+            z.ToList().ForEach(x => list.Add(new UserInfo() { UserType = x.UserType, EndPoint = x.EndPoint, userData = x.userData }));
+            return list.Where(x => x.EndPoint.ToString() != up.EndPoint.ToString() && x.UserType <= up.UserType).ToArray();
         }
 
         public int Bark(int nTimes)

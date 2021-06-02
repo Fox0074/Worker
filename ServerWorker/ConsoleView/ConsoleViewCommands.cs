@@ -37,8 +37,10 @@ namespace ServerWorker.ConsoleView
         public void ShowUsers()
         {
             Console.WriteLine("Список клиентов:");
+            var usersList = ServerNet.ConnectedUsers.ToArray().ToList();
+            usersList.AddRange(ServerNet.ConnectedServers.ToArray());
 
-            foreach (var user in ServerNet.ConnectedUsers.ToArray())
+            foreach (var user in usersList)
             {
                 if (user.userData != null)
                 {
@@ -104,34 +106,23 @@ namespace ServerWorker.ConsoleView
 
         public void Exit() { }
 
-        private User remoteServer;
-        private List<User> users = new List<User>();
         public void ConnectToServer(string host)
         {
-            string pass = "";
+            string pass;
             do
             {
                 Console.Write("Enter password: ");
                 pass = Console.ReadLine();
-            } while (SessionLoginData.CreateMD5(pass) != Program.authSystem.sessionLoginData.Md5Pass);
+            } while (SessionLoginData.CreateMD5(pass) != Program.authSystem.SessionLoginData.Md5Pass);
 
-            Program.SubServer = new SubServer(host, pass);
-            remoteServer = SubServer.MainServer;
-
-            // var serverId = remoteServer.SystemCom.ServerIdentification(Program.ServerId, "hex34");
-            // if (serverId != null) remoteServer.userData = new UserCard.UserData(serverId);
-        }
-
-        public void test()
-        {
-
-            var serverId = remoteServer.SystemCom.ServerIdentification(Program.ServerId, "hex34");
-            if (serverId != null) remoteServer.userData = new UserCard.UserData(serverId);
-        }
-        public void test2()
-        {
-            remoteServer.AdminCom.GetUsers().ToList().ForEach(x => users.Add(new User(x)));
-            users.ToList().ForEach(x => Console.WriteLine(x.EndPoint));
+            new SubServer(host, pass);
+            Program.SubServer.ServerUser.AdminCom.GetUsers().ToList().ForEach(x =>
+            {
+                if (x.UserType == UserType.User)
+                    ServerNet.ConnectedUsers.Add(new User(x));
+                if (x.UserType == UserType.Admin || x.UserType == UserType.System)
+                    ServerNet.ConnectedServers.Add(new User(x));
+            });
         }
     }
 }

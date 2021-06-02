@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServerWorker
 {
+    [Serializable]
     public class ClientLog
     {
         public List<string> messages = new List<string>();

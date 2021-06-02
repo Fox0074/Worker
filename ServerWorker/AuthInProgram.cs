@@ -48,11 +48,11 @@ namespace ServerWorker
     public class AuthInProgram
     {
         public bool IsAuthorizate { get; set; } = false;
-        public SessionLoginData sessionLoginData;
+        public SessionLoginData SessionLoginData;
         public bool Authorization (string login, string pass)
         {
-            sessionLoginData = SessionLoginData.GetSessionData(login,pass);
-            IsAuthorizate = sessionLoginData != null;
+            SessionLoginData = SessionLoginData.GetSessionData(login,pass);
+            IsAuthorizate = SessionLoginData != null;
             return IsAuthorizate;
         }
     }
