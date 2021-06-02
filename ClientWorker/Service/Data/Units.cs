@@ -7,9 +7,7 @@ namespace Interfaces
     [Serializable]
     public class Unit
     {
-        public string Identificator { get; }
-        public DateTime StartdateTime { get; }
-        public IPEndPoint NextPoint { get; }
+        public EndPoint EndPoint { get; set;}
 
         public Unit(string Command, object[] Parameters)
         {

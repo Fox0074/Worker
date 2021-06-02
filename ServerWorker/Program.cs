@@ -18,6 +18,7 @@ namespace ServerWorker
     {
         static public AuthInProgram authSystem = new AuthInProgram();
         static public ServerNet server;
+        static public SubServer SubServer;
         static public Thread serverThread;
         static public ConsoleViewInstaller Console;
         static public Form1 form1;

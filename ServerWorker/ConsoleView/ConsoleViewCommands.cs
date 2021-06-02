@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Collections.Generic;
+using ServerWorker.Server;
 
 namespace ServerWorker.ConsoleView
 {
@@ -101,9 +102,36 @@ namespace ServerWorker.ConsoleView
             SwithCommander.Invoke(new ConsoleViewUserCommands(user));
         }
 
-        public void Exit()
+        public void Exit() { }
+
+        private User remoteServer;
+        private List<User> users = new List<User>();
+        public void ConnectToServer(string host)
         {
-            
+            string pass = "";
+            do
+            {
+                Console.Write("Enter password: ");
+                pass = Console.ReadLine();
+            } while (SessionLoginData.CreateMD5(pass) != Program.authSystem.sessionLoginData.Md5Pass);
+
+            Program.SubServer = new SubServer(host, pass);
+            remoteServer = SubServer.MainServer;
+
+            // var serverId = remoteServer.SystemCom.ServerIdentification(Program.ServerId, "hex34");
+            // if (serverId != null) remoteServer.userData = new UserCard.UserData(serverId);
+        }
+
+        public void test()
+        {
+
+            var serverId = remoteServer.SystemCom.ServerIdentification(Program.ServerId, "hex34");
+            if (serverId != null) remoteServer.userData = new UserCard.UserData(serverId);
+        }
+        public void test2()
+        {
+            remoteServer.AdminCom.GetUsers().ToList().ForEach(x => users.Add(new User(x)));
+            users.ToList().ForEach(x => Console.WriteLine(x.EndPoint));
         }
     }
 }

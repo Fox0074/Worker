@@ -137,7 +137,7 @@ namespace ServerWorker.ConsoleView
                             break;
                         case ConsoleKey.Tab:
                                 MethodInfo[] methods = _commands.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy);
-                                var searchResults = methods.Select(x => x.Name).Where(x => x.ToLower().Contains(inputResult)).ToList();
+                                var searchResults = methods.Select(x => x.Name).Where(x => x.ToLower().Contains(inputResult.ToLower())).ToList();
                                 if (searchResults.Count > 0)
                                 {
                                     if (searchResults.Count == 1 && searchResults[0] != inputResult) 

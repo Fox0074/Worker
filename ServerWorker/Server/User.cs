@@ -22,6 +22,8 @@ namespace ServerWorker.Server
         public const int PING_TIME = 7000;
         public UserCard.UserData userData;
 
+        public bool IsProxyUser = false;
+
         private readonly Timer _pingTimer;
         public Type RingType { get; private set; }
         public EndPoint EndPoint { get; private set; }
@@ -75,7 +77,6 @@ namespace ServerWorker.Server
             this._socket = Socket;
             Socket.ReceiveTimeout = PING_TIME * 4;
             Socket.SendTimeout = PING_TIME * 4;
-            //Сам добавил
             Socket.ReceiveBufferSize = 9999999;
             Socket.ReceiveBufferSize = 9999999;
             nStream = new ConqurentNetworkStream(Socket.GetStream());
@@ -91,6 +92,38 @@ namespace ServerWorker.Server
             AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
             SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
 
+        }
+
+        public User(EndPoint proxyUser)
+        {
+            IsProxyUser = true;
+            ClassInstance = new ClientRing(this);
+            EndPoint = proxyUser;
+
+            UsersComProxy = new Proxy<IUser>(this);
+            AdminComProxy = new Proxy<IAdmin>(this);
+            SystemComProxy = new Proxy<ISystem>(this);
+
+            UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
+            AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
+            SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
+
+        }
+
+        public User(User proxyUser)
+        {
+            IsProxyUser = true;
+
+            ClassInstance = proxyUser.ClassInstance;
+            EndPoint = proxyUser.EndPoint;
+            
+            UsersComProxy = new Proxy<IUser>(this);
+            AdminComProxy = new Proxy<IAdmin>(this);
+            SystemComProxy = new Proxy<ISystem>(this);
+
+            UsersCom = (IUser)UsersComProxy.GetTransparentProxy();
+            AdminCom = (IAdmin)AdminComProxy.GetTransparentProxy();
+            SystemCom = (ISystem)SystemComProxy.GetTransparentProxy();
         }
 
         private void OnPing(object state)
@@ -127,18 +160,28 @@ namespace ServerWorker.Server
         {
             lock (syncLock)
             {
+
                 _syncResult = new Unit(MethodName, parameters);
                 _syncResult.IsSync = IsWaitAnswer;
-
+                _syncResult.EndPoint = IsProxyUser ? EndPoint : null;
                 if (IsWaitAnswer)
                 {
                     _OnResponce.Reset();
-                    ServerNet.SendMessage(nStream, _syncResult);
+
+                    if (IsProxyUser)
+                        ServerNet.SendMessage(nStream, _syncResult);
+                    else
+                        SubServer.SendMessage(_syncResult);
+
                     _OnResponce.Wait();  // ожидаем ответ сервера
                 }
                 else
                 {
-                    ServerNet.SendMessage(nStream, _syncResult);
+                    if (IsProxyUser)
+                        ServerNet.SendMessage(nStream, _syncResult);
+                    else
+                        SubServer.SendMessage(_syncResult);
+
                     Log.Send(UserType.ToString() +" "+ EndPoint + " -> " + MethodName);
                 }
 

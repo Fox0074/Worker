@@ -13,6 +13,15 @@ namespace ServerWorker.Server
     {
         public static void GuideMessage(Unit unit, User user)
         {
+            if (unit.EndPoint != null)
+            {
+                var endUser = ServerNet.ConnectedUsers.ToArray().FirstOrDefault(x => x.EndPoint == unit.EndPoint);
+                 if (!unit.IsSync)
+                 {
+                     ServerNet.SendMessage(endUser.nStream, unit);
+                 }
+            }
+
             if (unit.IsDelegate)
             {
                 ExecuteDelegate(unit);

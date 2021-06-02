@@ -41,8 +41,10 @@ namespace ServerWorker.ServerCard
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            ServerNet serv = new ServerNet();
-            _user = serv.ConnectionToServer(textBox1.Text);
+            throw new Exception("Метод не реализован");
+            //TODO: Исправить
+            //ServerNet serv = new ServerNet();
+            //_user = serv.ConnectionToServer(textBox1.Text);
             if (_user != null)
             {
                 SetStateConection();

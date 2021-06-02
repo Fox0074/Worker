@@ -4,6 +4,7 @@ using ServerWorker.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +16,17 @@ namespace ServerWorker.UsersRank
         {
             up.UserType = UserType.Admin;
         }
-        public string ServerIdentification(string key)
+        public string ServerIdentification(string key, string pass)
         {
             up.userData = new UserCard.UserData(key);
             ServerNet.SendMessage(up.nStream,
-                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, Program.authSystem.sessionLoginData.Md5Pass }));
+                new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, pass}));
             return Program.ServerId;
+        }
+
+        public EndPoint[] GetUsers()
+        {
+            return ServerNet.ConnectedUsers.ToArray().Select(x => x.EndPoint).ToArray();
         }
 
         public int Bark(int nTimes)

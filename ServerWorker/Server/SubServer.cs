@@ -1,9 +1,8 @@
-﻿#define USE_COMPRESSION
+#define USE_COMPRESSION
 
 using Interfaces;
 using ServerWorker.Server;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,90 +10,31 @@ using System.Net.Sockets;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServerWorker
 {
-
-    public interface IEvents
+    public class SubServer
     {
-        Action OnStartConnect { get; set; }
-        Action<User> OnConnected { get; set; }
-        Action<User> OnDisconnect { get; set; }
-        Action OnPing { get; set; }
-        Action<Exception> OnError { get; set; }
-        Action OnAuthorized { get; set; }
+        public static readonly SyncAccess ConnectedProxyUsers = new SyncAccess();
+        public static User MainServer;
 
-        Action<int> OnBark { get; set; }
-    }
-
-    public enum UserType
-    {
-        UnAuthorized,
-        User,
-        Admin,
-        System,
-    }
-
-    public class ServerNet : IEvents
-    {
-        public IEvents Events
+        public SubServer(string host, string pass)
         {
-            get { return this; }
-        }
 
-        #region События
+            TcpClient ServerSocket = new System.Net.Sockets.TcpClient();
+            ServerSocket.ReceiveBufferSize = 8192;
+            ServerSocket.SendBufferSize = 8192;
+            ServerSocket.ReceiveTimeout = 30000;
+            ServerSocket.SendTimeout = 30000;
 
-        Action IEvents.OnStartConnect { get; set; }
-        Action<User> IEvents.OnConnected { get; set; }
-        Action<User> IEvents.OnDisconnect { get; set; }
-        Action IEvents.OnPing { get; set; }
-        Action<Exception> IEvents.OnError { get; set; }
-        Action IEvents.OnAuthorized { get; set; }
-        Action<int> IEvents.OnBark { get; set; }
-        #endregion
+            ServerSocket.Connect(host, 7777);
+            MainServer = new User(ServerSocket);
+            ConnectedProxyUsers.Add(MainServer);
+            MainServer.nStream.BeginRead(MainServer.HeaderLength, OnDataReadCallback, MainServer);
+            SendMessage(new Unit("ChangePrivileges", new string[] { Program.authSystem.sessionLoginData.Login, pass }));
 
-      
-        public System.Net.Sockets.TcpListener SERV;
-        public static readonly SyncAccess ConnectedUsers = new SyncAccess();
-        public static readonly SyncAccess ConnectedServers = new SyncAccess();
-        public ServerNet(int Port)
-        {
-            SERV = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any, Port);
-        }
-
-        public void Start()
-        {
-            SERV.Start();
-            SERV.BeginAcceptTcpClient(OnAcceptClient, null);
-        }
-
-        public void Stop()
-        {
-            SERV.Stop();
-        }
-
-        private void OnAcceptClient(IAsyncResult asyncResult)
-        {
-            var client = SERV.EndAcceptTcpClient(asyncResult);
-            SERV.BeginAcceptTcpClient(OnAcceptClient, null);
-
-            User user = new User(client);
-            ConnectedUsers.Add(user);
-            Log.Send("Подключился клиент: " + user.UserType);
-            //Events.OnConnected.Invoke(user);
-
-            try
-            {
-                user.nStream.BeginRead(user.HeaderLength, OnDataReadCallback, user);
-            }
-            catch (IOException ex)
-            {
-                Log.Send(ex.Message);
-                //Events.OnDisconnect.Invoke(user);
-                ConnectedUsers.Remove(user);
-                Log.Send("Не удалось подключить пользователя: " + ex.Message);
-            }
+            // var serverId = user.SystemCom.ServerIdentification(Program.ServerId, pass);
+            // if (serverId != null) user.userData = new UserCard.UserData(serverId);
         }
     
         private void OnDataReadCallback(IAsyncResult asyncResult)
@@ -116,8 +56,7 @@ namespace ServerWorker
                     else
                     {
                         unit.IsAnswer = true;
-                        SendMessage(user.nStream, unit);
-                        if (Events.OnPing != null) Events.OnPing.BeginInvoke(null, null);
+                        SendMessage(unit);
                     }
                 }
                 else
@@ -129,8 +68,7 @@ namespace ServerWorker
             }
             catch (Exception ex)
             {
-                //Events.OnDisconnect.Invoke(user);
-                ConnectedUsers.Remove(user);               
+                ConnectedProxyUsers.Remove(user);               
                 Log.Send("Пользователь " + user.UserType + ": " + user.EndPoint.ToString() + " удален. Ошибка: " + ex.Message);
                 GC.Collect(2, GCCollectionMode.Optimized);                
                 return;
@@ -177,7 +115,7 @@ namespace ServerWorker
 #endif
         }
 
-        public static void SendMessage(ConqurentNetworkStream nStream, Unit msg)
+        public static void SendMessage(Unit msg)
         {
 #if USE_COMPRESSION
 
@@ -193,7 +131,7 @@ namespace ServerWorker
                 byte[] DataLength = BitConverter.GetBytes(BinaryData.Length);
                 byte[] DataWithHeader = DataLength.Concat(BinaryData).ToArray();
 
-                nStream.Add(DataWithHeader);
+                MainServer.nStream.Add(DataWithHeader);
             }
 
 #else

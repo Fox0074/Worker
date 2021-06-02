@@ -1,7 +1,10 @@
-﻿namespace Interfaces.Users
+﻿using System.Net;
+
+namespace Interfaces.Users
 {
     public interface IAdmin
     {
-        string ServerIdentification(string key);
+        EndPoint[] GetUsers();
+        string ServerIdentification(string key, string pass);
     }
 }

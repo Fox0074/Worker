@@ -81,6 +81,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server\ServerNet.cs" />
+    <Compile Include="Server\SubServer.cs" />
     <Compile Include="UserCard\UserData.cs" />
     <Compile Include="UserCard\UserID.cs" />
     <Compile Include="UsersRank\SystemRing.cs" />
