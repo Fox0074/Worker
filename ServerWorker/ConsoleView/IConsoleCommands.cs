@@ -4,7 +4,8 @@ namespace ServerWorker.ConsoleView
 {
     public interface IConsoleCommands
     {
-        Action<IConsoleCommands> SwithCommander {get; set;}
+        Action<IConsoleCommands> PushCommander {get; set;}
+        Action PopCommander {get; set;}
         void Help();
     }
 }

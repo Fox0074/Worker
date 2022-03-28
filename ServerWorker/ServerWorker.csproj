@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0DFBDDF6-9786-4DE0-86DC-7E1A2C0D9617}</ProjectGuid>
-    <OutputType>exe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>ServerWorker</RootNamespace>
     <AssemblyName>ServerWorker</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -28,7 +28,6 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -204,6 +203,7 @@
     <Compile Include="ConsoleView\ConsoleViewCommands.cs" />
     <Compile Include="ConsoleView\ConsoleViewUserCommands.cs" />
     <Compile Include="ConsoleView\IConsoleCommands.cs" />
+    <Compile Include="ConsoleView\DirectoryViewCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

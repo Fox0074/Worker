@@ -8,7 +8,8 @@ namespace ServerWorker.ConsoleView
 {
     public class ConsoleViewCommands : IConsoleCommands
     {
-        public Action<IConsoleCommands> SwithCommander {get; set;} = delegate { };
+        public Action<IConsoleCommands> PushCommander {get; set;} = delegate { };
+        public Action PopCommander {get; set;} = delegate { };
         private string drawUsersTableFormat = "{0,-7}|{1, -7}|{2, -25}|{3, -20}|{4, -25}|{5, -7}|{6, -2}|{7, -4}";
         private List<String> _excludedMethods = new List<string>()
         {
@@ -101,10 +102,13 @@ namespace ServerWorker.ConsoleView
                 return;
             }
 
-            SwithCommander.Invoke(new ConsoleViewUserCommands(user));
+            PushCommander.Invoke(new ConsoleViewUserCommands(user));
         }
 
-        public void Exit() { }
+        public void Exit() 
+        {
+            Program.StopServer();
+        }
 
         public void ConnectToServer(string host)
         {

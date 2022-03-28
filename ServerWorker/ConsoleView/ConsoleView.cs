@@ -8,37 +8,14 @@ namespace ServerWorker.ConsoleView
     public class ConsoleView
     {
         public Action OnProgramClose = delegate { };
+
         private List<string> _commandsLog = new List<string>();
         private int _positionCommandLog;
-        private class CommandRequest
-        {
-            public string Source;
-            public string Command;
-            public List<object> ObjectParametrs = new List<object>();
-            public List<string> StringParametrs = new List<string>();
-
-            public CommandRequest(string stringRequest)
-            {
-                Source = stringRequest;
-                StringParametrs.AddRange(stringRequest.Split(' ').ToList());
-                //TODO: привидение типов
-                ObjectParametrs.AddRange(stringRequest.Split(' ').ToList());
-                Command = StringParametrs[0];
-                StringParametrs.RemoveAt(0);
-                ObjectParametrs.RemoveAt(0);
-            }
-        }
-        private class CommandResult
-        {
-            public bool Success;
-            public object ReturnValue;
-        }
-
         private IConsoleCommands _commands;
-
+        private Stack<IConsoleCommands> _commanderStack = new Stack<IConsoleCommands>();
         public ConsoleView()
         {
-            SwitchCommander(new ConsoleViewCommands());
+            PushCommander(new ConsoleViewCommands());
             _positionCommandLog = _commandsLog.Count-1;
             AppDomain.CurrentDomain.ProcessExit += (arg1,arg2) => OnProgramClose.Invoke();
         }
@@ -50,7 +27,7 @@ namespace ServerWorker.ConsoleView
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("Command >> ");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Green;
                 commandRequest = new CommandRequest(SymbolycInputRead("Command >> ", ConsoleColor.Red));
 
                 if (!string.IsNullOrWhiteSpace(commandRequest.Command)) 
@@ -67,7 +44,7 @@ namespace ServerWorker.ConsoleView
 
                 var result = ProcessMessage(
                     commandRequest.Command, 
-                    commandRequest.ObjectParametrs.Count > 0 ? commandRequest.ObjectParametrs.ToArray() : null, 
+                    commandRequest.GetObjectParametrs(), 
                     _commands);
 
                 if (result.Success)
@@ -200,7 +177,6 @@ namespace ServerWorker.ConsoleView
                     throw ex.InnerException;
                 }
 
-
                 // возвращаем ref и out параметры
                 parametrs = method.GetParameters().Select(x => x.ParameterType.IsByRef ? parametrs[x.Position] : null).ToArray();
             }
@@ -215,12 +191,49 @@ namespace ServerWorker.ConsoleView
             return result;
         }
 
-        private void SwitchCommander(IConsoleCommands commander)
+        private void PushCommander(IConsoleCommands commander)
         {
             _commands = commander;
-            _commands.SwithCommander += SwitchCommander;
+            _commanderStack.Push(commander);
+            _commands.PushCommander = PushCommander;
+            _commands.PopCommander = PopCommander;
         }
 
+        private void PopCommander()
+        {
+            _commanderStack.Pop();
+            _commands = _commanderStack.Peek();
+        }
+
+
+        private class CommandRequest
+        {
+            public string Source;
+            public string Command;
+            public List<object> ObjectParametrs = new List<object>();
+            public List<string> StringParametrs = new List<string>();
+
+            public CommandRequest(string stringRequest)
+            {
+                Source = stringRequest;
+                StringParametrs.AddRange(stringRequest.Split(' ').ToList());
+                //TODO: привидение типов
+                ObjectParametrs.AddRange(stringRequest.Split(' ').ToList());
+                Command = StringParametrs[0];
+                StringParametrs.RemoveAt(0);
+                ObjectParametrs.RemoveAt(0);
+            }
+
+            public object[] GetObjectParametrs()
+            {
+                return ObjectParametrs.Count > 0 ? ObjectParametrs.ToArray() : null;
+            }
+        }
+        private class CommandResult
+        {
+            public bool Success;
+            public object ReturnValue;
+        }
 
     }
 }

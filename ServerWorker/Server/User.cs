@@ -79,8 +79,7 @@ namespace ServerWorker.Server
             this._socket = Socket;
             Socket.ReceiveTimeout = PING_TIME * 4;
             Socket.SendTimeout = PING_TIME * 4;
-            Socket.ReceiveBufferSize = 9999999;
-            Socket.ReceiveBufferSize = 9999999;
+            Socket.ReceiveBufferSize = sizeof(int);
             nStream = new ConqurentNetworkStream(Socket.GetStream());
             _pingTimer = new Timer(OnPing, null, PING_TIME, PING_TIME);
             ClassInstance = new ClientRing(this);
