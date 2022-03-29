@@ -19,6 +19,69 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ClientBuild",
+            "type": "shell",
+            "command": "msbuild",
+            "args": 
+            [
+                "/property:GenerateFullPaths=true",
+                "/t:build",
+                "/consoleloggerparameters:NoSummary",
+                "/p:DefineConstants=WinExe"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/ClientWorker/Service/"
+              },
+            "group": "build",
+            "presentation": 
+            {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "DllClientBuild",
+            "type": "shell",
+            "command": "msbuild",
+            "args": 
+            [
+                "/property:GenerateFullPaths=true",
+                "/t:build",
+                "/consoleloggerparameters:NoSummary",
+                "/p:DefineConstants=Library"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/ClientWorker/Service/"
+              },
+            "group": "build",
+            "presentation": 
+            {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ServerBuild",
+            "type": "shell",
+            "command": "msbuild",
+            "args": 
+            [
+                "/property:GenerateFullPaths=true",
+                "/t:build",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "options": {
+                "cwd": "${workspaceRoot}/ServerWorker/"
+              },
+            "group": "build",
+            "presentation": 
+            {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
+
     ]
 }

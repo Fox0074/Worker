@@ -5,12 +5,13 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{430971D6-ADE1-4000-B4C4-118E149D7013}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType Condition="$(DefineConstants.Contains(Library))">Library</OutputType>
+    <OutputType Condition="$(DefineConstants.Contains(WinExe))">WinExe</OutputType>
     <RootNamespace>Service</RootNamespace>
     <AssemblyName>Service</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <StartupObject>ClientWorker.Program</StartupObject>
+    <StartupObject Condition="$(DefineConstants.Contains(WinExe))">ClientWorker.Program</StartupObject>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <NuGetPackageImportStamp>

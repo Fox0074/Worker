@@ -4,13 +4,23 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Launch",
+            "name": "LaunchServer",
             "type": "mono",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceRoot}/ServerWorker/bin/Debug/ServerWorker.exe",
             "cwd": "${workspaceRoot}/ServerWorker/bin/Debug",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "LaunchClient",
+            "type": "mono",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceRoot}/ClientWorker/Service/bin/Debug/Service.exe",
+            "cwd": "${workspaceRoot}/ClientWorker/Service/bin/Debug",
             "console": "integratedTerminal"
         },
         {
