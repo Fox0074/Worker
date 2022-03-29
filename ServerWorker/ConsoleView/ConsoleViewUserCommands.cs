@@ -103,7 +103,8 @@ namespace ServerWorker.ConsoleView
 
         public void ScreenShoot()
         {
-            throw new Exception("Метод еще не реализован");
+            var bitMap = _user.UsersCom.ScreenShot();
+            bitMap.Save("Screen_" + _user.userData.id + "_" + DateTime.Now.ToString("HH:mm:ss"), System.Drawing.Imaging.ImageFormat.Png);
         }
 
         public void GetProcesses()
@@ -156,7 +157,7 @@ namespace ServerWorker.ConsoleView
 
         public void OpenChat()
         {
-            _user.UsersCom.StartChat();
+            PushCommander(new ConsoleViewChatCommands(_user));
         }
 
         public void Back()

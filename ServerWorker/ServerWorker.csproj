@@ -204,6 +204,7 @@
     <Compile Include="ConsoleView\ConsoleViewUserCommands.cs" />
     <Compile Include="ConsoleView\IConsoleCommands.cs" />
     <Compile Include="ConsoleView\DirectoryViewCommands.cs" />
+    <Compile Include="ConsoleView\ConsoleViewChatCommands.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
